@@ -1,0 +1,9 @@
+build.xml
+/build/
+/dist/
+/project/
+/nbproject/
+!project.properties
+!project.xml
+*.db
+*.mf

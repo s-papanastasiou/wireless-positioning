@@ -25,7 +25,6 @@ public class Logging {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-
     }
 
     public void printLine(String message) {

@@ -22,7 +22,7 @@ public class Main {
 
     private final static double HALF_PI = Math.PI / 2;
 
-    private final static String OFFLINE_MAP = "OfflineMap.csv";
+    private final static String OFFLINE_MAP = "offlineMap.csv";
     private final static String ONLINE_WIFI_DATA = "onlineWifiDataA.csv";
     private final static String SETTINGS_FILE = "settingsFileA.csv";
     private final static String INITIAL_POINTS = "initialPointsA.csv";
@@ -68,9 +68,9 @@ public class Main {
             System.out.println("Loading inertial file");
             List<Data> inertialDataList = loadInertialData(inertialDataFile);
 
-            Logging log = new Logging(new File(resultsDir, "Results.csv"));
-            String header = "isBSSIDMerged;isOrientationMerged;K;initReadings;partCount;CloudRange;CloudDisplacement;isForce;Mean";
-            log.printLine(header);
+            Logging resultsLog = new Logging(new File(resultsDir, "Results.csv"));
+            String resultsHeader = "isBSSIDMerged;isOrientationMerged;K;initReadings;partCount;CloudRange;CloudDisplacement;isForce;Mean";
+            resultsLog.printLine(resultsHeader);
 
             for (AppSettings appSettings : appSettingsList) {
 
@@ -88,10 +88,21 @@ public class Main {
 
                 int currentInertialIndex = 0;
                 int orientation = Probabilistic.NO_ORIENTATION;
-                double mean = 0.0;
+                double totalDistance = 0.0;
 
+                String trialName = String.format("%s;%s;%s;%s;%s;%s;%s;%s", appSettings.isBSSIDMerged(),
+                        appSettings.isOrientationMerged(), appSettings.getK(), appSettings.getInitRSSIReadings(),
+                        appSettings.getParticleCount(), appSettings.getCloudRange(),
+                        appSettings.getCloudDisplacementCoefficient(), appSettings.isForceToOfflineMap());
+                            
+                Logging trialLog = new Logging(new File(resultsDir, String.format("Trial %s.csv", trialName)));
+                String trialHeader = "Point_No;Trial_X;Trial_Y;Distance;Pos_X;Pos_Y";
+                trialLog.printLine(trialHeader);
+                System.out.println("Running trial:" + trialHeader);
+                int lineNumber = 0;
                 for (KNNTrialPoint knnTrialPoint : onlinePoints) {
 
+                    
                     for (int i = currentInertialIndex; i < inertialDataList.size(); i++) {
                         Data sensorData = inertialDataList.get(i);
                         if (sensorData.getTimestamp() < knnTrialPoint.getTimestamp()) {  //Move using the sensor data
@@ -107,23 +118,7 @@ public class Main {
                             currentInertialIndex = i;   //store the next index to be used
                             break; //exit the loop
                         }
-                    }
-
-                    /*
-                    while (inertialPoint.getTimestamp() < knnTrialPoint.getTimestamp())
-                    {
-                        data = inertialDataList.get(currentInertialIndex);
-                        if(data.getTimestamp() < knnTrialPoint.getTimestamp()){
-
-                            InertialData results = InertialData.getDatas(data.getInvertedMatrix(),
-                                        data.getLinearAcceleration(), data.getOrientation(),
-                                        appSettings.getBuildingOrientation());
-                            inertialPoint = InertialPoint.move(inertialPoint, results, data.getTimestamp(), appSettings.getSpeedBreak());
-                            orientation = InertialData.getOrientation(appSettings.isOrientationMerged(), data.getOrientation()[0], appSettings.getBuildingOrientation());
-                            currentInertialIndex++;
-                        }
-                    }
-                    */
+                    }              
 
                     Point probabilisticPoint = Probabilistic.run(knnTrialPoint.getFloorPoint(), offlineMap, appSettings.getK(), orientation);
 
@@ -136,27 +131,29 @@ public class Main {
 
                     Point bestPoint = findBestPoint(offlineMap, cloud.getEstiPos(), appSettings.isForceToOfflineMap());
 
-                    mean += distance(knnTrialPoint, bestPoint);
+                    double trialDistance = distance(knnTrialPoint, bestPoint);
+                    totalDistance += trialDistance;
 
                     //store the points for drawing
                     finalPoints.add(new Point(bestPoint.getX() * X_PIXELS, bestPoint.getY() * Y_PIXELS));
                     trialPoints.add(new Point(knnTrialPoint.getFloorPoint().getxRef() * X_PIXELS,
                             knnTrialPoint.getFloorPoint().getyRef() * Y_PIXELS));
-
+                    String trialResult = getTrialResult(lineNumber, knnTrialPoint, trialDistance, bestPoint);
+                    trialLog.printLine(trialResult);
+                    
+                    lineNumber++;
                 }
-
-                String results = String.format("%s;%s;%s;%s;%s;%s;%s;%s;%s", appSettings.isBSSIDMerged(),
-                        appSettings.isOrientationMerged(), appSettings.getK(), appSettings.getInitRSSIReadings(),
-                        appSettings.getParticleCount(), appSettings.getCloudRange(),
-                        appSettings.getCloudDisplacementCoefficient(), appSettings.isForceToOfflineMap(), mean / onlinePoints.size());
-                log.printLine(results);
+                
+                trialLog.close();
+                String results = trialName +";" + Double.toString(totalDistance / (double) onlinePoints.size());
+                resultsLog.printLine(results);
 
                 //display the image
                 File outputImageFile = new File(imageDir, createTitle(appSettings, true));
                 DisplayRoute.draw(trialPoints, finalPoints, outputImageFile, image);
             }
 
-            log.close();
+            resultsLog.close();
         }
     }
 
@@ -365,4 +362,15 @@ public class Main {
 
         return bestPoint;
     }
+    
+    private static String getTrialResult(int lineNumber, KNNTrialPoint knnTrialPoint, double trialDistance, Point bestPoint){
+        
+        int trialX = knnTrialPoint.getFloorPoint().getxRef();
+        int trialY = knnTrialPoint.getFloorPoint().getyRef();
+        double posX = bestPoint.getX();
+        double posY = bestPoint.getY();        
+        
+        return String.format("%s;%s;%s;%s;%s;%s",lineNumber,trialX, trialY, trialDistance, posX, posY);
+    }
+    
 }

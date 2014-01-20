@@ -21,7 +21,7 @@ public class Logging {
     public Logging(File logFile) {
 
         try {
-            writer = new BufferedWriter(new FileWriter(logFile));
+            writer = new BufferedWriter(new FileWriter(logFile, false));
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

@@ -7,3 +7,7 @@ build.xml
 !project.xml
 *.db
 *.mf
+*.png
+/ResultsA
+/ImagesA
+*.csv

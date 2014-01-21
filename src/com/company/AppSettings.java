@@ -74,4 +74,29 @@ public class AppSettings {
     public double getBuildingOrientation() {
         return buildingOrientation;
     }
+    
+    public String getParticleTitle(String OUT_SEP){
+        return "particle-" + isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP + 
+                        K + OUT_SEP + initRSSIReadings + OUT_SEP + 
+                        particleCount + OUT_SEP + speedBreak + OUT_SEP + cloudRange + OUT_SEP + 
+                        cloudDisplacementCoefficient + OUT_SEP + isForceToOfflineMap;
+    }
+    
+    public String getParticleImageTitle(){
+        return "particle" + isBSSIDMerged + "-" + isOrientationMerged + "-" + 
+                        K + "-" + initRSSIReadings + "-" + 
+                        particleCount + "-" + speedBreak + "-" + cloudRange + "-" + 
+                        cloudDisplacementCoefficient + "-" + isForceToOfflineMap;
+    }
+    
+    public String getProbablisticTitle(String OUT_SEP){
+        return "probablistic-" + isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP + 
+                        K + OUT_SEP + isForceToOfflineMap;
+    }
+    
+    public String getProbablisticImageTitle(){
+        return "probablistic-" + isBSSIDMerged + "-" + isOrientationMerged + "-" + 
+                        K + "-" + isForceToOfflineMap;
+    }
+    
 }

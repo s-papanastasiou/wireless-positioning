@@ -28,21 +28,33 @@ public class Main {
     private final static String INITIAL_POINTS = "initialPointsA.csv";
     private final static String INERTIAL_DATA = "inertialDataA.csv";
     private final static String IMAGE = "floor2final.png";
-    private final static String IMAGE_DIRECTORY = "ImagesA";
-    private final static String RESULTS_DIRECTORY = "ResultsA";
-    private final static String SEPARATOR = ";";
+    private final static String RESULTS_DIRECTORY = "Results";
+    private final static String PARTICLE_IMAGE_DIRECTORY = "ParticleImages";
+    private final static String PARTICLE_RESULTS_DIRECTORY = "ParticleResults";
+    private final static String PROBABLISTIC_IMAGE_DIRECTORY = "ProbablisticImages";
+    private final static String PROBABLISTIC_RESULTS_DIRECTORY = "ProbablisticResults";
+    private final static String INPUT_SEPARATOR = ";";
+    private final static String OUT_SEP = ",";
     private static final double X_PIXELS = 1192.0 / 55;
     private static final double Y_PIXELS = 538.0 / 23.75;
     private static Cloud cloud;
     private static InertialPoint inertialPoint;
 
+    // Logging headers /////////////////////////////////////////////////////////////////////////////////////////////        
+    private final static String trialHeader = "Point_No" + OUT_SEP + "Trial_X" + OUT_SEP + "Trial_Y" + OUT_SEP + "Distance" + OUT_SEP + "Pos_X" + OUT_SEP + "Pos_Y";
+    private final static String particleResultsHeader = "BSSIDMerged" + OUT_SEP + "OrientationMerged" + OUT_SEP + "KValue" + OUT_SEP + "InitialReadings" + OUT_SEP + "ParticleCount" + OUT_SEP + "CloudRange" + OUT_SEP + "CloudDisplacement" + OUT_SEP + "ForceToMap" + OUT_SEP + "MeanDistance";
+    private final static String probabilisticResultsHeader = "BSSIDMerged" + OUT_SEP + "OrientationMerged" + OUT_SEP + "KValue" + OUT_SEP + "ForceToMap" + OUT_SEP + "MeanDistance";
+
     public static void main(String[] args) {
 
         // Output directories //////////////////////////////////////////////////////////////////////////////////////////
-        File imageDir = checkDir(IMAGE_DIRECTORY);
-        File resultsDir = checkDir(RESULTS_DIRECTORY);
+        File resultsDir = checkDir(null, RESULTS_DIRECTORY);
+        File particleImageDir = checkDir(resultsDir, PARTICLE_IMAGE_DIRECTORY);
+        File particleResultsDir = checkDir(resultsDir, PARTICLE_RESULTS_DIRECTORY);
+        File probablisticImageDir = checkDir(resultsDir, PROBABLISTIC_IMAGE_DIRECTORY);
+        File probablisticResultsDir = checkDir(resultsDir, PROBABLISTIC_RESULTS_DIRECTORY);
 
-        // Loadings ////////////////////////////////////////////////////////////////////////////////////////////////////
+        // External files //////////////////////////////////////////////////////////////////////////////////////////////
         File offlineFile = new File(OFFLINE_MAP);
         File onlineWifiDataFile = new File(ONLINE_WIFI_DATA);
         File settingsFile = new File(SETTINGS_FILE);
@@ -53,56 +65,77 @@ public class Main {
         boolean isFileCheck = checkFiles(offlineFile, onlineWifiDataFile, settingsFile, initialPointsFile, inertialDataFile, image);
         if (isFileCheck) {
 
+            //Load files
             System.out.println("Loading settings file");
             List<AppSettings> appSettingsList = loadSettings(settingsFile);
 
             System.out.println("Loading offline file");
-            List<RSSIData> offlineDataList = RSSILoader.load(offlineFile, SEPARATOR);
+            List<RSSIData> offlineDataList = RSSILoader.load(offlineFile, INPUT_SEPARATOR);
 
             System.out.println("Loading online file");
-            List<RSSIData> onlineDataList = RSSILoader.load(onlineWifiDataFile, SEPARATOR);
+            List<RSSIData> onlineDataList = RSSILoader.load(onlineWifiDataFile, INPUT_SEPARATOR);
 
             System.out.println("Loading initial file");
-            List<RSSIData> initialDataList = RSSILoader.load(initialPointsFile, SEPARATOR);
+            List<RSSIData> initialDataList = RSSILoader.load(initialPointsFile, INPUT_SEPARATOR);
 
             System.out.println("Loading inertial file");
             List<Data> inertialDataList = loadInertialData(inertialDataFile);
 
-            Logging resultsLog = new Logging(new File(resultsDir, "Results.csv"));
-            String resultsHeader = "isBSSIDMerged;isOrientationMerged;K;initReadings;partCount;CloudRange;CloudDisplacement;isForce;Mean";
-            resultsLog.printLine(resultsHeader);
+            //Particle Results Logging
+            Logging particleResultsLog = new Logging(new File(particleResultsDir, "ParticleResults.csv"));
+            particleResultsLog.printLine(particleResultsHeader);
 
+            //Probabilistic Results Logging
+            Logging probabilisticResultsLog = new Logging(new File(probablisticResultsDir, "ProbablisticResults.csv"));
+            probabilisticResultsLog.printLine(probabilisticResultsHeader);
+
+            //Loop through each set of settings
             for (AppSettings appSettings : appSettingsList) {
 
-
+                //Load offline map, online points (trial scan points) and intial points (stationary readings at start of trial).
                 HashMap<String, KNNFloorPoint> offlineMap = KNNRSSI.compile(offlineDataList, appSettings.isBSSIDMerged(), appSettings.isOrientationMerged());
                 List<KNNTrialPoint> onlinePoints = KNNRSSI.compileTrialList(onlineDataList, appSettings.isBSSIDMerged(), appSettings.isOrientationMerged());
                 List<KNNTrialPoint> initialPoints = KNNRSSI.compileTrialList(initialDataList, appSettings.isBSSIDMerged(), appSettings.isOrientationMerged());
 
+                //Lists to store the results.
                 List<Point> trialPoints = new ArrayList<>();
-                List<Point> finalPoints = new ArrayList<>();
+                List<Point> particleFinalPoints = new ArrayList<>();
+                List<Point> probabilisticFinalPoints = new ArrayList<>();
 
+                //Calculate initial points to calculate where the particle filter starts.
                 Point initialPoint = initialPoint(initialPoints, appSettings.getInitRSSIReadings(), offlineMap, appSettings.getK(), Probabilistic.NO_ORIENTATION);
+
+                //Find the time of the last intialisation point. Intertial readings until this time are ignored. 
                 long lastTimestamp = initialPoints.get(initialPoints.size() - 1).getTimestamp();
                 inertialPoint = new InertialPoint(initialPoint, lastTimestamp);
 
+                //Initiliase variables for trial
                 int currentInertialIndex = 0;
                 int orientation = Probabilistic.NO_ORIENTATION;
-                double totalDistance = 0.0;
+                double particleTotalDistance = 0.0;
+                double probablisticTotalDistance = 0.0;
 
-                String trialName = String.format("%s;%s;%s;%s;%s;%s;%s;%s", appSettings.isBSSIDMerged(),
-                        appSettings.isOrientationMerged(), appSettings.getK(), appSettings.getInitRSSIReadings(),
-                        appSettings.getParticleCount(), appSettings.getCloudRange(),
-                        appSettings.getCloudDisplacementCoefficient(), appSettings.isForceToOfflineMap());
-                            
-                Logging trialLog = new Logging(new File(resultsDir, String.format("Trial %s.csv", trialName)));
-                String trialHeader = "Point_No;Trial_X;Trial_Y;Distance;Pos_X;Pos_Y";
-                trialLog.printLine(trialHeader);
-                System.out.println("Running trial:" + trialHeader);
+                //Setup trial logs to record point data within the trial.
+                String particleTrialName = appSettings.getParticleTitle(OUT_SEP);
+                String probabilisticTrialName = appSettings.getProbablisticTitle(OUT_SEP);
+
+                //Particle Trial Logging
+                Logging particleTrialLog = new Logging(new File(particleResultsDir, String.format("Trial %s.csv", particleTrialName)));
+                particleTrialLog.printLine(trialHeader);
+
+                //Probablistic Trial Logging
+                Logging probabilisticTrialLog = new Logging(new File(probablisticResultsDir, String.format("Trial %s.csv", probabilisticTrialName)));
+                probabilisticTrialLog.printLine(trialHeader);
+
+                System.out.println("Running particle trial:" + particleTrialName);
+                System.out.println("Running probabilistic trial:" + probabilisticTrialName);
+
+                //Reset line numbering
                 int lineNumber = 0;
+
+                //Loop through each of the points in the trial.
                 for (KNNTrialPoint knnTrialPoint : onlinePoints) {
 
-                    
                     for (int i = currentInertialIndex; i < inertialDataList.size(); i++) {
                         Data sensorData = inertialDataList.get(i);
                         if (sensorData.getTimestamp() < knnTrialPoint.getTimestamp()) {  //Move using the sensor data
@@ -118,9 +151,12 @@ public class Main {
                             currentInertialIndex = i;   //store the next index to be used
                             break; //exit the loop
                         }
-                    }              
+                    }
 
                     Point probabilisticPoint = Probabilistic.run(knnTrialPoint.getFloorPoint(), offlineMap, appSettings.getK(), orientation);
+
+                    double probabilisticTrialDistance = distance(knnTrialPoint, probabilisticPoint);
+                    probablisticTotalDistance += probabilisticTrialDistance;
 
                     if (cloud != null) {
                         cloud = ParticleFilter.filter(cloud, probabilisticPoint, inertialPoint, appSettings.getParticleCount(), appSettings.getCloudRange(), appSettings.getCloudDisplacementCoefficient());
@@ -131,32 +167,47 @@ public class Main {
 
                     Point bestPoint = findBestPoint(offlineMap, cloud.getEstiPos(), appSettings.isForceToOfflineMap());
 
-                    double trialDistance = distance(knnTrialPoint, bestPoint);
-                    totalDistance += trialDistance;
+                    double particleTrialDistance = distance(knnTrialPoint, bestPoint);
+                    particleTotalDistance += particleTrialDistance;
 
-                    //store the points for drawing
-                    finalPoints.add(new Point(bestPoint.getX() * X_PIXELS, bestPoint.getY() * Y_PIXELS));
-                    trialPoints.add(new Point(knnTrialPoint.getFloorPoint().getxRef() * X_PIXELS,
-                            knnTrialPoint.getFloorPoint().getyRef() * Y_PIXELS));
-                    String trialResult = getTrialResult(lineNumber, knnTrialPoint, trialDistance, bestPoint);
-                    trialLog.printLine(trialResult);
-                    
+                    //Store the points for drawing
+                    trialPoints.add(new Point(knnTrialPoint.getFloorPoint().getxRef() * X_PIXELS, knnTrialPoint.getFloorPoint().getyRef() * Y_PIXELS));
+                    particleFinalPoints.add(new Point(bestPoint.getX() * X_PIXELS, bestPoint.getY() * Y_PIXELS));
+                    probabilisticFinalPoints.add(new Point(probabilisticPoint.getX() * X_PIXELS, probabilisticPoint.getY() * Y_PIXELS));
+
+                    //Log the trial results
+                    String particleTrialResult = getTrialResult(lineNumber, knnTrialPoint, particleTrialDistance, bestPoint);
+                    particleTrialLog.printLine(particleTrialResult);
+
+                    String probabilisticTrialResult = getTrialResult(lineNumber, knnTrialPoint, probabilisticTrialDistance, probabilisticPoint);
+                    probabilisticTrialLog.printLine(probabilisticTrialResult);
+
+                    //Increment the line number
                     lineNumber++;
                 }
-                
-                trialLog.close();
-                String results = trialName +";" + Double.toString(totalDistance / (double) onlinePoints.size());
-                resultsLog.printLine(results);
 
-                //display the image
-                File outputImageFile = new File(imageDir, createTitle(appSettings, true));
-                DisplayRoute.draw(trialPoints, finalPoints, outputImageFile, image);
+                particleTrialLog.close();
+                probabilisticTrialLog.close();
+
+                //Logging of the aggregate results for the trial - same as the name given to individual trial file names but with the mean distance error added.           
+                String particleResults = particleTrialName + OUT_SEP + Double.toString(particleTotalDistance / (double) onlinePoints.size());
+                particleResultsLog.printLine(particleResults);
+
+                String probabilisticResults = probabilisticTrialName + OUT_SEP + Double.toString(probablisticTotalDistance / (double) onlinePoints.size());
+                probabilisticResultsLog.printLine(probabilisticResults);
+
+                //Draw the image for the trial
+                File particleOutputImageFile = new File(particleImageDir, appSettings.getParticleImageTitle());
+                DisplayRoute.draw(trialPoints, particleFinalPoints, particleOutputImageFile, image);
+
+                File probabilisticOutputImageFile = new File(probablisticImageDir, appSettings.getProbablisticImageTitle());
+                DisplayRoute.draw(trialPoints, probabilisticFinalPoints, probabilisticOutputImageFile, image);
             }
 
-            resultsLog.close();
+            particleResultsLog.close();
+            probabilisticResultsLog.close();
         }
     }
-
 
     private static boolean checkFiles(File offlineMap, File onlinePointsFile, File settingsFile, File initialPointsFile, File inertialDataFile, File image) {
 
@@ -198,18 +249,18 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new FileReader(settingsFile))) {
 
             String header = reader.readLine();
-            int headerSize = header.split(SEPARATOR).length;
+            int headerSize = header.split(INPUT_SEPARATOR).length;
 
             String line;
             while ((line = reader.readLine()) != null) {
 
                 lineNumber++;
-                String[] columns = line.split(SEPARATOR);
+                String[] columns = line.split(INPUT_SEPARATOR);
 
                 if (columns.length == headerSize) {
 
-                    AppSettings appSettings =
-                            new AppSettings(Boolean.parseBoolean(columns[0]), Boolean.parseBoolean(columns[1]),
+                    AppSettings appSettings
+                            = new AppSettings(Boolean.parseBoolean(columns[0]), Boolean.parseBoolean(columns[1]),
                                     Integer.parseInt(columns[2]), Integer.parseInt(columns[3]),
                                     Integer.parseInt(columns[4]), Integer.parseInt(columns[5]),
                                     Double.parseDouble(columns[6]), Double.parseDouble(columns[7]),
@@ -221,7 +272,7 @@ public class Main {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            System.err.println(e.getMessage());
         }
 
         System.out.println("Settings loaded: " + lineNumber);
@@ -237,18 +288,18 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new FileReader(inertialDataFile))) {
 
             String header = reader.readLine();
-            int headerSize = header.split(SEPARATOR).length;
+            int headerSize = header.split(INPUT_SEPARATOR).length;
 
             String line;
             while ((line = reader.readLine()) != null) {
 
                 lineNumber++;
-                String[] columns = line.split(SEPARATOR);
+                String[] columns = line.split(INPUT_SEPARATOR);
 
                 if (columns.length == headerSize) {
 
-                    Data data =
-                            new Data(TimeStamp.convertDateTime(columns[0]), Float.parseFloat(columns[1]),
+                    Data data
+                            = new Data(TimeStamp.convertDateTime(columns[0]), Float.parseFloat(columns[1]),
                                     Float.parseFloat(columns[2]), Float.parseFloat(columns[3]),
                                     Float.parseFloat(columns[4]), Float.parseFloat(columns[5]),
                                     Float.parseFloat(columns[6]), Float.parseFloat(columns[7]),
@@ -267,7 +318,7 @@ public class Main {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            System.err.println(e.getMessage());
         }
 
         System.out.println("Data loaded: " + lineNumber);
@@ -285,32 +336,18 @@ public class Main {
         return Math.hypot(x, y);
     }
 
-    private static String createTitle(AppSettings appSettings, Boolean isImage) {
+    private static File checkDir(File parentDir, String directory) {
 
-        String title;
-        String base = String.format("-initR=%s-Part=%s-SpeedB=%s-CloudR=%s-CouldDis=%s",
-                appSettings.getInitRSSIReadings(), appSettings.getParticleCount(), appSettings.getSpeedBreak(),
-                appSettings.getCloudRange(), appSettings.getCloudDisplacementCoefficient());
-        String force = "-force";
-
-        if (appSettings.isForceToOfflineMap())
-            base += force;
-
-        if (isImage) {
-            title = "image" + base;  //image file extension added by drawing function
+        File dir;
+        if (parentDir != null) {
+            dir = new File(parentDir, directory);
         } else {
-            title = "results" + base + ".csv";
+            dir = new File(directory);
         }
 
-        return title;
-    }
-
-    private static File checkDir(String directory) {
-
-        File dir = new File(directory);
-
-        if (!dir.exists())
+        if (!dir.exists()) {
             dir.mkdir();
+        }
 
         return dir;
     }
@@ -362,15 +399,15 @@ public class Main {
 
         return bestPoint;
     }
-    
-    private static String getTrialResult(int lineNumber, KNNTrialPoint knnTrialPoint, double trialDistance, Point bestPoint){
-        
+
+    private static String getTrialResult(int lineNumber, KNNTrialPoint knnTrialPoint, double trialDistance, Point bestPoint) {
+
         int trialX = knnTrialPoint.getFloorPoint().getxRef();
         int trialY = knnTrialPoint.getFloorPoint().getyRef();
         double posX = bestPoint.getX();
-        double posY = bestPoint.getY();        
-        
-        return String.format("%s;%s;%s;%s;%s;%s",lineNumber,trialX, trialY, trialDistance, posX, posY);
+        double posY = bestPoint.getY();
+
+        return lineNumber + OUT_SEP + trialX + OUT_SEP + trialY + OUT_SEP + trialDistance + OUT_SEP + posX + OUT_SEP + posY;
     }
-    
+
 }

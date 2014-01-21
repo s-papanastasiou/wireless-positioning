@@ -92,7 +92,6 @@ public class InertialData {
             if (trueOrientation > 360)
                 trueOrientation = trueOrientation - 360;
 
-
             if ((trueOrientation > 315) || (trueOrientation <= 45))
                 orientation = 1;
             else if ((trueOrientation > 45) && (trueOrientation <= 135))

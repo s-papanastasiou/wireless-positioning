@@ -1,25 +1,21 @@
 package com.company;
 
 /**
- * Created with IntelliJ IDEA.
- * User: pierre
- * Date: 31/10/2013
- * Time: 15:17
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: pierre Date: 31/10/2013 Time: 15:17 To
+ * change this template use File | Settings | File Templates.
  */
 public class AppSettings {
 
-    private boolean isBSSIDMerged;
-    private boolean isOrientationMerged;
-    private int K;
-    private int initRSSIReadings;
-    private int particleCount;
-    private int speedBreak;
-    private double cloudRange;
-    private double cloudDisplacementCoefficient;
-    private boolean isForceToOfflineMap;
-    private double buildingOrientation;
-
+    private final boolean isBSSIDMerged;
+    private final boolean isOrientationMerged;
+    private final int K;
+    private final int initRSSIReadings;
+    private final int particleCount;
+    private final int speedBreak;
+    private final double cloudRange;
+    private final double cloudDisplacementCoefficient;
+    private final boolean isForceToOfflineMap;
+    private final double buildingOrientation;
 
     public AppSettings(boolean BSSIDMerged, boolean orientationMerged, int k, int initRSSIReadings, int particleCount, int speedBreak, double cloudRange, double cloudDisplacementCoefficient, boolean forceToOfflineMap, double buildingOrientation) {
         this.isBSSIDMerged = BSSIDMerged;
@@ -51,52 +47,57 @@ public class AppSettings {
         return initRSSIReadings;
     }
 
-    public int getParticleCount(){
+    public int getParticleCount() {
         return particleCount;
     }
 
-    public int getSpeedBreak(){
+    public int getSpeedBreak() {
         return speedBreak;
     }
 
-    public double getCloudRange(){
+    public double getCloudRange() {
         return cloudRange;
     }
 
-    public double getCloudDisplacementCoefficient(){
+    public double getCloudDisplacementCoefficient() {
         return cloudDisplacementCoefficient;
     }
 
-    public boolean isForceToOfflineMap(){
+    public boolean isForceToOfflineMap() {
         return isForceToOfflineMap;
     }
 
     public double getBuildingOrientation() {
         return buildingOrientation;
     }
-    
-    public String getParticleTitle(String OUT_SEP){
-        return "particle-" + isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP + 
-                        K + OUT_SEP + initRSSIReadings + OUT_SEP + 
-                        particleCount + OUT_SEP + speedBreak + OUT_SEP + cloudRange + OUT_SEP + 
-                        cloudDisplacementCoefficient + OUT_SEP + isForceToOfflineMap;
+
+    public String getParticleTitle(String OUT_SEP) {
+        return "particle-" + isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP
+                + K + OUT_SEP + initRSSIReadings + OUT_SEP
+                + particleCount + OUT_SEP + speedBreak + OUT_SEP + cloudRange + OUT_SEP
+                + cloudDisplacementCoefficient + OUT_SEP + isForceToOfflineMap;
     }
-    
-    public String getParticleImageTitle(){
-        return "particle" + isBSSIDMerged + "-" + isOrientationMerged + "-" + 
-                        K + "-" + initRSSIReadings + "-" + 
-                        particleCount + "-" + speedBreak + "-" + cloudRange + "-" + 
-                        cloudDisplacementCoefficient + "-" + isForceToOfflineMap;
+
+    public String getParticleImageTitle() {
+        return "particle" + isBSSIDMerged + "-" + isOrientationMerged + "-"
+                + K + "-" + initRSSIReadings + "-"
+                + particleCount + "-" + speedBreak + "-" + cloudRange + "-"
+                + cloudDisplacementCoefficient + "-" + isForceToOfflineMap;
     }
-    
-    public String getProbablisticTitle(String OUT_SEP){
-        return "probablistic-" + isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP + 
-                        K + OUT_SEP + isForceToOfflineMap;
+
+    public String getProbablisticTitle(String OUT_SEP) {
+        return "probablistic-" + isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP
+                + K + OUT_SEP + isForceToOfflineMap;
     }
-    
-    public String getProbablisticImageTitle(){
-        return "probablistic-" + isBSSIDMerged + "-" + isOrientationMerged + "-" + 
-                        K + "-" + isForceToOfflineMap;
+
+    public String getProbablisticImageTitle() {
+        return "probablistic-" + isBSSIDMerged + "-" + isOrientationMerged + "-"
+                + K + "-" + isForceToOfflineMap;
     }
-    
+
+    @Override
+    public String toString() {
+        return isBSSIDMerged + ":" + isOrientationMerged + ":" + K + ":" + initRSSIReadings + ":" + particleCount + ":" + speedBreak + ":" + cloudRange + ":" + cloudDisplacementCoefficient + ":" + isForceToOfflineMap + ":" + buildingOrientation;
+    }
+
 }

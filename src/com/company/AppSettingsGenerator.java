@@ -70,6 +70,7 @@ public class AppSettingsGenerator {
                             for(double displacement_counter = cloudDisplacementCoefficient_MIN; displacement_counter <= cloudDisplacementCoefficient_MAX; displacement_counter += cloudDisplacementCoefficient_INC){
                                 AppSettings setting = new AppSettings(isBSSIDMerged, isOrientationMerged, k_counter, init_counter, particle_counter, speed_counter, range_counter, displacement_counter, isForcedToOfflineMap, buildingOrientation);
                                 settings.add(setting);
+                                System.out.println(setting.toString());
                             }
                         }
                     }

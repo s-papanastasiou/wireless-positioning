@@ -31,14 +31,22 @@ public class Main {
     private final static String RESULTS_DIRECTORY = "Results";
     private final static String PARTICLE_IMAGE_DIRECTORY = "ParticleImages";
     private final static String PARTICLE_RESULTS_DIRECTORY = "ParticleResults";
-    private final static String PROBABLISTIC_IMAGE_DIRECTORY = "ProbablisticImages";
+    private final static String PROBABILISTIC_IMAGE_DIRECTORY = "ProbablisticImages";
     private final static String PROBABLISTIC_RESULTS_DIRECTORY = "ProbablisticResults";
+    private final static String PARTICLE_COMPASS_IMAGE_DIRECTORY = "ParticleCompassImages";
+    private final static String PARTICLE_COMPASS_RESULTS_DIRECTORY = "ParticleCompassResults";
+    private final static String PROBABILISTIC_COMPASS_IMAGE_DIRECTORY = "ProbablisticCompassImages";
+    private final static String PROBABILISTIC_COMPASS_RESULTS_DIRECTORY = "ProbablisticCompassResults";
+    
     private final static String INPUT_SEPARATOR = ";";
     private final static String OUT_SEP = ",";
     private static final double X_PIXELS = 1192.0 / 55;
     private static final double Y_PIXELS = 538.0 / 23.75;
     private static Cloud cloud;
     private static InertialPoint inertialPoint;
+
+    //Generate settings automatically, ignoring any input file
+    private static boolean isGenerateSettings = true;
 
     // Logging headers /////////////////////////////////////////////////////////////////////////////////////////////        
     private final static String trialHeader = "Point_No" + OUT_SEP + "Trial_X" + OUT_SEP + "Trial_Y" + OUT_SEP + "Distance" + OUT_SEP + "Pos_X" + OUT_SEP + "Pos_Y";
@@ -51,8 +59,13 @@ public class Main {
         File resultsDir = checkDir(null, RESULTS_DIRECTORY);
         File particleImageDir = checkDir(resultsDir, PARTICLE_IMAGE_DIRECTORY);
         File particleResultsDir = checkDir(resultsDir, PARTICLE_RESULTS_DIRECTORY);
-        File probablisticImageDir = checkDir(resultsDir, PROBABLISTIC_IMAGE_DIRECTORY);
-        File probablisticResultsDir = checkDir(resultsDir, PROBABLISTIC_RESULTS_DIRECTORY);
+        File probabilisticImageDir = checkDir(resultsDir, PROBABILISTIC_IMAGE_DIRECTORY);
+        File probabilisticResultsDir = checkDir(resultsDir, PROBABLISTIC_RESULTS_DIRECTORY);
+        
+        File particleCompassImageDir = checkDir(resultsDir, PARTICLE_COMPASS_IMAGE_DIRECTORY);
+        File particleCompassResultsDir = checkDir(resultsDir, PARTICLE_COMPASS_RESULTS_DIRECTORY);
+        File probabilisticCompassImageDir = checkDir(resultsDir, PROBABILISTIC_COMPASS_IMAGE_DIRECTORY);
+        File probabilisticCompassResultsDir = checkDir(resultsDir, PROBABILISTIC_COMPASS_RESULTS_DIRECTORY);
 
         // External files //////////////////////////////////////////////////////////////////////////////////////////////
         File offlineFile = new File(OFFLINE_MAP);
@@ -65,7 +78,6 @@ public class Main {
         boolean isFileCheck = checkFiles(offlineFile, onlineWifiDataFile, settingsFile, initialPointsFile, inertialDataFile, image);
         if (isFileCheck) {
 
-            //Load files
             System.out.println("Loading settings file");
             List<AppSettings> appSettingsList = loadSettings(settingsFile);
 
@@ -82,11 +94,11 @@ public class Main {
             List<Data> inertialDataList = loadInertialData(inertialDataFile);
 
             //Particle Results Logging
-            Logging particleResultsLog = new Logging(new File(particleResultsDir, "ParticleResults.csv"));
+            Logging particleResultsLog = new Logging(new File(resultsDir, "ParticleResults.csv"));
             particleResultsLog.printLine(particleResultsHeader);
 
             //Probabilistic Results Logging
-            Logging probabilisticResultsLog = new Logging(new File(probablisticResultsDir, "ProbablisticResults.csv"));
+            Logging probabilisticResultsLog = new Logging(new File(resultsDir, "ProbablisticResults.csv"));
             probabilisticResultsLog.printLine(probabilisticResultsHeader);
 
             //Loop through each set of settings
@@ -119,12 +131,28 @@ public class Main {
                 String particleTrialName = appSettings.getParticleTitle(OUT_SEP);
                 String probabilisticTrialName = appSettings.getProbablisticTitle(OUT_SEP);
 
-                //Particle Trial Logging
-                Logging particleTrialLog = new Logging(new File(particleResultsDir, String.format("Trial %s.csv", particleTrialName)));
+                //Trial Logging - split into different folders for when compass used or not
+                File particleTrialDir;
+                File probabilisticTrialDir;
+                File partImageDir;
+                File probImageDir;
+                
+                if(appSettings.isOrientationMerged()){
+                    particleTrialDir = particleResultsDir;
+                    probabilisticTrialDir = probabilisticResultsDir;
+                    partImageDir = particleImageDir;
+                    probImageDir = probabilisticImageDir;
+                }else{
+                    particleTrialDir = particleCompassResultsDir;
+                    probabilisticTrialDir = probabilisticCompassResultsDir;
+                    partImageDir = particleCompassImageDir;
+                    probImageDir = probabilisticCompassImageDir;
+                }
+                
+                Logging particleTrialLog = new Logging(new File(particleTrialDir, String.format("Trial %s.csv", particleTrialName)));
+                Logging probabilisticTrialLog = new Logging(new File(probabilisticTrialDir, String.format("Trial %s.csv", probabilisticTrialName)));
+                               
                 particleTrialLog.printLine(trialHeader);
-
-                //Probablistic Trial Logging
-                Logging probabilisticTrialLog = new Logging(new File(probablisticResultsDir, String.format("Trial %s.csv", probabilisticTrialName)));
                 probabilisticTrialLog.printLine(trialHeader);
 
                 System.out.println("Running particle trial:" + particleTrialName);
@@ -197,10 +225,10 @@ public class Main {
                 probabilisticResultsLog.printLine(probabilisticResults);
 
                 //Draw the image for the trial
-                File particleOutputImageFile = new File(particleImageDir, appSettings.getParticleImageTitle());
+                File particleOutputImageFile = new File(partImageDir, appSettings.getParticleImageTitle());
                 DisplayRoute.draw(trialPoints, particleFinalPoints, particleOutputImageFile, image);
 
-                File probabilisticOutputImageFile = new File(probablisticImageDir, appSettings.getProbablisticImageTitle());
+                File probabilisticOutputImageFile = new File(probImageDir, appSettings.getProbablisticImageTitle());
                 DisplayRoute.draw(trialPoints, probabilisticFinalPoints, probabilisticOutputImageFile, image);
             }
 
@@ -223,7 +251,8 @@ public class Main {
         }
         if (!settingsFile.isFile()) {
             System.out.println(String.format("%s not found", settingsFile.toString()));
-            isFileCheck = false;
+            System.out.println(String.format("Switching to settings generation"));
+            isGenerateSettings = true;
         }
         if (!initialPointsFile.isFile()) {
             System.out.println(String.format("%s not found", initialPointsFile.toString()));
@@ -243,40 +272,46 @@ public class Main {
 
     private static List<AppSettings> loadSettings(File settingsFile) {
 
-        int lineNumber = 0;
         List<AppSettings> appSettingsList = new ArrayList<>();
+        //Load files
+        if (isGenerateSettings) {
+            System.out.println("Generating settings");
+            appSettingsList = AppSettingsGenerator.generate();
+        } else {
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(settingsFile))) {
+            int lineNumber = 0;
 
-            String header = reader.readLine();
-            int headerSize = header.split(INPUT_SEPARATOR).length;
+            try (BufferedReader reader = new BufferedReader(new FileReader(settingsFile))) {
 
-            String line;
-            while ((line = reader.readLine()) != null) {
+                String header = reader.readLine();
+                int headerSize = header.split(INPUT_SEPARATOR).length;
 
-                lineNumber++;
-                String[] columns = line.split(INPUT_SEPARATOR);
+                String line;
+                while ((line = reader.readLine()) != null) {
 
-                if (columns.length == headerSize) {
+                    lineNumber++;
+                    String[] columns = line.split(INPUT_SEPARATOR);
 
-                    AppSettings appSettings
-                            = new AppSettings(Boolean.parseBoolean(columns[0]), Boolean.parseBoolean(columns[1]),
-                                    Integer.parseInt(columns[2]), Integer.parseInt(columns[3]),
-                                    Integer.parseInt(columns[4]), Integer.parseInt(columns[5]),
-                                    Double.parseDouble(columns[6]), Double.parseDouble(columns[7]),
-                                    Boolean.parseBoolean(columns[8]), Double.parseDouble(columns[9]));
+                    if (columns.length == headerSize) {
 
-                    appSettingsList.add(appSettings);
-                } else {
-                    System.out.println("Skipping line " + lineNumber);
+                        AppSettings appSettings
+                                = new AppSettings(Boolean.parseBoolean(columns[0]), Boolean.parseBoolean(columns[1]),
+                                        Integer.parseInt(columns[2]), Integer.parseInt(columns[3]),
+                                        Integer.parseInt(columns[4]), Integer.parseInt(columns[5]),
+                                        Double.parseDouble(columns[6]), Double.parseDouble(columns[7]),
+                                        Boolean.parseBoolean(columns[8]), Double.parseDouble(columns[9]));
+
+                        appSettingsList.add(appSettings);
+                    } else {
+                        System.out.println("Skipping line " + lineNumber);
+                    }
                 }
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
             }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+
+            System.out.println("Settings loaded: " + lineNumber);
         }
-
-        System.out.println("Settings loaded: " + lineNumber);
-
         return appSettingsList;
     }
 

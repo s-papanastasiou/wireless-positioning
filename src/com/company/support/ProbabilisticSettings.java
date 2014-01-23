@@ -15,17 +15,13 @@ public class ProbabilisticSettings {
     private final boolean isBSSIDMerged;
     private final boolean isOrientationMerged;
     private final int K;    
-    private final int initRSSIReadings;
-    private final int speedBreak;
     private final boolean isForceToOfflineMap;
     private final double buildingOrientation;
 
-    public ProbabilisticSettings(boolean BSSIDMerged, boolean orientationMerged, boolean forceToOfflineMap, int k, int initRSSIReadings, int speedBreak, double buildingOrientation) {
+    public ProbabilisticSettings(boolean BSSIDMerged, boolean orientationMerged, boolean forceToOfflineMap, int k, double buildingOrientation) {
         this.isBSSIDMerged = BSSIDMerged;
         this.isOrientationMerged = orientationMerged;
         this.K = k;        
-        this.initRSSIReadings = initRSSIReadings;
-        this.speedBreak = speedBreak;
         this.isForceToOfflineMap = forceToOfflineMap;
         this.buildingOrientation = buildingOrientation;
     }
@@ -40,15 +36,7 @@ public class ProbabilisticSettings {
 
     public int getK() {
         return K;
-    }  
-    
-    public int getInitRSSIReadings() {
-        return initRSSIReadings;
-    }
-    
-    public int getSpeedBreak() {
-        return speedBreak;
-    }
+    }      
 
     public boolean isForceToOfflineMap() {
         return isForceToOfflineMap;
@@ -60,17 +48,17 @@ public class ProbabilisticSettings {
 
     public String getProbablisticTitle(String OUT_SEP) {
         return "probablistic-" + isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP
-                + K + OUT_SEP + initRSSIReadings+ OUT_SEP + speedBreak + OUT_SEP + isForceToOfflineMap;
+                + K + OUT_SEP + isForceToOfflineMap;
     }
 
     public String getProbablisticImageTitle() {
         return "probablistic-" + isBSSIDMerged + "-" + isOrientationMerged + "-"
-                + K + "-" + initRSSIReadings + "-" + speedBreak + "-" + isForceToOfflineMap;
+                + K + "-" + isForceToOfflineMap;
     }
 
     @Override
     public String toString() {
-        return isBSSIDMerged + ":" + isOrientationMerged + ":" + K + ":" + initRSSIReadings + ":" + speedBreak + ":" + isForceToOfflineMap + ":" + buildingOrientation;
+        return isBSSIDMerged + ":" + isOrientationMerged + ":" + K + ":" + isForceToOfflineMap + ":" + buildingOrientation;
     }
 
 }

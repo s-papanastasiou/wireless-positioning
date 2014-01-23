@@ -24,7 +24,7 @@ public class FileController {
     private final static String INERTIAL_DATA = "inertialDataA.csv";
     private final static String IMAGE = "floor2final.png";
     
-    private final static String RESULTS_DIRECTORY = "Results";
+    private final static String RESULTS_DIRECTORY = "F:\\TrialResults";
     private final static String PARTICLE_IMAGE_DIRECTORY = "ParticleImages";
     private final static String PARTICLE_RESULTS_DIRECTORY = "ParticleResults";
     private final static String PROBABILISTIC_IMAGE_DIRECTORY = "ProbablisticImages";

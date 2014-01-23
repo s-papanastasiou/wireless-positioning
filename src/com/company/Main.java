@@ -65,7 +65,7 @@ public class Main {
     }
 
     private static final int K_MIN = 1;
-    private static final int K_MAX = 20;
+    private static final int K_MAX = 10;
     private static final int K_INC = 1;
     private static final double buildingOrientation = -0.523598776;
     
@@ -100,11 +100,11 @@ public class Main {
         
         private static void runProbablistic(FileController fc, Logging probabilisticResultsLog, boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue){
             
-            
-            List<ProbabilisticSettings> proSettingsList = SettingsGenerator.probablisitic(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, buildingOrientation);
+            ProbabilisticSettings proSettings = new ProbabilisticSettings(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, buildingOrientation);
+                            
             String output = String.format("%s,%s,%s,%s", isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue);
             System.out.println("Generated: " + output);
-            Simulation.runProbabilistic(fc, proSettingsList, probabilisticResultsLog, OUT_SEP);
+            Simulation.runProbabilistic(fc, proSettings, probabilisticResultsLog, OUT_SEP);
             System.out.println("Simulation completed: " + output);
         }
 

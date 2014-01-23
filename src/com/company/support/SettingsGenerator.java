@@ -55,20 +55,4 @@ public class SettingsGenerator {
 
         return settings;
     }
-
-    public static List<ProbabilisticSettings> probablisitic(boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue, double buildingOrientation) {
-
-        List<ProbabilisticSettings> settings = new ArrayList<>();
-
-        for (int init_counter = initRSSIReadings_MIN; init_counter <= initRSSIReadings_MAX; init_counter += initRSSIReadings_INC) {
-            for (int speed_counter = speedBreak_MIN; speed_counter <= speedBreak_MAX; speed_counter += speedBreak_INC) {
-                ProbabilisticSettings setting = new ProbabilisticSettings(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, init_counter, speed_counter, buildingOrientation);
-                settings.add(setting);
-                //System.out.println(setting.toString());
-            }
-        }
-
-        return settings;
-    }
-
 }

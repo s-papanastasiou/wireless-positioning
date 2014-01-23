@@ -106,96 +106,82 @@ public class Simulation {
         return lineNumber + OUT_SEP + trialX + OUT_SEP + trialY + OUT_SEP + trialDistance + OUT_SEP + posX + OUT_SEP + posY;
     }
 
-    public static void runProbabilistic(FileController fc, List<ProbabilisticSettings> proSettingsList, Logging probabilisticResultsLog, String OUT_SEP) {
+    public static void runProbabilistic(FileController fc, ProbabilisticSettings proSettings, Logging probabilisticResultsLog, String OUT_SEP) {
 
-        for (ProbabilisticSettings proSettings : proSettingsList) {
-            //Load offline map, online points (trial scan points) and intial points (stationary readings at start of trial).
-            HashMap<String, KNNFloorPoint> offlineMap = KNNRSSI.compile(fc.offlineDataList, proSettings.isBSSIDMerged(), proSettings.isOrientationMerged());
-            List<KNNTrialPoint> onlinePoints = KNNRSSI.compileTrialList(fc.onlineDataList, proSettings.isBSSIDMerged(), proSettings.isOrientationMerged());
-            List<KNNTrialPoint> initialPoints = KNNRSSI.compileTrialList(fc.initialDataList, proSettings.isBSSIDMerged(), proSettings.isOrientationMerged());
+        //Load offline map, online points (trial scan points) and intial points (stationary readings at start of trial).
+        HashMap<String, KNNFloorPoint> offlineMap = KNNRSSI.compile(fc.offlineDataList, proSettings.isBSSIDMerged(), proSettings.isOrientationMerged());
+        List<KNNTrialPoint> onlinePoints = KNNRSSI.compileTrialList(fc.onlineDataList, proSettings.isBSSIDMerged(), proSettings.isOrientationMerged());
 
-            //Lists to store the results.
-            List<Point> trialPoints = new ArrayList<>();
-            List<Point> probabilisticFinalPoints = new ArrayList<>();
+        //Lists to store the results.
+        List<Point> trialPoints = new ArrayList<>();
+        List<Point> probabilisticFinalPoints = new ArrayList<>();
 
-            //Setup trial logs to record point data within the trial.
-            String probabilisticTrialName = proSettings.getProbablisticTitle(OUT_SEP);
+        //Setup trial logs to record point data within the trial.
+        String probabilisticTrialName = proSettings.getProbablisticTitle(OUT_SEP);
 
-            //Trial Logging - split into different folders for when compass used or not
-            fc.switchDirectories(proSettings.isOrientationMerged());
+        //Trial Logging - split into different folders for when compass used or not
+        fc.switchDirectories(proSettings.isOrientationMerged());
 
-            Logging probabilisticTrialLog = new Logging(new File(fc.probabilisticTrialDir, String.format("Trial %s.csv", probabilisticTrialName)));
+        Logging probabilisticTrialLog = new Logging(new File(fc.probabilisticTrialDir, String.format("Trial %s.csv", probabilisticTrialName)));
 
-            probabilisticTrialLog.printLine(Main.trialHeader);
+        probabilisticTrialLog.printLine(Main.trialHeader);
 
-            //System.out.println("Running probabilistic trial:" + probabilisticTrialName);
+            //System.out.println("Running probabilistic trial:" + probabilisticTrialName);            
+        //Initiliase variables for trial
+        int currentInertialIndex = 0;
+        int orientation = Probabilistic.NO_ORIENTATION;
+        double probablisticTotalDistance = 0.0;
 
-            //Calculate initial points to calculate where the particle filter starts.
-            Point initialPoint = initialPoint(initialPoints, proSettings.getInitRSSIReadings(), offlineMap, proSettings.getK(), Probabilistic.NO_ORIENTATION);
+        //Reset line numbering
+        int lineNumber = 0;
 
-            //Find the time of the last intialisation point. Intertial readings until this time are ignored. 
-            long lastTimestamp = initialPoints.get(initialPoints.size() - 1).getTimestamp();
-            InertialPoint inertialPoint = new InertialPoint(initialPoint, lastTimestamp);
+        final List<Data> inertialDataList = fc.inertialDataList;
 
-            //Initiliase variables for trial
-            int currentInertialIndex = 0;
-            int orientation = Probabilistic.NO_ORIENTATION;
-            double probablisticTotalDistance = 0.0;
+        //Loop through each of the points in the trial.            
+        for (KNNTrialPoint knnTrialPoint : onlinePoints) {
 
-            //Reset line numbering
-            int lineNumber = 0;
+            for (int i = currentInertialIndex; i < inertialDataList.size(); i++) {
+                Data sensorData = inertialDataList.get(i);
+                if (sensorData.getTimestamp() < knnTrialPoint.getTimestamp()) {  //Move using the sensor data
 
-            final List<Data> inertialDataList = fc.inertialDataList;
+                    sensorData.getOrientation()[0] += HALF_PI - proSettings.getBuildingOrientation();
+                    orientation = InertialData.getOrientation(proSettings.isOrientationMerged(), sensorData.getOrientation()[0], proSettings.getBuildingOrientation());
 
-            //Loop through each of the points in the trial.            
-            for (KNNTrialPoint knnTrialPoint : onlinePoints) {
-
-                for (int i = currentInertialIndex; i < inertialDataList.size(); i++) {
-                    Data sensorData = inertialDataList.get(i);
-                    if (sensorData.getTimestamp() < knnTrialPoint.getTimestamp()) {  //Move using the sensor data
-
-                        sensorData.getOrientation()[0] += HALF_PI - proSettings.getBuildingOrientation();
-                        InertialData results = InertialData.getDatas(sensorData.getInvertedMatrix(),
-                                sensorData.getLinearAcceleration(), sensorData.getOrientation(),
-                                proSettings.getBuildingOrientation());
-                        inertialPoint = InertialPoint.move(inertialPoint, results, sensorData.getTimestamp(), proSettings.getSpeedBreak());
-                        orientation = InertialData.getOrientation(proSettings.isOrientationMerged(), sensorData.getOrientation()[0], proSettings.getBuildingOrientation());
-
-                    } else {      //Move using the wifi data
-                        currentInertialIndex = i;   //store the next index to be used
-                        break; //exit the loop
-                    }
+                } else {      //Move using the wifi data
+                    currentInertialIndex = i;   //store the next index to be used
+                    break; //exit the loop
                 }
-
-                Point probabilisticPoint = Probabilistic.run(knnTrialPoint.getFloorPoint(), offlineMap, proSettings.getK(), orientation);
-
-                Point bestPoint = findBestPoint(offlineMap, probabilisticPoint, proSettings.isForceToOfflineMap());
-
-                double probabilisticTrialDistance = distance(knnTrialPoint, bestPoint);
-                probablisticTotalDistance += probabilisticTrialDistance;
-
-                //Store the points for drawing
-                trialPoints.add(new Point(knnTrialPoint.getFloorPoint().getxRef() * X_PIXELS, knnTrialPoint.getFloorPoint().getyRef() * Y_PIXELS));
-                probabilisticFinalPoints.add(new Point(probabilisticPoint.getX() * X_PIXELS, probabilisticPoint.getY() * Y_PIXELS));
-
-                //Log the trial results
-                String probabilisticTrialResult = getTrialResult(lineNumber, knnTrialPoint, probabilisticTrialDistance, probabilisticPoint, OUT_SEP);
-                probabilisticTrialLog.printLine(probabilisticTrialResult);
-
-                //Increment the line number
-                lineNumber++;
             }
 
-            probabilisticTrialLog.close();
+            Point probabilisticPoint = Probabilistic.run(knnTrialPoint.getFloorPoint(), offlineMap, proSettings.getK(), orientation);
 
-            //Logging of the aggregate results for the trial - same as the name given to individual trial file names but with the mean distance error added.                       
-            String probabilisticResults = probabilisticTrialName + OUT_SEP + Double.toString(probablisticTotalDistance / (double) onlinePoints.size());
-            probabilisticResultsLog.printLine(probabilisticResults);
+            Point bestPoint = findBestPoint(offlineMap, probabilisticPoint, proSettings.isForceToOfflineMap());
 
-            //Draw the image for the trial            
-            File probabilisticOutputImageFile = new File(fc.probImageDir, "Trial " + proSettings.getProbablisticImageTitle());
-            DisplayRoute.draw(trialPoints, probabilisticFinalPoints, probabilisticOutputImageFile, fc.image);
+            double probabilisticTrialDistance = distance(knnTrialPoint, bestPoint);
+            probablisticTotalDistance += probabilisticTrialDistance;
+
+            //Store the points for drawing
+            trialPoints.add(new Point(knnTrialPoint.getFloorPoint().getxRef() * X_PIXELS, knnTrialPoint.getFloorPoint().getyRef() * Y_PIXELS));
+            probabilisticFinalPoints.add(new Point(probabilisticPoint.getX() * X_PIXELS, probabilisticPoint.getY() * Y_PIXELS));
+
+            //Log the trial results
+            String probabilisticTrialResult = getTrialResult(lineNumber, knnTrialPoint, probabilisticTrialDistance, probabilisticPoint, OUT_SEP);
+            probabilisticTrialLog.printLine(probabilisticTrialResult);
+
+            //Increment the line number
+            lineNumber++;
         }
+
+        probabilisticTrialLog.close();
+
+        //Logging of the aggregate results for the trial - same as the name given to individual trial file names but with the mean distance error added.                       
+        String probabilisticResults = probabilisticTrialName + OUT_SEP + Double.toString(probablisticTotalDistance / (double) onlinePoints.size());
+        probabilisticResultsLog.printLine(probabilisticResults);
+
+        //Draw the image for the trial            
+        File probabilisticOutputImageFile = new File(fc.probImageDir, "Trial " + proSettings.getProbablisticImageTitle());
+        DisplayRoute.draw(trialPoints, probabilisticFinalPoints, probabilisticOutputImageFile, fc.image);
+
     }
 
     public static void runParticle(FileController fc, List<ParticleSettings> parSettingsList, Logging particleResultsLog, String OUT_SEP) {
@@ -222,7 +208,6 @@ public class Simulation {
             particleTrialLog.printLine(Main.trialHeader);
 
             //System.out.println("Running particle trial:" + particleTrialName);
-
             //Calculate initial points to calculate where the particle filter starts.
             Point initialPoint = initialPoint(initialPoints, parSettings.getInitRSSIReadings(), offlineMap, parSettings.getK(), Probabilistic.NO_ORIENTATION);
 

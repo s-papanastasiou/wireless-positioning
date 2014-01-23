@@ -33,7 +33,7 @@ public class SettingsGenerator {
 
     private static final double cloudDisplacementCoefficient_MIN = 0.1;
     private static final double cloudDisplacementCoefficient_MAX = 1.0;
-    private static final double cloudDisplacementCoefficient_INC = 0.1;
+    private static final double cloudDisplacementCoefficient_INC = 0.2;
 
     public static List<ParticleSettings> particle(boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue, double buildingOrientation) {
 

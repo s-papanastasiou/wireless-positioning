@@ -128,7 +128,7 @@ public class Simulation {
 
             probabilisticTrialLog.printLine(Main.trialHeader);
 
-            System.out.println("Running probabilistic trial:" + probabilisticTrialName);
+            //System.out.println("Running probabilistic trial:" + probabilisticTrialName);
 
             //Calculate initial points to calculate where the particle filter starts.
             Point initialPoint = initialPoint(initialPoints, proSettings.getInitRSSIReadings(), offlineMap, proSettings.getK(), Probabilistic.NO_ORIENTATION);
@@ -221,7 +221,7 @@ public class Simulation {
 
             particleTrialLog.printLine(Main.trialHeader);
 
-            System.out.println("Running particle trial:" + particleTrialName);
+            //System.out.println("Running particle trial:" + particleTrialName);
 
             //Calculate initial points to calculate where the particle filter starts.
             Point initialPoint = initialPoint(initialPoints, parSettings.getInitRSSIReadings(), offlineMap, parSettings.getK(), Probabilistic.NO_ORIENTATION);

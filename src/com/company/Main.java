@@ -13,7 +13,7 @@ public class Main {
 
     //Generate settings automatically, ignoring any input file
     private static boolean isGenerateSettings = true;
-    private static boolean isOutputImage = true;
+    private static final boolean isOutputImage = false;
 
     private final static String IN_SEP = ";";
     private final static String OUT_SEP = ",";

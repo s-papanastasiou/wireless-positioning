@@ -13,6 +13,7 @@ public class Main {
 
     //Generate settings automatically, ignoring any input file
     private static boolean isGenerateSettings = true;
+    private static boolean isOutputImage = true;
 
     private final static String IN_SEP = ";";
     private final static String OUT_SEP = ",";
@@ -104,7 +105,7 @@ public class Main {
                             
             String output = String.format("%s,%s,%s,%s", isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue);
             System.out.println("Generated: " + output);
-            Simulation.runProbabilistic(fc, proSettings, probabilisticResultsLog, OUT_SEP);
+            Simulation.runProbabilistic(fc, proSettings, probabilisticResultsLog, OUT_SEP, isOutputImage);
             System.out.println("Simulation completed: " + output);
         }
 
@@ -114,7 +115,7 @@ public class Main {
             List<ParticleSettings> parSettingsList = SettingsGenerator.particle(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, buildingOrientation);
             String output = String.format("%s,%s,%s,%s", isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue);
             System.out.println("Generated: " + output);
-            Simulation.runParticle(fc, parSettingsList, particleResultsLog, OUT_SEP);
+            Simulation.runParticle(fc, parSettingsList, particleResultsLog, OUT_SEP, isOutputImage);
             System.out.println("Simulation completed: " + output);
         }
 

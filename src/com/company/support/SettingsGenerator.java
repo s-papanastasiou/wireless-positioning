@@ -15,23 +15,23 @@ import java.util.List;
 public class SettingsGenerator {
 
     //Ranges
-    private static final int initRSSIReadings_MIN = 1;
+    private static final int initRSSIReadings_MIN = 0;
     private static final int initRSSIReadings_MAX = 10;
-    private static final int initRSSIReadings_INC = 1;
+    private static final int initRSSIReadings_INC = 2;
 
-    private static final int particleCount_MIN = 10;
-    private static final int particleCount_MAX = 200;
-    private static final int particleCount_INC = 10;
+    private static final int particleCount_MIN = 0;
+    private static final int particleCount_MAX = 100;
+    private static final int particleCount_INC = 20;
 
-    private static final int speedBreak_MIN = 10;
-    private static final int speedBreak_MAX = 200;
-    private static final int speedBreak_INC = 10;
+    private static final int speedBreak_MIN = 0;
+    private static final int speedBreak_MAX = 100;
+    private static final int speedBreak_INC = 20;
 
-    private static final double cloudRange_MIN = 0.01;
-    private static final double cloudRange_MAX = 1.00;
-    private static final double cloudRange_INC = 0.05;
+    private static final double cloudRange_MIN = 0.0;
+    private static final double cloudRange_MAX = 1.0;
+    private static final double cloudRange_INC = 0.2;
 
-    private static final double cloudDisplacementCoefficient_MIN = 0.1;
+    private static final double cloudDisplacementCoefficient_MIN = 0.0;
     private static final double cloudDisplacementCoefficient_MAX = 1.0;
     private static final double cloudDisplacementCoefficient_INC = 0.2;
 

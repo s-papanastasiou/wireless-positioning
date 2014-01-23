@@ -20,9 +20,10 @@ import java.util.List;
  */
 public class DataLoad {
 
-    public static List<AppSettings> loadSettings(File settingsFile, String INPUT_SEPARATOR) {
+    /*
+    public static List<ParticleSettings> loadSettings(File settingsFile, String INPUT_SEPARATOR) {
 
-        List<AppSettings> appSettingsList = new ArrayList<>();
+        List<ParticleSettings> settingsList = new ArrayList<>();
         //Load files
 
         int lineNumber = 0;
@@ -40,14 +41,14 @@ public class DataLoad {
 
                 if (columns.length == headerSize) {
 
-                    AppSettings appSettings
-                            = new AppSettings(Boolean.parseBoolean(columns[0]), Boolean.parseBoolean(columns[1]),
+          ParticleSettingsppSettings appSettings
+                   ParticleSettingsnew AppSettings(Boolean.parseBoolean(columns[0]), Boolean.parseBoolean(columns[1]),
                                     Integer.parseInt(columns[2]), Integer.parseInt(columns[3]),
                                     Integer.parseInt(columns[4]), Integer.parseInt(columns[5]),
                                     Double.parseDouble(columns[6]), Double.parseDouble(columns[7]),
                                     Boolean.parseBoolean(columns[8]), Double.parseDouble(columns[9]));
 
-                    appSettingsList.add(appSettings);
+                    settingsList.add(appSettings);
                 } else {
                     System.out.println("Skipping line " + lineNumber);
                 }
@@ -58,9 +59,9 @@ public class DataLoad {
 
         System.out.println("Settings loaded: " + lineNumber);
 
-        return appSettingsList;
+        return settingsList;
     }
-
+*/
     public static List<Data> loadInertialData(File inertialDataFile, String INPUT_SEPARATOR) {
 
         int lineNumber = 0;

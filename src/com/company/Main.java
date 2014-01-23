@@ -1,11 +1,11 @@
 package com.company;
 
 import com.company.support.FileController;
-import com.company.support.AppSettingsGenerator;
+import com.company.support.SettingsGenerator;
 import com.company.support.Simulation;
-import com.company.support.AppSettings;
+import com.company.support.ParticleSettings;
 import com.company.support.Logging;
-import com.company.support.DataLoad;
+import com.company.support.ProbabilisticSettings;
 import java.io.File;
 import java.util.List;
 
@@ -46,11 +46,17 @@ public class Main {
 
             //Loop through each set of settings
             if (isGenerateSettings) {
+                System.out.println("Generating settings");
                 runSimulations(fc, particleResultsLog, probabilisticResultsLog);
 
             } else {
-                List<AppSettings> appSettingsList = DataLoad.loadSettings(fc.settingsFile, IN_SEP);
-                Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
+                System.out.println("Running from file disabled");
+                /*
+                System.out.println("Using file settings");
+                List<ParticleSettings> appSettingsList = DataLoad.loadSettings(fc.settingsFile, IN_SEP);
+                Simulation.runParticle(fc, appSettingsList, particleResultsLog, OUT_SEP);
+                Simulation.runProbabilistic(fc, appSettingsList, probabilisticResultsLog, OUT_SEP);
+*/
             }
 
             particleResultsLog.close();
@@ -58,46 +64,58 @@ public class Main {
         }
     }
 
+    private static final int K_MIN = 1;
+    private static final int K_MAX = 20;
+    private static final int K_INC = 1;
+    private static final double buildingOrientation = -0.523598776;
+    
     private static void runSimulations(FileController fc, Logging particleResultsLog, Logging probabilisticResultsLog) {
-        List<AppSettings> appSettingsList;
-        appSettingsList = AppSettingsGenerator.generate(false, false, false);
-        System.out.println("Generated: false, false, false");
-        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
-        System.out.println("Simulation completed: false, false, false");
 
-        appSettingsList = AppSettingsGenerator.generate(true, false, false);
-        System.out.println("Generated: true, false, false");
-        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
-        System.out.println("Simulation completed: true, false, false");
+        //Particle Test
+        for (int k_counter = K_MIN; k_counter <= K_MAX; k_counter += K_INC) {
+            System.out.println("Particle Test");
+            runParticle(fc, particleResultsLog, false, false, false, k_counter);
+            runParticle(fc, particleResultsLog, true, false, false, k_counter);
+            runParticle(fc, particleResultsLog, false, true, false, k_counter);
+            runParticle(fc, particleResultsLog, false, false, true, k_counter);
+            runParticle(fc, particleResultsLog, true, true, false, k_counter);
+            runParticle(fc, particleResultsLog, true, false, true, k_counter);
+            runParticle(fc, particleResultsLog, false, true, true, k_counter);
+            runParticle(fc, particleResultsLog, true, true, true, k_counter);
+        }
 
-        appSettingsList = AppSettingsGenerator.generate(false, true, false);
-        System.out.println("Generated: false, true, false");
-        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
-        System.out.println("Simulation completed: false, true, false");
-
-        appSettingsList = AppSettingsGenerator.generate(false, false, true);
-        System.out.println("Generated: false, false, true");
-        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
-        System.out.println("Simulation completed: false, false, true");
-
-        appSettingsList = AppSettingsGenerator.generate(true, true, false);
-        System.out.println("Generated: true, true, false");
-        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
-        System.out.println("Simulation completed: true, true, false");
-
-        appSettingsList = AppSettingsGenerator.generate(true, false, true);
-        System.out.println("Generated: true, false, true");
-        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
-        System.out.println("Simulation completed: true, false, true");
-
-        appSettingsList = AppSettingsGenerator.generate(false, true, true);
-        System.out.println("Generated: false, true, true");
-        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
-        System.out.println("Simulation completed: false, true, true");
-
-        appSettingsList = AppSettingsGenerator.generate(true, true, true);
-        System.out.println("Generated: true, true, true");
-        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
-        System.out.println("Simulation completed: true, true, true");
+        for (int k_counter = K_MIN; k_counter <= K_MAX; k_counter += K_INC) {
+            System.out.println("Probablistic Test");
+            
+            runProbablistic(fc, probabilisticResultsLog, false, false, false, k_counter);
+            runProbablistic(fc, probabilisticResultsLog, true, false, false, k_counter);
+            runProbablistic(fc, probabilisticResultsLog, false, true, false, k_counter);
+            runProbablistic(fc, probabilisticResultsLog, false, false, true, k_counter);
+            runProbablistic(fc, probabilisticResultsLog, true, true, false, k_counter);
+            runProbablistic(fc, probabilisticResultsLog, true, false, true, k_counter);
+            runProbablistic(fc, probabilisticResultsLog, false, true, true, k_counter);
+            runProbablistic(fc, probabilisticResultsLog, true, true, true, k_counter);                                               
+        }
     }
+        
+        private static void runProbablistic(FileController fc, Logging probabilisticResultsLog, boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue){
+            
+            
+            List<ProbabilisticSettings> proSettingsList = SettingsGenerator.probablisitic(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, buildingOrientation);
+            String output = String.format("%s,%s,%s,%s", isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue);
+            System.out.println("Generated: " + output);
+            Simulation.runProbabilistic(fc, proSettingsList, probabilisticResultsLog, OUT_SEP);
+            System.out.println("Simulation completed: " + output);
+        }
+
+     private static void runParticle(FileController fc, Logging particleResultsLog, boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue){
+            
+            
+            List<ParticleSettings> parSettingsList = SettingsGenerator.particle(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, buildingOrientation);
+            String output = String.format("%s,%s,%s,%s", isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue);
+            System.out.println("Generated: " + output);
+            Simulation.runParticle(fc, parSettingsList, particleResultsLog, OUT_SEP);
+            System.out.println("Simulation completed: " + output);
+        }
+
 }

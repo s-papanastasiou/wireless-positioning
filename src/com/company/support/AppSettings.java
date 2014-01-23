@@ -79,7 +79,7 @@ public class AppSettings {
     }
 
     public String getParticleImageTitle() {
-        return "particle" + isBSSIDMerged + "-" + isOrientationMerged + "-"
+        return "particle-" + isBSSIDMerged + "-" + isOrientationMerged + "-"
                 + K + "-" + initRSSIReadings + "-"
                 + particleCount + "-" + speedBreak + "-" + cloudRange + "-"
                 + cloudDisplacementCoefficient + "-" + isForceToOfflineMap;

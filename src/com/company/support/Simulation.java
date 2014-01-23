@@ -219,10 +219,10 @@ public class Simulation {
             probabilisticResultsLog.printLine(probabilisticResults);
 
             //Draw the image for the trial
-            File particleOutputImageFile = new File(fc.partImageDir, appSettings.getParticleImageTitle());
+            File particleOutputImageFile = new File(fc.partImageDir, "Trial " + appSettings.getParticleImageTitle());
             DisplayRoute.draw(trialPoints, particleFinalPoints, particleOutputImageFile, fc.image);
 
-            File probabilisticOutputImageFile = new File(fc.probImageDir, appSettings.getProbablisticImageTitle());
+            File probabilisticOutputImageFile = new File(fc.probImageDir, "Trial " +  appSettings.getProbablisticImageTitle());
             DisplayRoute.draw(trialPoints, probabilisticFinalPoints, probabilisticOutputImageFile, fc.image);
         }
     }

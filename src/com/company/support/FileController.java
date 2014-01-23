@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.company;
+package com.company.support;
 
+import com.company.methods.Data;
 import datastorage.RSSIData;
 import filehandling.RSSILoader;
 import java.io.File;

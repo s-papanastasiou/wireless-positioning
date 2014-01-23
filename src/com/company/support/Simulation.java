@@ -3,8 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.company;
+package com.company.support;
 
+import com.company.Main;
+import com.company.methods.ParticleFilter;
+import com.company.methods.Probabilistic;
+import com.company.methods.Particle;
+import com.company.methods.Data;
+import com.company.methods.InertialPoint;
+import com.company.methods.Cloud;
+import com.company.methods.InertialData;
 import datastorage.KNNFloorPoint;
 import datastorage.KNNTrialPoint;
 import filehandling.KNNRSSI;

@@ -1,4 +1,4 @@
-package com.company;
+package com.company.support;
 
 /**
  * Created with IntelliJ IDEA. User: pierre Date: 31/10/2013 Time: 15:17 To

@@ -1,4 +1,4 @@
-package com.company;
+package com.company.support;
 
 import java.io.BufferedWriter;
 import java.io.File;

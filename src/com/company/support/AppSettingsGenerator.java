@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.company;
+package com.company.support;
 
 import java.util.ArrayList;
 import java.util.List;

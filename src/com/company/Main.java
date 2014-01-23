@@ -50,7 +50,7 @@ public class Main {
 
             } else {
                 List<AppSettings> appSettingsList = DataLoad.loadSettings(fc.settingsFile, IN_SEP);
-                Simulation.simulate(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
+                Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
             }
 
             particleResultsLog.close();
@@ -62,42 +62,42 @@ public class Main {
         List<AppSettings> appSettingsList;
         appSettingsList = AppSettingsGenerator.generate(false, false, false);
         System.out.println("Generated: false, false, false");
-        Simulation.simulate(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
+        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
         System.out.println("Simulation completed: false, false, false");
 
         appSettingsList = AppSettingsGenerator.generate(true, false, false);
         System.out.println("Generated: true, false, false");
-        Simulation.simulate(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
+        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
         System.out.println("Simulation completed: true, false, false");
 
         appSettingsList = AppSettingsGenerator.generate(false, true, false);
         System.out.println("Generated: false, true, false");
-        Simulation.simulate(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
+        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
         System.out.println("Simulation completed: false, true, false");
 
         appSettingsList = AppSettingsGenerator.generate(false, false, true);
         System.out.println("Generated: false, false, true");
-        Simulation.simulate(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
+        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
         System.out.println("Simulation completed: false, false, true");
 
         appSettingsList = AppSettingsGenerator.generate(true, true, false);
         System.out.println("Generated: true, true, false");
-        Simulation.simulate(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
+        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
         System.out.println("Simulation completed: true, true, false");
 
         appSettingsList = AppSettingsGenerator.generate(true, false, true);
         System.out.println("Generated: true, false, true");
-        Simulation.simulate(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
+        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
         System.out.println("Simulation completed: true, false, true");
 
         appSettingsList = AppSettingsGenerator.generate(false, true, true);
         System.out.println("Generated: false, true, true");
-        Simulation.simulate(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
+        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
         System.out.println("Simulation completed: false, true, true");
 
         appSettingsList = AppSettingsGenerator.generate(true, true, true);
         System.out.println("Generated: true, true, true");
-        Simulation.simulate(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
+        Simulation.run(fc, appSettingsList, particleResultsLog, probabilisticResultsLog, OUT_SEP);
         System.out.println("Simulation completed: true, true, true");
     }
 }

@@ -106,7 +106,7 @@ public class Simulation {
         return lineNumber + OUT_SEP + trialX + OUT_SEP + trialY + OUT_SEP + trialDistance + OUT_SEP + posX + OUT_SEP + posY;
     }
 
-    public static void simulate(FileController fc, List<AppSettings> appSettingsList, Logging particleResultsLog, Logging probabilisticResultsLog, String OUT_SEP) {
+    public static void run(FileController fc, List<AppSettings> appSettingsList, Logging particleResultsLog, Logging probabilisticResultsLog, String OUT_SEP) {
 
         for (AppSettings appSettings : appSettingsList) {
 
@@ -153,11 +153,13 @@ public class Simulation {
             //Reset line numbering
             int lineNumber = 0;
 
-            //Loop through each of the points in the trial.
+            final List<Data> inertialDataList = fc.inertialDataList;
+            
+            //Loop through each of the points in the trial.            
             for (KNNTrialPoint knnTrialPoint : onlinePoints) {
 
-                for (int i = currentInertialIndex; i < fc.inertialDataList.size(); i++) {
-                    Data sensorData = fc.inertialDataList.get(i);
+                for (int i = currentInertialIndex; i < inertialDataList.size(); i++) {
+                    Data sensorData = inertialDataList.get(i);
                     if (sensorData.getTimestamp() < knnTrialPoint.getTimestamp()) {  //Move using the sensor data
 
                         sensorData.getOrientation()[0] += HALF_PI - appSettings.getBuildingOrientation();

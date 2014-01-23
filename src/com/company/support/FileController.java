@@ -23,6 +23,7 @@ public class FileController {
     private final static String INITIAL_POINTS = "initialPointsA.csv";
     private final static String INERTIAL_DATA = "inertialDataA.csv";
     private final static String IMAGE = "floor2final.png";
+    
     private final static String RESULTS_DIRECTORY = "Results";
     private final static String PARTICLE_IMAGE_DIRECTORY = "ParticleImages";
     private final static String PARTICLE_RESULTS_DIRECTORY = "ParticleResults";
@@ -41,15 +42,16 @@ public class FileController {
     public File image;
 
     public File resultsDir;
-    public File particleImageDir;
-    public File particleResultsDir;
-    public File probabilisticImageDir;
-    public File probabilisticResultsDir;
+    
+    private File particleImageDir;
+    private File particleResultsDir;
+    private File probabilisticImageDir;
+    private File probabilisticResultsDir;
 
-    public File particleCompassImageDir;
-    public File particleCompassResultsDir;
-    public File probabilisticCompassImageDir;
-    public File probabilisticCompassResultsDir;
+    private File particleCompassImageDir;
+    private File particleCompassResultsDir;
+    private File probabilisticCompassImageDir;
+    private File probabilisticCompassResultsDir;
 
     public List<RSSIData> offlineDataList;
     public List<RSSIData> onlineDataList;
@@ -79,15 +81,24 @@ public class FileController {
     private void setupDirectories() {
         // Output directories //////////////////////////////////////////////////////////////////////////////////////////
         resultsDir = DataLoad.checkDir(null, RESULTS_DIRECTORY);
+        
+        //Non-compass method directories
         particleImageDir = DataLoad.checkDir(resultsDir, PARTICLE_IMAGE_DIRECTORY);
         particleResultsDir = DataLoad.checkDir(resultsDir, PARTICLE_RESULTS_DIRECTORY);
         probabilisticImageDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_IMAGE_DIRECTORY);
         probabilisticResultsDir = DataLoad.checkDir(resultsDir, PROBABLISTIC_RESULTS_DIRECTORY);
 
+        //Compass method directories
         particleCompassImageDir = DataLoad.checkDir(resultsDir, PARTICLE_COMPASS_IMAGE_DIRECTORY);
         particleCompassResultsDir = DataLoad.checkDir(resultsDir, PARTICLE_COMPASS_RESULTS_DIRECTORY);
         probabilisticCompassImageDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_COMPASS_IMAGE_DIRECTORY);
         probabilisticCompassResultsDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_COMPASS_RESULTS_DIRECTORY);
+        
+        //Actual output directories
+        particleTrialDir = particleResultsDir;
+        probabilisticTrialDir = probabilisticResultsDir;
+        partImageDir = particleImageDir;
+        probImageDir = probabilisticImageDir;
     }
 
     private void setupExternalFiles() {

@@ -28,7 +28,6 @@ public class ProbabilisticSettings {
         this.speedBreak = speedBreak;
         this.isForceToOfflineMap = forceToOfflineMap;
         this.buildingOrientation = buildingOrientation;
-
     }
 
     public boolean isBSSIDMerged() {
@@ -61,17 +60,17 @@ public class ProbabilisticSettings {
 
     public String getProbablisticTitle(String OUT_SEP) {
         return "probablistic-" + isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP
-                + K + OUT_SEP + speedBreak + OUT_SEP + isForceToOfflineMap;
+                + K + OUT_SEP + initRSSIReadings+ OUT_SEP + speedBreak + OUT_SEP + isForceToOfflineMap;
     }
 
     public String getProbablisticImageTitle() {
         return "probablistic-" + isBSSIDMerged + "-" + isOrientationMerged + "-"
-                + K + "-" + speedBreak + "-" + isForceToOfflineMap;
+                + K + "-" + initRSSIReadings + "-" + speedBreak + "-" + isForceToOfflineMap;
     }
 
     @Override
     public String toString() {
-        return isBSSIDMerged + ":" + isOrientationMerged + ":" + K + ":" + speedBreak + ":" + isForceToOfflineMap + ":" + buildingOrientation;
+        return isBSSIDMerged + ":" + isOrientationMerged + ":" + K + ":" + initRSSIReadings + ":" + speedBreak + ":" + isForceToOfflineMap + ":" + buildingOrientation;
     }
 
 }

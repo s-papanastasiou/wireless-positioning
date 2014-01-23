@@ -19,13 +19,13 @@ public class SettingsGenerator {
     private static final int initRSSIReadings_MAX = 10;
     private static final int initRSSIReadings_INC = 1;
 
-    private static final int particleCount_MIN = 5;
+    private static final int particleCount_MIN = 10;
     private static final int particleCount_MAX = 200;
-    private static final int particleCount_INC = 5;
+    private static final int particleCount_INC = 10;
 
-    private static final int speedBreak_MIN = 5;
+    private static final int speedBreak_MIN = 10;
     private static final int speedBreak_MAX = 200;
-    private static final int speedBreak_INC = 5;
+    private static final int speedBreak_INC = 10;
 
     private static final double cloudRange_MIN = 0.01;
     private static final double cloudRange_MAX = 1.00;

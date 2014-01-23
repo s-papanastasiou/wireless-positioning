@@ -40,25 +40,9 @@ public class AppSettingsGenerator {
     private static final double cloudDisplacementCoefficient_MAX=1.0;
     private static final double cloudDisplacementCoefficient_INC=0.1;       
     
-    private static final double buildingOrientation = -0.523598776;
+    private static final double buildingOrientation = -0.523598776;       
     
-    public static final List<AppSettings> generate(){
-        
-        List<AppSettings> settings= new ArrayList<>();
-        
-        settings.addAll(subGen(false, false, false));
-        settings.addAll(subGen(true, false, false));
-        settings.addAll(subGen(false, true, false));
-        settings.addAll(subGen(false, false, true));
-        settings.addAll(subGen(true, true, false));
-        settings.addAll(subGen(true, false, true));        
-        settings.addAll(subGen(false, true, true));
-        settings.addAll(subGen(true, true, true));
-                
-        return settings;
-    }
-    
-    private static List<AppSettings> subGen(boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap){
+    public static List<AppSettings> generate(boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap){
         
         List<AppSettings> settings= new ArrayList<>();
                       

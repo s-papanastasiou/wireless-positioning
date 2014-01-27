@@ -7,6 +7,8 @@ import com.company.support.ParticleSettings;
 import com.company.support.Logging;
 import com.company.support.ProbabilisticSettings;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class Main {
@@ -111,12 +113,14 @@ public class Main {
 
      private static void runParticle(FileController fc, Logging particleResultsLog, boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue){
             
-            
+            SimpleDateFormat dateFormat = new SimpleDateFormat ("hh:mm:ss dd/MM/yyyy");
+            Date date = new Date();
             List<ParticleSettings> parSettingsList = SettingsGenerator.particle(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, buildingOrientation);
             String output = String.format("%s,%s,%s,%s", isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue);
-            System.out.println("Generated: " + output);
+            System.out.println("Generated: " + output + " " + dateFormat.format(date));
             Simulation.runParticle(fc, parSettingsList, particleResultsLog, OUT_SEP, isOutputImage);
-            System.out.println("Simulation completed: " + output);
+            date = new Date();
+            System.out.println("Simulation completed: " + output + " " + dateFormat.format(date));
         }
 
 }

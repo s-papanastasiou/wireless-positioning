@@ -18,8 +18,7 @@ import java.util.List;
 public class FileController {
 
     private final static String OFFLINE_MAP = "offlineMap.csv";
-    private final static String ONLINE_WIFI_DATA = "onlineWifiDataA.csv";
-    private final static String SETTINGS_FILE = "settingsFileA.csv";
+    private final static String ONLINE_WIFI_DATA = "onlineWifiDataA.csv";    
     private final static String INITIAL_POINTS = "initialPointsA.csv";
     private final static String INERTIAL_DATA = "inertialDataA.csv";
     private final static String IMAGE = "floor2final.png";
@@ -35,8 +34,7 @@ public class FileController {
     private final static String PROBABILISTIC_COMPASS_RESULTS_DIRECTORY = "ProbablisticCompassResults";
 
     public File offlineMapFile;
-    public File onlinePointsFile;
-    public File settingsFile;
+    public File onlinePointsFile;    
     public File initialPointsFile;
     public File inertialDataFile;
     public File image;
@@ -107,8 +105,7 @@ public class FileController {
     private void setupExternalFiles() {
         // External files //////////////////////////////////////////////////////////////////////////////////////////////
         offlineMapFile = new File(OFFLINE_MAP);
-        onlinePointsFile = new File(ONLINE_WIFI_DATA);
-        settingsFile = new File(SETTINGS_FILE);
+        onlinePointsFile = new File(ONLINE_WIFI_DATA);        
         initialPointsFile = new File(INITIAL_POINTS);
         inertialDataFile = new File(INERTIAL_DATA);
         image = new File(IMAGE);

@@ -6,6 +6,9 @@
 
 package com.company.support;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Gerg
@@ -93,6 +96,27 @@ public class ParticleSettings {
     @Override
     public String toString() {
         return isBSSIDMerged + ":" + isOrientationMerged + ":" + isForceToOfflineMap + ":" + K + ":" + initRSSIReadings + ":" + particleCount + ":" + speedBreak + ":" + cloudRange + ":" + cloudDisplacementCoefficient + ":" + buildingOrientation;
+    }
+    
+    public static List<ParticleSettings> generate(boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue, TrialProperties tp) {
+
+        List<ParticleSettings> settings = new ArrayList<>();
+
+        for (int init_counter = tp.getInitRSSIReadings_MIN(); init_counter <= tp.getInitRSSIReadings_MAX(); init_counter += tp.getInitRSSIReadings_INC()) {
+            for (int particle_counter = tp.getParticleCount_MIN(); particle_counter <= tp.getParticleCount_MAX(); particle_counter += tp.getParticleCount_INC()) {
+                for (int speed_counter = tp.getSpeedBreak_MIN(); speed_counter <= tp.getSpeedBreak_MAX(); speed_counter += tp.getSpeedBreak_INC()) {
+                    for (double range_counter = tp.getCloudRange_MIN(); range_counter <= tp.getCloudRange_MAX(); range_counter += tp.getCloudRange_INC()) {
+                        for (double displacement_counter = tp.getCloudDispCoeff_MIN(); displacement_counter <= tp.getCloudDispCoeff_MAX(); displacement_counter += tp.getCloudDispCoeff_INC()) {
+                            ParticleSettings setting = new ParticleSettings(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, init_counter, particle_counter, speed_counter, range_counter, displacement_counter, tp.getBuildingOrientation());
+                            settings.add(setting);
+                            //System.out.println(setting.toString());
+                        }
+                    }
+                }
+            }
+        }
+
+        return settings;
     }
 
 }

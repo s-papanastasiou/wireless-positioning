@@ -1,11 +1,11 @@
 package com.company;
 
 import com.company.support.FileController;
-import com.company.support.SettingsGenerator;
 import com.company.support.Simulation;
 import com.company.support.ParticleSettings;
 import com.company.support.Logging;
 import com.company.support.ProbabilisticSettings;
+import com.company.support.TrialProperties;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,10 +13,9 @@ import java.util.List;
 
 public class Main {
 
-    //Generate settings automatically, ignoring any input file
-    private static boolean isGenerateSettings = true;
-    private static final boolean isOutputImage = false;
-    private static final boolean isTrialDetail = false;
+    //Generate settings automatically, ignoring any input file    
+    private static boolean isOutputImage = false;
+    private static boolean isTrialDetail = false;
 
     private final static String IN_SEP = ";";
     private final static String OUT_SEP = ",";
@@ -28,85 +27,62 @@ public class Main {
 
     public static void main(String[] args) {
 
-        if (extractK(args)) {
-            FileController fc = new FileController(IN_SEP);
+        checkArgs(args);
+        
+        TrialProperties tp = new TrialProperties();
+        FileController fc = new FileController(IN_SEP);        
+        
+        if (fc.isSetupOk) {
 
-            if (fc.isSetupOk) {
+            //Particle Results Logging
+            Logging particleResultsLog = new Logging(new File(fc.resultsDir, "ParticleResults.csv"));
+            particleResultsLog.printLine(particleResultsHeader);
 
-                //Particle Results Logging
-                Logging particleResultsLog = new Logging(new File(fc.resultsDir, "ParticleResults.csv"));
-                particleResultsLog.printLine(particleResultsHeader);
+            //Probabilistic Results Logging
+            Logging probabilisticResultsLog = new Logging(new File(fc.resultsDir, "ProbablisticResults.csv"));
+            probabilisticResultsLog.printLine(probabilisticResultsHeader);
 
-                //Probabilistic Results Logging
-                Logging probabilisticResultsLog = new Logging(new File(fc.resultsDir, "ProbablisticResults.csv"));
-                probabilisticResultsLog.printLine(probabilisticResultsHeader);
+            //Loop through each set of settings                
+            System.out.println("Generating settings");
+            runSimulations(fc, tp, particleResultsLog, probabilisticResultsLog);
 
-                if (fc.settingsFile.isFile()) {
-                    System.out.println("Loading settings from file");
-                } else {
-                    System.out.println(String.format("%s not found", fc.settingsFile.toString()));
-                    System.out.println(String.format("Switching to settings generation"));
-                    isGenerateSettings = true;
-                }
-
-                //Loop through each set of settings
-                if (isGenerateSettings) {
-                    System.out.println("Generating settings");
-                    runSimulations(fc, particleResultsLog, probabilisticResultsLog);
-
-                } else {
-                    System.out.println("Running from file disabled");
-                    /*
-                     System.out.println("Using file settings");
-                     List<ParticleSettings> appSettingsList = DataLoad.loadSettings(fc.settingsFile, IN_SEP);
-                     Simulation.runParticle(fc, appSettingsList, particleResultsLog, OUT_SEP);
-                     Simulation.runProbabilistic(fc, appSettingsList, probabilisticResultsLog, OUT_SEP);
-                     */
-                }
-
-                particleResultsLog.close();
-                probabilisticResultsLog.close();
-            }
+            particleResultsLog.close();
+            probabilisticResultsLog.close();
         }
+
     }
-
-    private static int K_MIN = 1;
-    private static int K_MAX = 10;
-    private static int K_INC = 1;
-    private static final double buildingOrientation = -0.523598776;
-
-    private static void runSimulations(FileController fc, Logging particleResultsLog, Logging probabilisticResultsLog) {
+ 
+    private static void runSimulations(FileController fc, TrialProperties tp, Logging particleResultsLog, Logging probabilisticResultsLog) {
 
         //Particle Test
-        for (int k_counter = K_MIN; k_counter <= K_MAX; k_counter += K_INC) {
+        for (int k_counter = tp.getK_MIN(); k_counter <= tp.getK_MAX(); k_counter += tp.getK_INC()) {
             System.out.println("Particle Test");
-            runParticle(fc, particleResultsLog, false, false, false, k_counter);
-            runParticle(fc, particleResultsLog, true, false, false, k_counter);
-            runParticle(fc, particleResultsLog, false, true, false, k_counter);
-            runParticle(fc, particleResultsLog, false, false, true, k_counter);
-            runParticle(fc, particleResultsLog, true, true, false, k_counter);
-            runParticle(fc, particleResultsLog, true, false, true, k_counter);
-            runParticle(fc, particleResultsLog, false, true, true, k_counter);
-            runParticle(fc, particleResultsLog, true, true, true, k_counter);
+            runParticle(fc, particleResultsLog, false, false, false, k_counter, tp);
+            runParticle(fc, particleResultsLog, true, false, false, k_counter, tp);
+            runParticle(fc, particleResultsLog, false, true, false, k_counter, tp);
+            runParticle(fc, particleResultsLog, false, false, true, k_counter, tp);
+            runParticle(fc, particleResultsLog, true, true, false, k_counter, tp);
+            runParticle(fc, particleResultsLog, true, false, true, k_counter, tp);
+            runParticle(fc, particleResultsLog, false, true, true, k_counter, tp);
+            runParticle(fc, particleResultsLog, true, true, true, k_counter, tp);
         }
 
-        for (int k_counter = K_MIN; k_counter <= K_MAX; k_counter += K_INC) {
+        for (int k_counter = tp.getK_MIN(); k_counter <= tp.getK_MAX(); k_counter += tp.getK_INC()) {
             System.out.println("Probablistic Test");
-
-            runProbablistic(fc, probabilisticResultsLog, false, false, false, k_counter);
-            runProbablistic(fc, probabilisticResultsLog, true, false, false, k_counter);
-            runProbablistic(fc, probabilisticResultsLog, false, true, false, k_counter);
-            runProbablistic(fc, probabilisticResultsLog, false, false, true, k_counter);
-            runProbablistic(fc, probabilisticResultsLog, true, true, false, k_counter);
-            runProbablistic(fc, probabilisticResultsLog, true, false, true, k_counter);
-            runProbablistic(fc, probabilisticResultsLog, false, true, true, k_counter);
-            runProbablistic(fc, probabilisticResultsLog, true, true, true, k_counter);
+            runProbablistic(fc, probabilisticResultsLog, false, false, false, k_counter, tp);
+            runProbablistic(fc, probabilisticResultsLog, true, false, false, k_counter, tp);
+            runProbablistic(fc, probabilisticResultsLog, false, true, false, k_counter, tp);
+            runProbablistic(fc, probabilisticResultsLog, false, false, true, k_counter, tp);
+            runProbablistic(fc, probabilisticResultsLog, true, true, false, k_counter, tp);
+            runProbablistic(fc, probabilisticResultsLog, true, false, true, k_counter, tp);
+            runProbablistic(fc, probabilisticResultsLog, false, true, true, k_counter, tp);
+            runProbablistic(fc, probabilisticResultsLog, true, true, true, k_counter, tp);
         }
     }
 
-    private static void runProbablistic(FileController fc, Logging probabilisticResultsLog, boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue) {
+    private static void runProbablistic(FileController fc, Logging probabilisticResultsLog, boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue, TrialProperties tp) {
 
-        ProbabilisticSettings proSettings = new ProbabilisticSettings(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, buildingOrientation);
+        ProbabilisticSettings proSettings = new ProbabilisticSettings(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, tp.getBuildingOrientation());
 
         String output = String.format("%s,%s,%s,%s", isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue);
         System.out.println("Generated: " + output);
@@ -114,11 +90,11 @@ public class Main {
         System.out.println("Simulation completed: " + output);
     }
 
-    private static void runParticle(FileController fc, Logging particleResultsLog, boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue) {
+    private static void runParticle(FileController fc, Logging particleResultsLog, boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue, TrialProperties tp) {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss dd/MM/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
         Date date = new Date();
-        List<ParticleSettings> parSettingsList = SettingsGenerator.particle(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, buildingOrientation);
+        List<ParticleSettings> parSettingsList = ParticleSettings.generate(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, tp);
         String output = String.format("%s,%s,%s,%s", isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue);
         System.out.println("Generated: " + output + " " + dateFormat.format(date));
         Simulation.runParticle(fc, parSettingsList, particleResultsLog, OUT_SEP, isTrialDetail, isOutputImage);
@@ -126,33 +102,17 @@ public class Main {
         System.out.println("Simulation completed: " + output + " " + dateFormat.format(date));
     }
 
-    private static boolean extractK(String[] args) {
-
-        boolean isSuccess = true;
-        try {
-            switch (args.length) {
-                case 3:
-                    K_MIN = Integer.parseInt(args[0]);
-                    K_MAX = Integer.parseInt(args[1]);
-                    K_INC = Integer.parseInt(args[2]);
-                    break;
-                case 2:
-                    K_MIN = Integer.parseInt(args[0]);
-                    K_MAX = Integer.parseInt(args[1]);
-                    System.out.println("Default K_INC: " + K_INC);
-                    break;
-                case 0:
-                    System.out.println(String.format("Default values: K_MIN %s, K_MAX %s, K_INC %s", K_MIN, K_MAX, K_INC));
-                    break;
-                default:
-                    throw new NumberFormatException();
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Error reading args. No args or ints only: K_MIN K_MAX K_INC (K_INC optional)");
-            isSuccess = false;
+    private static void checkArgs(String[] args){
+                
+        if(args.length==2){
+            isOutputImage = Boolean.parseBoolean(args[0]);
+            
+            isTrialDetail = Boolean.parseBoolean(args[1]);
+            
         }
-
-        return isSuccess;
+        System.out.println("Output Image: " + isOutputImage);
+        System.out.println("Trial Detail: " + isTrialDetail);        
     }
-
+    
+    
 }

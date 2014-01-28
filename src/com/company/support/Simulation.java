@@ -106,7 +106,7 @@ public class Simulation {
         return lineNumber + OUT_SEP + trialX + OUT_SEP + trialY + OUT_SEP + trialDistance + OUT_SEP + posX + OUT_SEP + posY;
     }
 
-    public static void runProbabilistic(FileController fc, ProbabilisticSettings proSettings, Logging probabilisticResultsLog, String OUT_SEP, boolean isOutputImage) {
+    public static void runProbabilistic(FileController fc, ProbabilisticSettings proSettings, Logging probabilisticResultsLog, String OUT_SEP, boolean isTrialDetail, boolean isOutputImage) {
 
         //Load offline map, online points (trial scan points) and intial points (stationary readings at start of trial).
         HashMap<String, KNNFloorPoint> offlineMap = KNNRSSI.compile(fc.offlineDataList, proSettings.isBSSIDMerged(), proSettings.isOrientationMerged());
@@ -122,8 +122,7 @@ public class Simulation {
         //Trial Logging - split into different folders for when compass used or not
         fc.switchDirectories(proSettings.isOrientationMerged());
 
-        Logging probabilisticTrialLog = new Logging(new File(fc.probabilisticTrialDir, String.format("Trial %s.csv", probabilisticTrialName)));
-
+        Logging probabilisticTrialLog = new Logging(isTrialDetail, new File(fc.probabilisticTrialDir, String.format("Trial %s.csv", probabilisticTrialName)));
         probabilisticTrialLog.printLine(Main.trialHeader);
 
         //System.out.println("Running probabilistic trial:" + probabilisticTrialName);            
@@ -166,9 +165,10 @@ public class Simulation {
                 probabilisticFinalPoints.add(new Point(probabilisticPoint.getX() * X_PIXELS, probabilisticPoint.getY() * Y_PIXELS));
             }
             //Log the trial results
-            String probabilisticTrialResult = getTrialResult(lineNumber, knnTrialPoint, probabilisticTrialDistance, probabilisticPoint, OUT_SEP);
-            probabilisticTrialLog.printLine(probabilisticTrialResult);
-
+            if(probabilisticTrialLog.isLogging()){
+                String probabilisticTrialResult = getTrialResult(lineNumber, knnTrialPoint, probabilisticTrialDistance, probabilisticPoint, OUT_SEP);
+                probabilisticTrialLog.printLine(probabilisticTrialResult);
+            }
             //Increment the line number
             lineNumber++;
         }
@@ -186,7 +186,7 @@ public class Simulation {
         }
     }
 
-    public static void runParticle(FileController fc, List<ParticleSettings> parSettingsList, Logging particleResultsLog, String OUT_SEP, boolean isOutputImage) {
+    public static void runParticle(FileController fc, List<ParticleSettings> parSettingsList, Logging particleResultsLog, String OUT_SEP, boolean isTrialDetail, boolean isOutputImage) {
 
         for (ParticleSettings parSettings : parSettingsList) {
 
@@ -205,10 +205,9 @@ public class Simulation {
             //Trial Logging - split into different folders for when compass used or not
             fc.switchDirectories(parSettings.isOrientationMerged());
 
-            Logging particleTrialLog = new Logging(new File(fc.particleTrialDir, String.format("Trial %s.csv", particleTrialName)));
-
-            particleTrialLog.printLine(Main.trialHeader);
-
+            Logging particleTrialLog = new Logging(isTrialDetail, new File(fc.particleTrialDir, String.format("Trial %s.csv", particleTrialName)));            
+            particleTrialLog.printLine(Main.trialHeader);          
+                    
             //System.out.println("Running particle trial:" + particleTrialName);
             //Calculate initial points to calculate where the particle filter starts.
             Point initialPoint = initialPoint(initialPoints, parSettings.getInitRSSIReadings(), offlineMap, parSettings.getK(), Probabilistic.NO_ORIENTATION);
@@ -269,13 +268,14 @@ public class Simulation {
                     particleFinalPoints.add(new Point(bestPoint.getX() * X_PIXELS, bestPoint.getY() * Y_PIXELS));
                 }
                 //Log the trial results
-                String particleTrialResult = getTrialResult(lineNumber, knnTrialPoint, particleTrialDistance, bestPoint, OUT_SEP);
-                particleTrialLog.printLine(particleTrialResult);
-
+                if(particleTrialLog.isLogging()){
+                    String particleTrialResult = getTrialResult(lineNumber, knnTrialPoint, particleTrialDistance, bestPoint, OUT_SEP);                
+                    particleTrialLog.printLine(particleTrialResult);
+                }
                 //Increment the line number
                 lineNumber++;
             }
-
+           
             particleTrialLog.close();
 
             //Logging of the aggregate results for the trial - same as the name given to individual trial file names but with the mean distance error added.           

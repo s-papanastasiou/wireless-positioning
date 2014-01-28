@@ -24,7 +24,7 @@ public class FileController {
     private final static String INERTIAL_DATA = "inertialDataA.csv";
     private final static String IMAGE = "floor2final.png";
     
-    private final static String RESULTS_DIRECTORY = "C:\\TrialResults";
+    private final static String RESULTS_DIRECTORY = "TrialResults";
     private final static String PARTICLE_IMAGE_DIRECTORY = "ParticleImages";
     private final static String PARTICLE_RESULTS_DIRECTORY = "ParticleResults";
     private final static String PROBABILISTIC_IMAGE_DIRECTORY = "ProbablisticImages";
@@ -80,7 +80,10 @@ public class FileController {
 
     private void setupDirectories() {
         // Output directories //////////////////////////////////////////////////////////////////////////////////////////
-        resultsDir = DataLoad.checkDir(null, RESULTS_DIRECTORY);
+        String workDirPath = System.getProperty("user.dir");
+        File workDir = new File(workDirPath);
+        resultsDir = DataLoad.checkDir(workDir, RESULTS_DIRECTORY);
+        System.out.println("Results directory: "  + resultsDir.getAbsolutePath());
         
         //Non-compass method directories
         particleImageDir = DataLoad.checkDir(resultsDir, PARTICLE_IMAGE_DIRECTORY);

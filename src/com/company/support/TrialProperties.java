@@ -21,7 +21,7 @@ public class TrialProperties {
     private int K_MIN;
     private int K_MAX;
     private int K_INC;
-    private double buildingOrientation;
+    private Double buildingOrientation;
 
     private int initRSSIReadings_MIN;
     private int initRSSIReadings_MAX;
@@ -35,13 +35,13 @@ public class TrialProperties {
     private int speedBreak_MAX;
     private int speedBreak_INC;
 
-    private double cloudRange_MIN;
-    private double cloudRange_MAX;
-    private double cloudRange_INC;
+    private Double cloudRange_MIN;
+    private Double cloudRange_MAX;
+    private Double cloudRange_INC;
 
-    private double cloudDispCoeff_MIN;
-    private double cloudDispCoeff_MAX;
-    private double cloudDispCoeff_INC;
+    private Double cloudDispCoeff_MIN;
+    private Double cloudDispCoeff_MAX;
+    private Double cloudDispCoeff_INC;
 
     private static final String propsFilename = "trial.properties";
     
@@ -92,7 +92,7 @@ public class TrialProperties {
             K_MIN = Integer.parseInt(props.getProperty(Keys.K_MIN.name()));
             K_MAX = Integer.parseInt(props.getProperty(Keys.K_MAX.name()));
             K_INC = Integer.parseInt(props.getProperty(Keys.K_INC.name()));
-            buildingOrientation = Double.parseDouble(Keys.buildingOrientation.name());
+            buildingOrientation = Double.parseDouble(props.getProperty(Keys.buildingOrientation.name()));
             initRSSIReadings_MIN = Integer.parseInt(props.getProperty(Keys.initRSSIReadings_MIN.name()));
             initRSSIReadings_MAX = Integer.parseInt(props.getProperty(Keys.initRSSIReadings_MAX.name()));
             initRSSIReadings_INC = Integer.parseInt(props.getProperty(Keys.initRSSIReadings_INC.name()));
@@ -102,12 +102,12 @@ public class TrialProperties {
             speedBreak_MIN = Integer.parseInt(props.getProperty(Keys.speedBreak_MIN.name()));
             speedBreak_MAX = Integer.parseInt(props.getProperty(Keys.speedBreak_MAX.name()));
             speedBreak_INC = Integer.parseInt(props.getProperty(Keys.speedBreak_INC.name()));
-            cloudRange_MIN = Double.parseDouble(Keys.cloudRange_MIN.name());
-            cloudRange_MAX = Double.parseDouble(Keys.cloudRange_MAX.name());
-            cloudRange_INC = Double.parseDouble(Keys.cloudRange_INC.name());
-            cloudDispCoeff_MIN = Double.parseDouble(Keys.cloudDispCoeff_MIN.name());
-            cloudDispCoeff_MAX = Double.parseDouble(Keys.cloudDispCoeff_MAX.name());
-            cloudDispCoeff_INC = Double.parseDouble(Keys.cloudDispCoeff_INC.name());
+            cloudRange_MIN = Double.parseDouble(props.getProperty(Keys.cloudRange_MIN.name()));
+            cloudRange_MAX = Double.parseDouble(props.getProperty(Keys.cloudRange_MAX.name()));
+            cloudRange_INC = Double.parseDouble(props.getProperty(Keys.cloudRange_INC.name()));
+            cloudDispCoeff_MIN = Double.parseDouble(props.getProperty(Keys.cloudDispCoeff_MIN.name()));
+            cloudDispCoeff_MAX = Double.parseDouble(props.getProperty(Keys.cloudDispCoeff_MAX.name()));
+            cloudDispCoeff_INC = Double.parseDouble(props.getProperty(Keys.cloudDispCoeff_INC.name()));
                         
         } catch (IOException ex) {
             System.out.println("Cannot read properties file.");
@@ -122,7 +122,7 @@ public class TrialProperties {
 
     private void checkAllKeys(Properties props) {
         for (Keys key : Keys.values()) {
-            if (props.containsKey(key.name())) {
+            if (!props.containsKey(key.name())) {
                 System.out.println("Properties file not setup correctly: " + key.name());
                 throw new AssertionError();
             }

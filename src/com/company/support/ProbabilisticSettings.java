@@ -17,13 +17,19 @@ public class ProbabilisticSettings {
     private final int K;    
     private final boolean isForceToOfflineMap;
     private final double buildingOrientation;
+    private final String OUT_SEP;
+    private final String valuesStr;
+    private final String titleStr;
 
-    public ProbabilisticSettings(boolean BSSIDMerged, boolean orientationMerged, boolean forceToOfflineMap, int k, double buildingOrientation) {
+    public ProbabilisticSettings(boolean BSSIDMerged, boolean orientationMerged, boolean forceToOfflineMap, int k, double buildingOrientation, String OUT_SEP) {
         this.isBSSIDMerged = BSSIDMerged;
         this.isOrientationMerged = orientationMerged;
         this.K = k;        
         this.isForceToOfflineMap = forceToOfflineMap;
         this.buildingOrientation = buildingOrientation;
+        this.OUT_SEP = OUT_SEP;  
+        valuesStr = isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP + K + OUT_SEP + isForceToOfflineMap;
+        titleStr = "probablistic-" + isBSSIDMerged + "-" + isOrientationMerged + "-" + K + "-" + isForceToOfflineMap;
     }
 
     public boolean isBSSIDMerged() {
@@ -46,15 +52,17 @@ public class ProbabilisticSettings {
         return buildingOrientation;
     }    
 
-    public String getProbablisticTitle(String OUT_SEP) {
-        return "probablistic-" + isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP
-                + K + OUT_SEP + isForceToOfflineMap;
+    public String getTitle() {
+        return titleStr;
+    }
+    
+    public String getValues(){
+        return valuesStr;
     }
 
-    public String getProbablisticImageTitle() {
-        return "probablistic-" + isBSSIDMerged + "-" + isOrientationMerged + "-"
-                + K + "-" + isForceToOfflineMap;
-    }
+    public String getOUT_SEP() {
+        return OUT_SEP;
+    }        
 
     @Override
     public String toString() {

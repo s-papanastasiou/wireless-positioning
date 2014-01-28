@@ -18,11 +18,11 @@ import java.util.List;
 public class FileController {
 
     private final static String OFFLINE_MAP = "offlineMap.csv";
-    private final static String ONLINE_WIFI_DATA = "onlineWifiDataA.csv";    
+    private final static String ONLINE_WIFI_DATA = "onlineWifiDataA.csv";
     private final static String INITIAL_POINTS = "initialPointsA.csv";
     private final static String INERTIAL_DATA = "inertialDataA.csv";
     private final static String IMAGE = "floor2final.png";
-    
+
     private final static String RESULTS_DIRECTORY = "TrialResults";
     private final static String PARTICLE_IMAGE_DIRECTORY = "ParticleImages";
     private final static String PARTICLE_RESULTS_DIRECTORY = "ParticleResults";
@@ -34,13 +34,13 @@ public class FileController {
     private final static String PROBABILISTIC_COMPASS_RESULTS_DIRECTORY = "ProbablisticCompassResults";
 
     public File offlineMapFile;
-    public File onlinePointsFile;    
+    public File onlinePointsFile;
     public File initialPointsFile;
     public File inertialDataFile;
     public File image;
 
     public File resultsDir;
-    
+
     private File particleImageDir;
     private File particleResultsDir;
     private File probabilisticImageDir;
@@ -56,15 +56,18 @@ public class FileController {
     public List<RSSIData> initialDataList;
     public List<Data> inertialDataList;
 
-    public File particleTrialDir;
-    public File probabilisticTrialDir;
-    public File partImageDir;
-    public File probImageDir;
+    public File particleTrialDir = null;
+    public File probabilisticTrialDir = null;
+    public File partImageDir = null;
+    public File probImageDir = null;
 
     public final boolean isSetupOk;
 
-    public FileController(String IN_SEP) {
-        setupDirectories();
+    private boolean isOutputImage;
+    private boolean isTrialDetail;
+
+    public FileController(String IN_SEP, boolean isOutputImage, boolean isTrialDetail) {
+        setupDirectories(isOutputImage, isTrialDetail);
 
         setupExternalFiles();
 
@@ -76,36 +79,43 @@ public class FileController {
         }
     }
 
-    private void setupDirectories() {
+    private void setupDirectories(boolean isOutputImage, boolean isTrialDetail) {
         // Output directories //////////////////////////////////////////////////////////////////////////////////////////
         String workDirPath = System.getProperty("user.dir");
         File workDir = new File(workDirPath);
         resultsDir = DataLoad.checkDir(workDir, RESULTS_DIRECTORY);
-        System.out.println("Results directory: "  + resultsDir.getAbsolutePath());
-        
-        //Non-compass method directories
-        particleImageDir = DataLoad.checkDir(resultsDir, PARTICLE_IMAGE_DIRECTORY);
-        particleResultsDir = DataLoad.checkDir(resultsDir, PARTICLE_RESULTS_DIRECTORY);
-        probabilisticImageDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_IMAGE_DIRECTORY);
-        probabilisticResultsDir = DataLoad.checkDir(resultsDir, PROBABLISTIC_RESULTS_DIRECTORY);
+        System.out.println("Results directory: " + resultsDir.getAbsolutePath());
 
-        //Compass method directories
-        particleCompassImageDir = DataLoad.checkDir(resultsDir, PARTICLE_COMPASS_IMAGE_DIRECTORY);
-        particleCompassResultsDir = DataLoad.checkDir(resultsDir, PARTICLE_COMPASS_RESULTS_DIRECTORY);
-        probabilisticCompassImageDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_COMPASS_IMAGE_DIRECTORY);
-        probabilisticCompassResultsDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_COMPASS_RESULTS_DIRECTORY);
-        
-        //Actual output directories
-        particleTrialDir = particleResultsDir;
-        probabilisticTrialDir = probabilisticResultsDir;
-        partImageDir = particleImageDir;
-        probImageDir = probabilisticImageDir;
+        //Image directories
+        if (isOutputImage) {
+            particleImageDir = DataLoad.checkDir(resultsDir, PARTICLE_IMAGE_DIRECTORY);
+            probabilisticImageDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_IMAGE_DIRECTORY);
+            particleCompassImageDir = DataLoad.checkDir(resultsDir, PARTICLE_COMPASS_IMAGE_DIRECTORY);
+            probabilisticCompassImageDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_COMPASS_IMAGE_DIRECTORY);
+
+            //Actual output directories
+            partImageDir = particleImageDir;
+            probImageDir = probabilisticImageDir;
+        }
+
+        //Results directories
+        if (isTrialDetail) {
+            particleResultsDir = DataLoad.checkDir(resultsDir, PARTICLE_RESULTS_DIRECTORY);
+            probabilisticResultsDir = DataLoad.checkDir(resultsDir, PROBABLISTIC_RESULTS_DIRECTORY);
+            particleCompassResultsDir = DataLoad.checkDir(resultsDir, PARTICLE_COMPASS_RESULTS_DIRECTORY);
+            probabilisticCompassResultsDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_COMPASS_RESULTS_DIRECTORY);
+
+            //Actual output directories
+            particleTrialDir = particleResultsDir;
+            probabilisticTrialDir = probabilisticResultsDir;
+
+        }
     }
 
     private void setupExternalFiles() {
         // External files //////////////////////////////////////////////////////////////////////////////////////////////
         offlineMapFile = new File(OFFLINE_MAP);
-        onlinePointsFile = new File(ONLINE_WIFI_DATA);        
+        onlinePointsFile = new File(ONLINE_WIFI_DATA);
         initialPointsFile = new File(INITIAL_POINTS);
         inertialDataFile = new File(INERTIAL_DATA);
         image = new File(IMAGE);
@@ -157,15 +167,23 @@ public class FileController {
     public void switchDirectories(boolean isOrientationMerged) {
 
         if (isOrientationMerged) {
-            particleTrialDir = particleResultsDir;
-            probabilisticTrialDir = probabilisticResultsDir;
-            partImageDir = particleImageDir;
-            probImageDir = probabilisticImageDir;
+            if (isTrialDetail) {
+                particleTrialDir = particleResultsDir;
+                probabilisticTrialDir = probabilisticResultsDir;
+            }
+            if (isOutputImage) {
+                partImageDir = particleImageDir;
+                probImageDir = probabilisticImageDir;
+            }
         } else {
-            particleTrialDir = particleCompassResultsDir;
-            probabilisticTrialDir = probabilisticCompassResultsDir;
-            partImageDir = particleCompassImageDir;
-            probImageDir = probabilisticCompassImageDir;
+            if (isTrialDetail) {
+                particleTrialDir = particleCompassResultsDir;
+                probabilisticTrialDir = probabilisticCompassResultsDir;
+            }
+            if (isOutputImage) {
+                partImageDir = particleCompassImageDir;
+                probImageDir = probabilisticCompassImageDir;
+            }
         }
     }
 

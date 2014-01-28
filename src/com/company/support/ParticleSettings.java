@@ -25,8 +25,12 @@ public class ParticleSettings {
     private final double cloudDisplacementCoefficient;
     private final boolean isForceToOfflineMap;
     private final double buildingOrientation;
+    private final String OUT_SEP;
+    private final String valuesStr;
+    private final String titleStr;
+    
 
-    ParticleSettings(boolean BSSIDMerged, boolean orientationMerged, boolean forceToOfflineMap, int k, int initRSSIReadings, int particleCount, int speedBreak, double cloudRange, double cloudDisplacementCoefficient, double buildingOrientation) {
+    ParticleSettings(boolean BSSIDMerged, boolean orientationMerged, boolean forceToOfflineMap, int k, int initRSSIReadings, int particleCount, int speedBreak, double cloudRange, double cloudDisplacementCoefficient, double buildingOrientation, String OUT_SEP) {
         this.isBSSIDMerged = BSSIDMerged;
         this.isOrientationMerged = orientationMerged;
         this.K = k;
@@ -37,6 +41,15 @@ public class ParticleSettings {
         this.cloudDisplacementCoefficient = cloudDisplacementCoefficient;
         this.isForceToOfflineMap = forceToOfflineMap;
         this.buildingOrientation = buildingOrientation;
+        this.OUT_SEP = OUT_SEP;
+        this.valuesStr = isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP + isForceToOfflineMap + OUT_SEP
+                + K + OUT_SEP + initRSSIReadings + OUT_SEP
+                + particleCount + OUT_SEP + speedBreak + OUT_SEP + cloudRange + OUT_SEP
+                + cloudDisplacementCoefficient;
+        this.titleStr = "particle-" + isBSSIDMerged + "-" + isOrientationMerged + "-" + isForceToOfflineMap + "-"
+                + K + "-" + initRSSIReadings + "-"
+                + particleCount + "-" + speedBreak + "-" + cloudRange + "-"
+                + cloudDisplacementCoefficient;
     }
 
     public boolean isBSSIDMerged() {
@@ -77,20 +90,18 @@ public class ParticleSettings {
 
     public double getBuildingOrientation() {
         return buildingOrientation;
-    }
+    }        
 
-    public String getParticleTitle(String OUT_SEP) {
-        return "particle-" + isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP + isForceToOfflineMap + OUT_SEP
-                + K + OUT_SEP + initRSSIReadings + OUT_SEP
-                + particleCount + OUT_SEP + speedBreak + OUT_SEP + cloudRange + OUT_SEP
-                + cloudDisplacementCoefficient ;
+    public String getTitle() {
+        return titleStr;
     }
+    
+    public String getValues(){
+        return valuesStr;
+    }    
 
-    public String getParticleImageTitle() {
-        return "particle-" + isBSSIDMerged + "-" + isOrientationMerged + "-" + isForceToOfflineMap + "-"
-                + K + "-" + initRSSIReadings + "-"
-                + particleCount + "-" + speedBreak + "-" + cloudRange + "-"
-                + cloudDisplacementCoefficient;
+    public String getOUT_SEP() {
+        return OUT_SEP;
     }
 
     @Override
@@ -98,7 +109,7 @@ public class ParticleSettings {
         return isBSSIDMerged + ":" + isOrientationMerged + ":" + isForceToOfflineMap + ":" + K + ":" + initRSSIReadings + ":" + particleCount + ":" + speedBreak + ":" + cloudRange + ":" + cloudDisplacementCoefficient + ":" + buildingOrientation;
     }
     
-    public static List<ParticleSettings> generate(boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue, TrialProperties tp) {
+    public static List<ParticleSettings> generate(boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue, TrialProperties tp, String OUT_SEP) {
 
         List<ParticleSettings> settings = new ArrayList<>();
 
@@ -107,7 +118,7 @@ public class ParticleSettings {
                 for (int speed_counter = tp.getSpeedBreak_MIN(); speed_counter <= tp.getSpeedBreak_MAX(); speed_counter += tp.getSpeedBreak_INC()) {
                     for (double range_counter = tp.getCloudRange_MIN(); range_counter <= tp.getCloudRange_MAX(); range_counter += tp.getCloudRange_INC()) {
                         for (double displacement_counter = tp.getCloudDispCoeff_MIN(); displacement_counter <= tp.getCloudDispCoeff_MAX(); displacement_counter += tp.getCloudDispCoeff_INC()) {
-                            ParticleSettings setting = new ParticleSettings(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, init_counter, particle_counter, speed_counter, range_counter, displacement_counter, tp.getBuildingOrientation());
+                            ParticleSettings setting = new ParticleSettings(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, init_counter, particle_counter, speed_counter, range_counter, displacement_counter, tp.getBuildingOrientation(), OUT_SEP);
                             settings.add(setting);
                             //System.out.println(setting.toString());
                         }

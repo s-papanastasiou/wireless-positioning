@@ -54,15 +54,21 @@ public class Simulation {
         double x = 0;
         double y = 0;
 
+        if(initReadings==0){
+            throw new AssertionError("Initial readings parameter is zero but must be at least one.");
+        }
+        
         if (initReadings <= initialPoints.size()) {
 
-            for (int i = 0; i < initReadings; i++) {
+        } else {
+            throw new AssertionError("Initial points is less than inital readings parameter");
+        }
+        
+        for (int i = 0; i < initReadings; i++) {
 
-                Point probabilisticPoint = Probabilistic.run(initialPoints.get(i).getFloorPoint(), offlineMap, k, orientation);
-                x += probabilisticPoint.getX();
-                y += probabilisticPoint.getY();
-            }
-
+            Point probabilisticPoint = Probabilistic.run(initialPoints.get(i).getFloorPoint(), offlineMap, k, orientation);
+            x += probabilisticPoint.getX();
+            y += probabilisticPoint.getY();
         }
 
         return new Point(x / initReadings, y / initReadings);
@@ -107,7 +113,9 @@ public class Simulation {
         return lineNumber + OUT_SEP + trialX + OUT_SEP + trialY + OUT_SEP + trialDistance + OUT_SEP + posX + OUT_SEP + posY;
     }
 
-    public static void runProbabilistic(FileController fc, ProbabilisticSettings proSettings, Logging probabilisticResultsLog, String OUT_SEP, boolean isTrialDetail, boolean isOutputImage) {
+    public static void runProbabilistic(FileController fc, ProbabilisticSettings proSettings, Logging probabilisticResultsLog, boolean isTrialDetail, boolean isOutputImage) {
+
+        String OUT_SEP = proSettings.getOUT_SEP();
 
         //Load offline map, online points (trial scan points) and intial points (stationary readings at start of trial).
         HashMap<String, KNNFloorPoint> offlineMap = KNNRSSI.compile(fc.offlineDataList, proSettings.isBSSIDMerged(), proSettings.isOrientationMerged());
@@ -117,13 +125,11 @@ public class Simulation {
         List<Point> trialPoints = new ArrayList<>();
         List<Point> probabilisticFinalPoints = new ArrayList<>();
 
-        //Setup trial logs to record point data within the trial.
-        String probabilisticTrialName = proSettings.getProbablisticTitle(OUT_SEP);
-
+        //Setup trial logs to record point data within the trial.        
         //Trial Logging - split into different folders for when compass used or not
         fc.switchDirectories(proSettings.isOrientationMerged());
 
-        Logging probabilisticTrialLog = new Logging(isTrialDetail, new File(fc.probabilisticTrialDir, String.format("Trial %s.csv", probabilisticTrialName)));
+        Logging probabilisticTrialLog = new Logging(isTrialDetail, new File(fc.probabilisticTrialDir, String.format("Trial %s.csv", proSettings.getTitle())));
         probabilisticTrialLog.printLine(Main.trialHeader);
 
         //System.out.println("Running probabilistic trial:" + probabilisticTrialName);            
@@ -166,7 +172,7 @@ public class Simulation {
                 probabilisticFinalPoints.add(new Point(probabilisticPoint.getX() * X_PIXELS, probabilisticPoint.getY() * Y_PIXELS));
             }
             //Log the trial results
-            if(probabilisticTrialLog.isLogging()){
+            if (probabilisticTrialLog.isLogging()) {
                 String probabilisticTrialResult = getTrialResult(lineNumber, knnTrialPoint, trialDistance, probabilisticPoint, OUT_SEP);
                 probabilisticTrialLog.printLine(probabilisticTrialResult);
             }
@@ -177,20 +183,21 @@ public class Simulation {
         probabilisticTrialLog.close();
 
         //Logging of the aggregate results for the trial - same as the name given to individual trial file names but with the mean distance error added.                       
-        String probabilisticResults = probabilisticTrialName + OUT_SEP + totalDistance.getMean() + OUT_SEP + totalDistance.getStdDev();
+        String probabilisticResults = proSettings.getValues() + OUT_SEP + totalDistance.getMean() + OUT_SEP + totalDistance.getStdDev();
         probabilisticResultsLog.printLine(probabilisticResults);
 
         //Draw the image for the trial  
         if (isOutputImage) {
-            File probabilisticOutputImageFile = new File(fc.probImageDir, "Trial " + proSettings.getProbablisticImageTitle());
+            File probabilisticOutputImageFile = new File(fc.probImageDir, "Trial " + proSettings.getTitle());
             DisplayRoute.draw(trialPoints, probabilisticFinalPoints, probabilisticOutputImageFile, fc.image);
         }
     }
 
-    public static void runParticle(FileController fc, List<ParticleSettings> parSettingsList, Logging particleResultsLog, String OUT_SEP, boolean isTrialDetail, boolean isOutputImage) {
+    public static void runParticle(FileController fc, List<ParticleSettings> parSettingsList, Logging particleResultsLog, boolean isTrialDetail, boolean isOutputImage) {
 
         for (ParticleSettings parSettings : parSettingsList) {
 
+            String OUT_SEP = parSettings.getOUT_SEP();
             //Load offline map, online points (trial scan points) and intial points (stationary readings at start of trial).
             HashMap<String, KNNFloorPoint> offlineMap = KNNRSSI.compile(fc.offlineDataList, parSettings.isBSSIDMerged(), parSettings.isOrientationMerged());
             List<KNNTrialPoint> onlinePoints = KNNRSSI.compileTrialList(fc.onlineDataList, parSettings.isBSSIDMerged(), parSettings.isOrientationMerged());
@@ -200,15 +207,13 @@ public class Simulation {
             List<Point> trialPoints = new ArrayList<>();
             List<Point> particleFinalPoints = new ArrayList<>();
 
-            //Setup trial logs to record point data within the trial.
-            String particleTrialName = parSettings.getParticleTitle(OUT_SEP);
-
+            //Setup trial logs to record point data within the trial.            
             //Trial Logging - split into different folders for when compass used or not
             fc.switchDirectories(parSettings.isOrientationMerged());
 
-            Logging particleTrialLog = new Logging(isTrialDetail, new File(fc.particleTrialDir, String.format("Trial %s.csv", particleTrialName)));            
-            particleTrialLog.printLine(Main.trialHeader);          
-                    
+            Logging particleTrialLog = new Logging(isTrialDetail, new File(fc.particleTrialDir, String.format("Trial %s.csv", parSettings.getTitle())));
+            particleTrialLog.printLine(Main.trialHeader);
+
             //System.out.println("Running particle trial:" + particleTrialName);
             //Calculate initial points to calculate where the particle filter starts.
             Point initialPoint = initialPoint(initialPoints, parSettings.getInitRSSIReadings(), offlineMap, parSettings.getK(), Probabilistic.NO_ORIENTATION);
@@ -269,23 +274,23 @@ public class Simulation {
                     particleFinalPoints.add(new Point(bestPoint.getX() * X_PIXELS, bestPoint.getY() * Y_PIXELS));
                 }
                 //Log the trial results
-                if(particleTrialLog.isLogging()){
-                    String particleTrialResult = getTrialResult(lineNumber, knnTrialPoint, trialDistance, bestPoint, OUT_SEP);                
+                if (particleTrialLog.isLogging()) {
+                    String particleTrialResult = getTrialResult(lineNumber, knnTrialPoint, trialDistance, bestPoint, OUT_SEP);
                     particleTrialLog.printLine(particleTrialResult);
                 }
                 //Increment the line number
                 lineNumber++;
             }
-           
+
             particleTrialLog.close();
 
             //Logging of the aggregate results for the trial - same as the name given to individual trial file names but with the mean distance error added.           
-            String particleResults = particleTrialName + OUT_SEP + totalDistance.getMean() + OUT_SEP + totalDistance.getStdDev();
+            String particleResults = parSettings.getValues() + OUT_SEP + totalDistance.getMean() + OUT_SEP + totalDistance.getStdDev();
             particleResultsLog.printLine(particleResults);
 
             //Draw the image for the trial
             if (isOutputImage) {
-                File particleOutputImageFile = new File(fc.partImageDir, "Trial " + parSettings.getParticleImageTitle());
+                File particleOutputImageFile = new File(fc.partImageDir, "Trial " + parSettings.getTitle());
                 DisplayRoute.draw(trialPoints, particleFinalPoints, particleOutputImageFile, fc.image);
             }
         }

@@ -16,6 +16,7 @@ import com.company.methods.InertialData;
 import datastorage.KNNFloorPoint;
 import datastorage.KNNTrialPoint;
 import filehandling.KNNRSSI;
+import general.AvgValue;
 import general.Point;
 import java.io.File;
 import java.util.ArrayList;
@@ -129,7 +130,7 @@ public class Simulation {
         //Initiliase variables for trial
         int currentInertialIndex = 0;
         int orientation = Probabilistic.NO_ORIENTATION;
-        double probablisticTotalDistance = 0.0;
+        AvgValue totalDistance = new AvgValue();
 
         //Reset line numbering
         int lineNumber = 0;
@@ -156,8 +157,8 @@ public class Simulation {
 
             Point bestPoint = findBestPoint(offlineMap, probabilisticPoint, proSettings.isForceToOfflineMap());
 
-            double probabilisticTrialDistance = distance(knnTrialPoint, bestPoint);
-            probablisticTotalDistance += probabilisticTrialDistance;
+            double trialDistance = distance(knnTrialPoint, bestPoint);
+            totalDistance.add(trialDistance);
 
             //Store the points for drawing
             if (isOutputImage) {
@@ -166,7 +167,7 @@ public class Simulation {
             }
             //Log the trial results
             if(probabilisticTrialLog.isLogging()){
-                String probabilisticTrialResult = getTrialResult(lineNumber, knnTrialPoint, probabilisticTrialDistance, probabilisticPoint, OUT_SEP);
+                String probabilisticTrialResult = getTrialResult(lineNumber, knnTrialPoint, trialDistance, probabilisticPoint, OUT_SEP);
                 probabilisticTrialLog.printLine(probabilisticTrialResult);
             }
             //Increment the line number
@@ -176,7 +177,7 @@ public class Simulation {
         probabilisticTrialLog.close();
 
         //Logging of the aggregate results for the trial - same as the name given to individual trial file names but with the mean distance error added.                       
-        String probabilisticResults = probabilisticTrialName + OUT_SEP + Double.toString(probablisticTotalDistance / (double) onlinePoints.size());
+        String probabilisticResults = probabilisticTrialName + OUT_SEP + totalDistance.getMean() + OUT_SEP + totalDistance.getStdDev();
         probabilisticResultsLog.printLine(probabilisticResults);
 
         //Draw the image for the trial  
@@ -219,7 +220,7 @@ public class Simulation {
             //Initiliase variables for trial
             int currentInertialIndex = 0;
             int orientation = Probabilistic.NO_ORIENTATION;
-            double particleTotalDistance = 0.0;
+            AvgValue totalDistance = new AvgValue();
 
             Cloud cloud = null;
 
@@ -259,8 +260,8 @@ public class Simulation {
 
                 Point bestPoint = findBestPoint(offlineMap, cloud.getEstiPos(), parSettings.isForceToOfflineMap());
 
-                double particleTrialDistance = distance(knnTrialPoint, bestPoint);
-                particleTotalDistance += particleTrialDistance;
+                double trialDistance = distance(knnTrialPoint, bestPoint);
+                totalDistance.add(trialDistance);
 
                 //Store the points for drawing
                 if (isOutputImage) {
@@ -269,7 +270,7 @@ public class Simulation {
                 }
                 //Log the trial results
                 if(particleTrialLog.isLogging()){
-                    String particleTrialResult = getTrialResult(lineNumber, knnTrialPoint, particleTrialDistance, bestPoint, OUT_SEP);                
+                    String particleTrialResult = getTrialResult(lineNumber, knnTrialPoint, trialDistance, bestPoint, OUT_SEP);                
                     particleTrialLog.printLine(particleTrialResult);
                 }
                 //Increment the line number
@@ -279,7 +280,7 @@ public class Simulation {
             particleTrialLog.close();
 
             //Logging of the aggregate results for the trial - same as the name given to individual trial file names but with the mean distance error added.           
-            String particleResults = particleTrialName + OUT_SEP + Double.toString(particleTotalDistance / (double) onlinePoints.size());
+            String particleResults = particleTrialName + OUT_SEP + totalDistance.getMean() + OUT_SEP + totalDistance.getStdDev();
             particleResultsLog.printLine(particleResults);
 
             //Draw the image for the trial

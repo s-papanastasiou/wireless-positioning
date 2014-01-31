@@ -28,8 +28,8 @@ public class ProbabilisticSettings {
         this.isForceToOfflineMap = forceToOfflineMap;
         this.buildingOrientation = buildingOrientation;
         this.OUT_SEP = OUT_SEP;  
-        valuesStr = isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP + K + OUT_SEP + isForceToOfflineMap;
-        titleStr = "probablistic-" + isBSSIDMerged + "-" + isOrientationMerged + "-" + K + "-" + isForceToOfflineMap;
+        valuesStr = isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP + isForceToOfflineMap + OUT_SEP + K ;
+        titleStr = "probablistic-" + isBSSIDMerged + "-" + isOrientationMerged + "-" + isForceToOfflineMap + "-" + K;
     }
 
     public boolean isBSSIDMerged() {
@@ -66,7 +66,7 @@ public class ProbabilisticSettings {
 
     @Override
     public String toString() {
-        return isBSSIDMerged + ":" + isOrientationMerged + ":" + K + ":" + isForceToOfflineMap + ":" + buildingOrientation;
+        return isBSSIDMerged + ":" + isOrientationMerged + ":" + isForceToOfflineMap + ":" + K + ":" + buildingOrientation;
     }
 
 }

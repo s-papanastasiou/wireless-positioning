@@ -118,7 +118,7 @@ public class TrialProperties {
             System.out.println(ex.getMessage());
             throw new AssertionError();
         }
-    }
+    }        
 
     private void checkAllKeys(Properties props) {
         for (Keys key : Keys.values()) {

@@ -12,7 +12,9 @@ import com.company.methods.Particle;
 import com.company.methods.Data;
 import com.company.methods.InertialPoint;
 import com.company.methods.Cloud;
+import com.company.methods.ForceToMap;
 import com.company.methods.InertialData;
+import com.company.methods.Intialise;
 import datastorage.KNNFloorPoint;
 import datastorage.KNNTrialPoint;
 import filehandling.KNNRSSI;
@@ -22,7 +24,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import visualinfo.DisplayRoute;
 
 /**
@@ -37,8 +38,6 @@ public class Simulation {
 
     private final static double HALF_PI = Math.PI / 2;
 
-    //private static Cloud cloud;
-    //private static InertialPoint inertialPoint;
     private static double distance(KNNTrialPoint knnTrialPoint, Point point) {
 
         double x, y;
@@ -47,60 +46,6 @@ public class Simulation {
         y = point.getY() - knnTrialPoint.getFloorPoint().getyRef();
 
         return Math.hypot(x, y);
-    }
-
-    private static Point initialPoint(List<KNNTrialPoint> initialPoints, int initReadings, HashMap<String, KNNFloorPoint> offlineMap, int k, int orientation) {
-
-        double x = 0;
-        double y = 0;
-
-        if(initReadings==0){
-            throw new AssertionError("Initial readings parameter is zero but must be at least one.");
-        }
-        
-        if (initReadings <= initialPoints.size()) {
-
-        } else {
-            throw new AssertionError("Initial points is less than inital readings parameter");
-        }
-        
-        for (int i = 0; i < initReadings; i++) {
-
-            Point probabilisticPoint = Probabilistic.run(initialPoints.get(i).getFloorPoint(), offlineMap, k, orientation);
-            x += probabilisticPoint.getX();
-            y += probabilisticPoint.getY();
-        }
-
-        return new Point(x / initReadings, y / initReadings);
-    }
-
-    private static Point findBestPoint(HashMap<String, KNNFloorPoint> offlineMap, Point estiPos, boolean forceToOfflineMap) {
-
-        Point bestPoint = new Point();
-
-        if (forceToOfflineMap) {
-
-            double lowestDistance = Double.MAX_VALUE;
-
-            Set<String> keys = offlineMap.keySet();
-            for (String key : keys) {
-
-                KNNFloorPoint knnFloorPoint = offlineMap.get(key);
-                Point point = new Point(knnFloorPoint.getxRef(), knnFloorPoint.getyRef());
-
-                double distance = Math.hypot(point.getX() - estiPos.getX(), point.getY() - (estiPos.getY()));
-
-                if (distance < lowestDistance) {
-                    bestPoint = point;
-                    lowestDistance = distance;
-                }
-            }
-        } else {
-
-            bestPoint = estiPos;
-        }
-
-        return bestPoint;
     }
 
     private static String getTrialResult(int lineNumber, KNNTrialPoint knnTrialPoint, double trialDistance, Point bestPoint, String OUT_SEP) {
@@ -161,7 +106,7 @@ public class Simulation {
 
             Point probabilisticPoint = Probabilistic.run(knnTrialPoint.getFloorPoint(), offlineMap, proSettings.getK(), orientation);
 
-            Point bestPoint = findBestPoint(offlineMap, probabilisticPoint, proSettings.isForceToOfflineMap());
+            Point bestPoint = ForceToMap.findBestPoint(offlineMap, probabilisticPoint, proSettings.isForceToOfflineMap());
 
             double trialDistance = distance(knnTrialPoint, bestPoint);
             totalDistance.add(trialDistance);
@@ -216,7 +161,7 @@ public class Simulation {
 
             //System.out.println("Running particle trial:" + particleTrialName);
             //Calculate initial points to calculate where the particle filter starts.
-            Point initialPoint = initialPoint(initialPoints, parSettings.getInitRSSIReadings(), offlineMap, parSettings.getK(), Probabilistic.NO_ORIENTATION);
+            Point initialPoint = Intialise.initialPoint(initialPoints, parSettings.getInitRSSIReadings(), offlineMap, parSettings.getK(), Probabilistic.NO_ORIENTATION);
 
             //Find the time of the last intialisation point. Intertial readings until this time are ignored. 
             long lastTimestamp = initialPoints.get(initialPoints.size() - 1).getTimestamp();
@@ -263,7 +208,7 @@ public class Simulation {
                     cloud = new Cloud(initialPoint, particles);
                 }
 
-                Point bestPoint = findBestPoint(offlineMap, cloud.getEstiPos(), parSettings.isForceToOfflineMap());
+                Point bestPoint = ForceToMap.findBestPoint(offlineMap, cloud.getEstiPos(), parSettings.isForceToOfflineMap());
 
                 double trialDistance = distance(knnTrialPoint, bestPoint);
                 totalDistance.add(trialDistance);

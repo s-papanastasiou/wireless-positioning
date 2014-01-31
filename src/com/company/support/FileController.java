@@ -63,10 +63,12 @@ public class FileController {
 
     public final boolean isSetupOk;
 
-    private boolean isOutputImage;
-    private boolean isTrialDetail;
+    private final boolean isOutputImage;
+    private final boolean isTrialDetail;
 
     public FileController(String IN_SEP, boolean isOutputImage, boolean isTrialDetail) {
+        this.isOutputImage = isOutputImage;
+        this.isTrialDetail = isTrialDetail;
         setupDirectories(isOutputImage, isTrialDetail);
 
         setupExternalFiles();

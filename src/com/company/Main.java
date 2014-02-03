@@ -145,18 +145,18 @@ public class Main {
     
     private static void specificSimulations(FileController fc, Logging particleResultsLog, Logging probabilisticResultsLog){
                    
-        double buildingOrientation = -0.523598776;
+        double buildingOrientation = -0.523598776;                
         ProbabilisticSettings nonCompassProbabilistic = new ProbabilisticSettings(false, true, false, 2, buildingOrientation, OUT_SEP);
         runProbablistic(fc, probabilisticResultsLog, nonCompassProbabilistic);
         
         ProbabilisticSettings compassProbabilistic = new ProbabilisticSettings(false, false, true, 10,buildingOrientation, OUT_SEP);
         runProbablistic(fc, probabilisticResultsLog, compassProbabilistic);
-                
+                        
         ParticleSettings nonCompassParticle = new ParticleSettings(true, true, true, 1, 4, 1, 1, 0.5, 1.1,buildingOrientation, OUT_SEP);
         runParticle(fc, particleResultsLog, nonCompassParticle);
         
         ParticleSettings compassParticle = new ParticleSettings(true, false, true, 6, 4, 1, 61, 0.3, 1.1,buildingOrientation, OUT_SEP);
-        runParticle(fc, particleResultsLog, compassParticle);        
+        runParticle(fc, particleResultsLog, compassParticle);
     }
     
     

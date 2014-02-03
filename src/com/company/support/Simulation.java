@@ -114,11 +114,11 @@ public class Simulation {
             //Store the points for drawing
             if (isOutputImage) {
                 trialPoints.add(new Point(knnTrialPoint.getFloorPoint().getxRef() * X_PIXELS, knnTrialPoint.getFloorPoint().getyRef() * Y_PIXELS));
-                probabilisticFinalPoints.add(new Point(probabilisticPoint.getX() * X_PIXELS, probabilisticPoint.getY() * Y_PIXELS));
+                probabilisticFinalPoints.add(new Point(bestPoint.getX() * X_PIXELS, bestPoint.getY() * Y_PIXELS));
             }
             //Log the trial results
             if (probabilisticTrialLog.isLogging()) {
-                String probabilisticTrialResult = getTrialResult(lineNumber, knnTrialPoint, trialDistance, probabilisticPoint, OUT_SEP);
+                String probabilisticTrialResult = getTrialResult(lineNumber, knnTrialPoint, trialDistance, bestPoint, OUT_SEP);
                 probabilisticTrialLog.printLine(probabilisticTrialResult);
             }
             //Increment the line number

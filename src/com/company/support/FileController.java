@@ -17,12 +17,6 @@ import java.util.List;
  */
 public class FileController {
 
-    private final static String OFFLINE_MAP = "offlineMap.csv";
-    private final static String ONLINE_WIFI_DATA = "onlineWifiDataA.csv";
-    private final static String INITIAL_POINTS = "initialPointsA.csv";
-    private final static String INERTIAL_DATA = "inertialDataA.csv";
-    private final static String IMAGE = "floor2final.png";
-
     private final static String RESULTS_DIRECTORY = "TrialResults";
     private final static String PARTICLE_IMAGE_DIRECTORY = "ParticleImages";
     private final static String PARTICLE_RESULTS_DIRECTORY = "ParticleResults";
@@ -33,6 +27,7 @@ public class FileController {
     private final static String PROBABILISTIC_COMPASS_IMAGE_DIRECTORY = "ProbablisticCompassImages";
     private final static String PROBABILISTIC_COMPASS_RESULTS_DIRECTORY = "ProbablisticCompassResults";
 
+    public File externalDir;
     public File offlineMapFile;
     public File onlinePointsFile;
     public File initialPointsFile;
@@ -66,15 +61,15 @@ public class FileController {
     private final boolean isOutputImage;
     private final boolean isTrialDetail;
 
-    public FileController(String IN_SEP, boolean isOutputImage, boolean isTrialDetail) {
-        this.isOutputImage = isOutputImage;
-        this.isTrialDetail = isTrialDetail;
+    public FileController(SettingsProperties sp) {
+        this.isOutputImage = sp.isOutputImage();
+        this.isTrialDetail = sp.isTrialDetail();
         setupDirectories(isOutputImage, isTrialDetail);
 
-        setupExternalFiles();
+        setupExternalFiles(sp);
 
         if (checkFiles()) {
-            setupLists(IN_SEP);
+            setupLists(sp.IN_SEP());
             isSetupOk = true;
         } else {
             isSetupOk = false;
@@ -114,40 +109,46 @@ public class FileController {
         }
     }
 
-    private void setupExternalFiles() {
+    private void setupExternalFiles(SettingsProperties sp) {
         // External files //////////////////////////////////////////////////////////////////////////////////////////////
-        offlineMapFile = new File(OFFLINE_MAP);
-        onlinePointsFile = new File(ONLINE_WIFI_DATA);
-        initialPointsFile = new File(INITIAL_POINTS);
-        inertialDataFile = new File(INERTIAL_DATA);
-        image = new File(IMAGE);
+        externalDir = new File(sp.EXTERNAL_DIRECTORY());
+        offlineMapFile = new File(externalDir, sp.OFFLINE_MAP());
+        onlinePointsFile = new File(externalDir, sp.ONLINE_WIFI_DATA());
+        initialPointsFile = new File(externalDir, sp.INITIAL_POINTS());
+        inertialDataFile = new File(externalDir, sp.INERTIAL_DATA());
+        image = new File(externalDir, sp.FLOORPLAN_IMAGE());
     }
 
     private boolean checkFiles() {
 
         boolean isFileCheck = true;
 
-        if (!offlineMapFile.isFile()) {
-            System.out.println(String.format("%s not found", offlineMapFile.toString()));
-            isFileCheck = false;
-        }
-        if (!onlinePointsFile.isFile()) {
-            System.out.println(String.format("%s not found", onlinePointsFile.toString()));
-            isFileCheck = false;
-        }
-        if (!initialPointsFile.isFile()) {
-            System.out.println(String.format("%s not found", initialPointsFile.toString()));
-            isFileCheck = false;
-        }
-        if (!inertialDataFile.isFile()) {
-            System.out.println(String.format("%s not found", inertialDataFile.toString()));
-            isFileCheck = false;
-        }
-        if (!image.isFile()) {
-            System.out.println(String.format("%s not found", image.toString()));
-            isFileCheck = false;
-        }
+        if (externalDir.isDirectory()) {
 
+            if (!offlineMapFile.isFile()) {
+                System.out.println(String.format("%s not found", offlineMapFile.toString()));
+                isFileCheck = false;
+            }
+            if (!onlinePointsFile.isFile()) {
+                System.out.println(String.format("%s not found", onlinePointsFile.toString()));
+                isFileCheck = false;
+            }
+            if (!initialPointsFile.isFile()) {
+                System.out.println(String.format("%s not found", initialPointsFile.toString()));
+                isFileCheck = false;
+            }
+            if (!inertialDataFile.isFile()) {
+                System.out.println(String.format("%s not found", inertialDataFile.toString()));
+                isFileCheck = false;
+            }
+            if (!image.isFile()) {
+                System.out.println(String.format("%s not found", image.toString()));
+                isFileCheck = false;
+            }
+        } else {
+            System.out.println(String.format("%s not found", externalDir.toString()));
+            isFileCheck = false;
+        }
         return isFileCheck;
     }
 

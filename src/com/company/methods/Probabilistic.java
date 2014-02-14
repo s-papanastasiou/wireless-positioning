@@ -23,7 +23,7 @@ public class Probabilistic {
 
         if (!onlinepoint.getAttributes().isEmpty()) {
 
-            TreeSet<ProbResult> results = new TreeSet<ProbResult>();
+            TreeSet<ProbResult> results = new TreeSet<>();
             HashMap<String, KNNFloorPoint> orientatedMap;
 
             if (orientation != NO_ORIENTATION)
@@ -40,7 +40,7 @@ public class Probabilistic {
                 results.add(new ProbResult(key, prob));
             }
 
-            List<ProbResult> kList = new ArrayList<ProbResult>();
+            List<ProbResult> kList = new ArrayList<>();
 
             for (int i = 0; i < kLimit; i++) {
                 kList.add(results.pollLast());
@@ -55,9 +55,7 @@ public class Probabilistic {
     }
 
     private static HashMap<String, KNNFloorPoint> filterMap(HashMap<String, KNNFloorPoint> offlineMap, int orientation) {
-        HashMap<String, KNNFloorPoint> orientatedMap;
-
-        orientatedMap = new HashMap<String, KNNFloorPoint>();
+        HashMap<String, KNNFloorPoint> orientatedMap = new HashMap<>();
         Set<String> keys = offlineMap.keySet();
 
         for (String key : keys) {

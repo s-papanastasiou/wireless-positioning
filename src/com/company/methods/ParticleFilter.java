@@ -44,8 +44,8 @@ public class ParticleFilter {
 
     private static List<Particle> weightCloud(List<Particle> particles, Point posProba, double particleCount, double cloudRange) {
 
-        TreeSet<Particle> sortedList = new TreeSet<Particle>();
-        List<Particle> finalList = new ArrayList<Particle>();
+        TreeSet<Particle> sortedList = new TreeSet<>();
+        List<Particle> finalList = new ArrayList<>();
 
         try {
             // We sort particles by weight
@@ -103,7 +103,7 @@ public class ParticleFilter {
 
     private static List<Particle> newRandomCloud(List<Particle> particles, double cloudDisplacement) {
 
-        List<Particle> newParticles = new ArrayList<Particle>();
+        List<Particle> newParticles = new ArrayList<>();
         for (Particle particle : particles) {
 
             double dx = cloudDisplacement * Math.sqrt(-Math.log(1 - Math.random()));
@@ -151,7 +151,7 @@ public class ParticleFilter {
 
     public static List<Particle> createParticles(Point pos, int nbPart) {
 
-        List<Particle> list = new ArrayList<Particle>();
+        List<Particle> list = new ArrayList<>();
 
         for (int i = 0; i < nbPart; i++) {
 

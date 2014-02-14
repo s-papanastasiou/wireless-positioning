@@ -60,11 +60,11 @@ public class InertialData {
         trueZ = (float) (0.01 * Math.floor(100 * (-aZ)));
 
         //compensate for small non-zero values when tablet is stationary
-        if ((trueX < 0.3) && (trueX > -0.3))
+        if ((trueX < JITTER_OFFSET) && (trueX > -JITTER_OFFSET))
             trueX = 0;
-        if ((trueY < 0.3) && (trueY > -0.3))
+        if ((trueY < JITTER_OFFSET) && (trueY > -JITTER_OFFSET))
             trueY = 0;
-        if ((trueZ < 0.3) && (trueZ > -0.3))
+        if ((trueZ < JITTER_OFFSET) && (trueZ > -JITTER_OFFSET))
             trueZ = 0;
 
         return new InertialData(trueX, trueY, trueZ, degrees360(orientation[0] - buildingOrientation + HALF_PI), -orientation[2] * RAD2DEG, -orientation[1] * RAD2DEG);

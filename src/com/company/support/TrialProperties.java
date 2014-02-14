@@ -5,18 +5,18 @@
  */
 package com.company.support;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 /**
  *
  * @author SST3ALBISG
  */
-public class TrialProperties {
+public class TrialProperties extends BaseProperties{
 
+    @Override
+    protected final String propsFilename() {
+        return "trial.properties";
+    }
     
     private int K_MIN;
     private int K_MAX;
@@ -42,10 +42,8 @@ public class TrialProperties {
     private Double cloudDispCoeff_MIN;
     private Double cloudDispCoeff_MAX;
     private Double cloudDispCoeff_INC;
-
-    private static final String propsFilename = "trial.properties";
     
-    public static enum Keys {
+    public enum Keys {
 
         K_MIN,
         K_MAX,
@@ -68,65 +66,41 @@ public class TrialProperties {
         cloudDispCoeff_INC
     };
 
-    
     public TrialProperties() {
-        
-        String workDirPath = System.getProperty("user.dir");
-        File workDir = new File(workDirPath);
-        File propsFile = new File(workDir, propsFilename);
-        InputStream in;
+        super();
+                
         try {
-            if(propsFile.isFile()){
-                in = new FileInputStream(propsFile);
-                System.out.println("Properties file located.");
-            }else{
-                in = getClass().getClassLoader().getResourceAsStream(propsFilename);
-                System.out.println("Default properties file used.");
-            }
-            Properties props = new Properties();
-
-            props.load(in);
-            in.close();
+            Properties props = load();
+            assignKeys(props);
             
-            checkAllKeys(props);
-            K_MIN = Integer.parseInt(props.getProperty(Keys.K_MIN.name()));
-            K_MAX = Integer.parseInt(props.getProperty(Keys.K_MAX.name()));
-            K_INC = Integer.parseInt(props.getProperty(Keys.K_INC.name()));
-            buildingOrientation = Double.parseDouble(props.getProperty(Keys.buildingOrientation.name()));
-            initRSSIReadings_MIN = Integer.parseInt(props.getProperty(Keys.initRSSIReadings_MIN.name()));
-            initRSSIReadings_MAX = Integer.parseInt(props.getProperty(Keys.initRSSIReadings_MAX.name()));
-            initRSSIReadings_INC = Integer.parseInt(props.getProperty(Keys.initRSSIReadings_INC.name()));
-            particleCount_MIN = Integer.parseInt(props.getProperty(Keys.particleCount_MIN.name()));
-            particleCount_MAX = Integer.parseInt(props.getProperty(Keys.particleCount_MAX.name()));
-            particleCount_INC = Integer.parseInt(props.getProperty(Keys.particleCount_INC.name()));
-            speedBreak_MIN = Integer.parseInt(props.getProperty(Keys.speedBreak_MIN.name()));
-            speedBreak_MAX = Integer.parseInt(props.getProperty(Keys.speedBreak_MAX.name()));
-            speedBreak_INC = Integer.parseInt(props.getProperty(Keys.speedBreak_INC.name()));
-            cloudRange_MIN = Double.parseDouble(props.getProperty(Keys.cloudRange_MIN.name()));
-            cloudRange_MAX = Double.parseDouble(props.getProperty(Keys.cloudRange_MAX.name()));
-            cloudRange_INC = Double.parseDouble(props.getProperty(Keys.cloudRange_INC.name()));
-            cloudDispCoeff_MIN = Double.parseDouble(props.getProperty(Keys.cloudDispCoeff_MIN.name()));
-            cloudDispCoeff_MAX = Double.parseDouble(props.getProperty(Keys.cloudDispCoeff_MAX.name()));
-            cloudDispCoeff_INC = Double.parseDouble(props.getProperty(Keys.cloudDispCoeff_INC.name()));
-                        
-        } catch (IOException ex) {
-            System.out.println("Cannot read properties file.");
-            System.out.println(ex.getMessage());
-            throw new AssertionError();
         } catch (NumberFormatException ex) {
-            System.out.println("Properties parameter value incorrect.");
+            System.out.println(propsFilename() + " parameter value incorrect.");
             System.out.println(ex.getMessage());
             throw new AssertionError();
         }
-    }        
+    }  
 
-    private void checkAllKeys(Properties props) {
-        for (Keys key : Keys.values()) {
-            if (!props.containsKey(key.name())) {
-                System.out.println("Properties file not setup correctly: " + key.name());
-                throw new AssertionError();
-            }
-        }
+    @Override
+    protected final void assignKeys(Properties props) throws NumberFormatException {
+        K_MIN = Integer.parseInt(props.getProperty(Keys.K_MIN.name()));
+        K_MAX = Integer.parseInt(props.getProperty(Keys.K_MAX.name()));
+        K_INC = Integer.parseInt(props.getProperty(Keys.K_INC.name()));
+        buildingOrientation = Double.parseDouble(props.getProperty(Keys.buildingOrientation.name()));
+        initRSSIReadings_MIN = Integer.parseInt(props.getProperty(Keys.initRSSIReadings_MIN.name()));
+        initRSSIReadings_MAX = Integer.parseInt(props.getProperty(Keys.initRSSIReadings_MAX.name()));
+        initRSSIReadings_INC = Integer.parseInt(props.getProperty(Keys.initRSSIReadings_INC.name()));
+        particleCount_MIN = Integer.parseInt(props.getProperty(Keys.particleCount_MIN.name()));
+        particleCount_MAX = Integer.parseInt(props.getProperty(Keys.particleCount_MAX.name()));
+        particleCount_INC = Integer.parseInt(props.getProperty(Keys.particleCount_INC.name()));
+        speedBreak_MIN = Integer.parseInt(props.getProperty(Keys.speedBreak_MIN.name()));
+        speedBreak_MAX = Integer.parseInt(props.getProperty(Keys.speedBreak_MAX.name()));
+        speedBreak_INC = Integer.parseInt(props.getProperty(Keys.speedBreak_INC.name()));
+        cloudRange_MIN = Double.parseDouble(props.getProperty(Keys.cloudRange_MIN.name()));
+        cloudRange_MAX = Double.parseDouble(props.getProperty(Keys.cloudRange_MAX.name()));
+        cloudRange_INC = Double.parseDouble(props.getProperty(Keys.cloudRange_INC.name()));
+        cloudDispCoeff_MIN = Double.parseDouble(props.getProperty(Keys.cloudDispCoeff_MIN.name()));
+        cloudDispCoeff_MAX = Double.parseDouble(props.getProperty(Keys.cloudDispCoeff_MAX.name()));
+        cloudDispCoeff_INC = Double.parseDouble(props.getProperty(Keys.cloudDispCoeff_INC.name()));
     }
 
     public int getK_MIN() {
@@ -205,8 +179,8 @@ public class TrialProperties {
         return cloudDispCoeff_INC;
     }
 
-    public static String getPropsFilename() {
-        return propsFilename;
-    }   
-    
+    public String getPropsFilename() {
+        return propsFilename();
+    }
+
 }

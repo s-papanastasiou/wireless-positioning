@@ -87,7 +87,7 @@ public class FileController {
         String workDirPath = System.getProperty("user.dir");
         File workDir = new File(workDirPath);
         resultsDir = DataLoad.checkDir(workDir, RESULTS_DIRECTORY);
-        logger.info("Results directory: " + resultsDir.getAbsolutePath());
+        logger.info("Results directory: {}", resultsDir.getAbsolutePath());
 
         //Image directories
         if (isOutputImage) {
@@ -134,27 +134,27 @@ public class FileController {
         if (externalDir.isDirectory()) {
 
             if (!offlineMapFile.isFile()) {
-                logger.info(String.format("%s not found", offlineMapFile.toString()));
+                logger.info("{} not found", offlineMapFile.toString());
                 isFileCheck = false;
             }
             if (!onlinePointsFile.isFile()) {
-                logger.info(String.format("%s not found", onlinePointsFile.toString()));
+                logger.info("{} not found", onlinePointsFile.toString());
                 isFileCheck = false;
             }
             if (!initialPointsFile.isFile()) {
-                logger.info(String.format("%s not found", initialPointsFile.toString()));
+                logger.info("{} not found", initialPointsFile.toString());
                 isFileCheck = false;
             }
             if (!inertialDataFile.isFile()) {
-                logger.info(String.format("%s not found", inertialDataFile.toString()));
+                logger.info("{} not found", inertialDataFile.toString());
                 isFileCheck = false;
             }
             if (!image.isFile()) {
-                logger.info(String.format("%s not found", image.toString()));
+                logger.info("{} not found", image.toString());
                 isFileCheck = false;
             }
         } else {
-            logger.info(String.format("%s not found", externalDir.toString()));
+            logger.info("{} not found", externalDir.toString());
             isFileCheck = false;
         }
         return isFileCheck;

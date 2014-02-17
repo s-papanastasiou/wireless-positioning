@@ -105,28 +105,28 @@ public class ProbabilisticTrial {
                                     proTrialList.add(new ProbabilisticTrial(parts, sp.OUT_SEP()));
                                     
                                 } catch (ParseException ex) {
-                                    logger.error("Error parsing line: " + lineCounter + " " + ex.getMessage());
+                                    logger.error("Error parsing line: {} {}", lineCounter, ex.getMessage());
                                 }
                             } else {
-                                logger.error("Data items count do not match headings count. Line: " + lineCounter);
+                                logger.error("Data items count do not match headings count. Line: {}", lineCounter);
                             }
                         }
                         
-                        logger.info("Probabilistic Trials read successfully. Lines read: " + lineCounter);
+                        logger.info("Probabilistic Trials read successfully. Lines read: {}", lineCounter);
                     } else {
                         logger.error("Headings are not as expected.");
                         if (parts.length == 1) {
-                            logger.error("Expecting separator: " + SEP + " Found: " + line);
+                            logger.error("Expecting separator: {} Found: ", SEP, line);
                         } else {
-                            logger.error("Expecting: " + SettingsProperties.toStringHeadings(SEP, HEADER) + " Found: " + line);
+                            logger.error("Expecting: {} Found: {}", SettingsProperties.toStringHeadings(SEP, HEADER), line);
                         }
                     }
                 }
             } catch (IOException x) {
-                logger.error(x.getLocalizedMessage());
+                logger.error(x.getMessage());
             }
         } else {
-            System.out.print("Probabilistic Trial file not found: " + inputFile.getPath());
+            logger.error("Probabilistic Trial file not found: {}", inputFile.getPath());
         }
         return proTrialList;        
     }    

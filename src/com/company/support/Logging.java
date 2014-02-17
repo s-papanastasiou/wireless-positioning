@@ -24,7 +24,7 @@ public class Logging {
         try {
             writer = new BufferedWriter(new FileWriter(logFile, false));
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage());
         }
     }
 
@@ -36,7 +36,7 @@ public class Logging {
                 writer = new BufferedWriter(new FileWriter(logFile, false));
             }
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage());
         }
     }
     
@@ -55,11 +55,11 @@ public class Logging {
                     writer.write(message);
                     writer.flush();
                 } else {
-                    logger.info("Writer has been closed. No logging for message: " + message);
+                    logger.info("Writer has been closed. No logging for message: {}", message);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage());
         }
 
     }
@@ -72,7 +72,7 @@ public class Logging {
                 writer = null;
             }
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage());
         }
 
     }

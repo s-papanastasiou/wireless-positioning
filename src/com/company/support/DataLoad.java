@@ -54,14 +54,14 @@ public class DataLoad {
 
                     settingsList.add(appSettings);
                 } else {
-                    logger.info("Skipping line " + lineNumber);
+                    logger.info("Skipping line: {}", lineNumber);
                 }
             }
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
 
-        logger.info("Settings loaded: " + lineNumber);
+        logger.info("Settings loaded: {}", lineNumber);
 
         return settingsList;
     }
@@ -100,14 +100,14 @@ public class DataLoad {
 
                     inertialDataList.add(data);
                 } else {
-                    logger.info("Skipping line " + lineNumber);
+                    logger.info("Skipping line: {}", lineNumber);
                 }
             }
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
 
-        logger.info("Data loaded: " + lineNumber);
+        logger.info("Data loaded: {}", lineNumber);
 
         return inertialDataList;
     }

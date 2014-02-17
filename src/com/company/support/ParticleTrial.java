@@ -173,20 +173,20 @@ public class ParticleTrial {
                                     parTrialList.add(new ParticleTrial(parts, sp.OUT_SEP()));
 
                                 } catch (ParseException ex) {
-                                    logger.error("Error parsing line: " + lineCounter + " " + ex.getMessage());
+                                    logger.error("Error parsing line: {} {}", lineCounter, ex.getMessage());
                                 }
                             } else {
-                                logger.error("Data items count do not match headings count. Line: " + lineCounter);
+                                logger.error("Data items count do not match headings count. Line: {}", lineCounter);
                             }
                         }
 
-                        logger.info("Particle Trials read successfully. Lines read: " + lineCounter);
+                        logger.info("Particle Trials read successfully. Lines read: {}", lineCounter);
                     } else {
                         logger.error("Headings are not as expected.");
                         if (parts.length == 1) {
-                            logger.error("Expecting separator: " + SEP + " Found: " + line);
+                            logger.error("Expecting separator: {} Found: {}", SEP, line);
                         } else {
-                            logger.error("Expecting: " + SettingsProperties.toStringHeadings(SEP, HEADER) + " Found: " + line);
+                            logger.error("Expecting: {} Found: {}", SettingsProperties.toStringHeadings(SEP, HEADER), line);
                         }
                     }
                 }
@@ -194,7 +194,7 @@ public class ParticleTrial {
                 logger.error(x.getLocalizedMessage());
             }
         } else {
-            System.out.print("Particle Trial file not found: " + inputFile.getPath());
+            logger.error("Particle Trial file not found: {}", inputFile.getPath());
         }
 
         return parTrialList;

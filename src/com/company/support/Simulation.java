@@ -79,7 +79,7 @@ public class Simulation {
         Logging probabilisticTrialLog = new Logging(sp.isTrialDetail(), new File(fc.probabilisticTrialDir, String.format("Trial %s.csv", proTrial.getTitle())));
         probabilisticTrialLog.printLine(sp.TRIAL_HEADER());
 
-        //logger.info("Running probabilistic trial:" + probabilisticTrialName);            
+        //logger.info("Running probabilistic trial: {}", probabilisticTrialName);            
         //Initiliase variables for trial
         int currentInertialIndex = 0;
         int orientation = Probabilistic.NO_ORIENTATION;
@@ -169,7 +169,7 @@ public class Simulation {
         Logging particleTrialLog = new Logging(sp.isTrialDetail(), new File(fc.particleTrialDir, String.format("Trial %s.csv", parTrial.getTitle())));
         particleTrialLog.printLine(sp.TRIAL_HEADER());
 
-            //logger.info("Running particle trial:" + particleTrialName);
+            //logger.info("Running particle trial: {}", particleTrialName);
         //Calculate initial points to calculate where the particle filter starts.
         Point initialPoint = Intialise.initialPoint(initialPoints, parTrial.getInitRSSIReadings(), offlineMap, parTrial.getK(), Probabilistic.NO_ORIENTATION);
 

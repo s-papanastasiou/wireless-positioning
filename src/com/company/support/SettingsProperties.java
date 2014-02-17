@@ -89,7 +89,7 @@ public class SettingsProperties extends BaseProperties {
             checkAllKeys(props);
             assignKeys(props);
         } catch (NumberFormatException ex) {
-            logger.info(propsFilename() + " parameter value incorrect.");
+            logger.info("{} parameter value incorrect.", propsFilename());
             logger.info(ex.getMessage());
             throw new AssertionError();
         }        
@@ -135,7 +135,7 @@ public class SettingsProperties extends BaseProperties {
     {                        
         for (SettingKeys key : SettingKeys.values()) {
             if (!props.containsKey(key)) {                
-                logger.info(propsFilename() + " file not setup correctly: " + key);
+                logger.info("{} file not setup correctly: {}", propsFilename(), key);
                 throw new AssertionError();                
             }
         }        

@@ -37,14 +37,14 @@ public abstract class BaseProperties {
                 in = new FileInputStream(propsFile);
                 props.load(in);
                 in.close();    
-                logger.info(propsFilename() + " file located.");                
+                logger.info("{} file located.", propsFilename());
                 //checkAllKeys(props);                
             }else{                
-                logger.info(propsFilename() + " file not located.");
+                logger.info("{} file not located.", propsFilename());
             }                                    
 
         } catch (IOException ex) {
-            logger.info(propsFilename() + " cannot be read.");
+            logger.info("{} cannot be read.", propsFilename());
             logger.info(ex.getMessage());
             throw new AssertionError();
         } 

@@ -1,5 +1,7 @@
 package com.company;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 import com.company.support.GenerateTrialProperties;
 import com.company.support.FileController;
 import com.company.support.Simulation;
@@ -20,6 +22,10 @@ public class Main {
     
     public static void main(String[] args) {
 
+        // print internal state
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        StatusPrinter.print(lc);
+        
         SettingsProperties sp = new SettingsProperties();
         GenerateTrialProperties gtp = new GenerateTrialProperties();
         FileController fc = new FileController(sp);

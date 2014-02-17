@@ -21,8 +21,11 @@ import general.AvgValue;
 import general.Point;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import visualinfo.DisplayRoute;
 
 /**
@@ -31,11 +34,8 @@ import visualinfo.DisplayRoute;
  */
 public class Simulation {
 
-    //Co-ordinates for image drawing
-    /*
-     private static final double X_PIXELS = 1192.0 / 55;
-     private static final double Y_PIXELS = 538.0 / 23.75;
-     */
+    private static final Logger logger = LoggerFactory.getLogger(Simulation.class);
+    
     private final static double HALF_PI = Math.PI / 2;
 
     private static double distance(KNNTrialPoint knnTrialPoint, Point point) {
@@ -58,7 +58,20 @@ public class Simulation {
         return lineNumber + OUT_SEP + trialX + OUT_SEP + trialY + OUT_SEP + trialDistance + OUT_SEP + posX + OUT_SEP + posY;
     }
 
-    public static void runProbabilistic(SettingsProperties sp, FileController fc, ProbabilisticTrial proTrial, Logging probabilisticResultsLog) {
+    public static void runProbabList(SettingsProperties sp, FileController fc, List<ProbabilisticTrial> proTrialList, Logging probabilisticResultsLog) {
+
+        for (ProbabilisticTrial proTrial : proTrialList) {
+            Date date = new Date();
+            
+            logger.info("Probabilistic Started: {} {}", proTrial.toString(), sp.formatDate(date));
+            Simulation.runProbab(sp, fc, proTrial, probabilisticResultsLog);
+            
+            date = new Date();
+            logger.info("Completed: {} {}", proTrial.toString(), sp.formatDate(date));
+        }
+    }
+    
+    public static void runProbab(SettingsProperties sp, FileController fc, ProbabilisticTrial proTrial, Logging probabilisticResultsLog) {
 
         String OUT_SEP = sp.OUT_SEP();
         final double BUILD_ORIENT = sp.BUILD_ORIENT();
@@ -142,7 +155,13 @@ public class Simulation {
 
     public static void runParticle(SettingsProperties sp, FileController fc, List<ParticleTrial> parTrialList, Logging particleResultsLog) {
         for (ParticleTrial parTrial : parTrialList) {
+            Date date = new Date();        
+            
+            logger.info("Particle Started: {} {}", parTrial.toString(), sp.formatDate(date));        
             runParticle(sp, fc, parTrial, particleResultsLog);
+            
+            date = new Date();
+            logger.info("Completed: {} {}", parTrial.toString(), sp.formatDate(date));                        
         }
     }
 

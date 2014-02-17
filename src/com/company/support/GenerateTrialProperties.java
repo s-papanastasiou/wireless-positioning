@@ -112,7 +112,7 @@ public class GenerateTrialProperties extends BaseProperties {
     @Override
     protected final void checkAllKeys(Properties props) {
         for (TrialKeys key : TrialKeys.values()) {
-            if (!props.containsKey(key)) {
+            if (!props.containsKey(key.name())) {
                 logger.info("{} file not setup correctly: {}", propsFilename(), key);
                 throw new AssertionError();
             }

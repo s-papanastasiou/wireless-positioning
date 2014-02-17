@@ -134,7 +134,7 @@ public class SettingsProperties extends BaseProperties {
     protected final void checkAllKeys(Properties props)
     {                        
         for (SettingKeys key : SettingKeys.values()) {
-            if (!props.containsKey(key)) {                
+            if (!props.containsKey(key.name())) {                
                 logger.info("{} file not setup correctly: {}", propsFilename(), key);
                 throw new AssertionError();                
             }

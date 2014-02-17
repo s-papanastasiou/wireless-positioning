@@ -49,13 +49,13 @@ public class Main {
             logger.info("Specific Particle Trial settings");
             List<ParticleTrial> particleTrialList = ParticleTrial.load(sp, fc);
             if (!particleTrialList.isEmpty()) {            
-                runParticle(sp, fc, particleResultsLog, particleTrialList);
+                Simulation.runParticle(sp, fc, particleTrialList, particleResultsLog);
             }
             
             logger.info("Specific Probabilistic Trial settings");
             List<ProbabilisticTrial> probabilisticTrialList = ProbabilisticTrial.load(sp, fc);
             if (!probabilisticTrialList.isEmpty()) {                
-                runProbablistic(sp, fc, particleResultsLog, probabilisticTrialList);
+                Simulation.runProbabList(sp, fc, probabilisticTrialList, probabilisticResultsLog);
             }
             
             particleResultsLog.close();
@@ -92,44 +92,16 @@ public class Main {
 
         String output = String.format("%s,%s,%s,%s", option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), kValue);
         logger.info("Generated: {} {}", output, sp.formatDate(date));
-        Simulation.runProbabilistic(sp, fc, proTrial, probabilisticResultsLog);
+        Simulation.runProbab(sp, fc, proTrial, probabilisticResultsLog);
         logger.info("Simulation completed: {} {}", output, sp.formatDate(date));
-    }
-
-    private static void runProbablistic(SettingsProperties sp, FileController fc, Logging probabilisticResultsLog, List<ProbabilisticTrial> proTrialList) {
-
-        for (ProbabilisticTrial proTrial : proTrialList) {
-            Date date = new Date();
-            String output = String.format("%s,%s,%s,%s", proTrial.isBSSIDMerged(), proTrial.isOrientationMerged(), proTrial.isForceToOfflineMap(), proTrial.getK());
-            logger.info("Specific: {} {}", output, sp.formatDate(date));
-            Simulation.runProbabilistic(sp, fc, proTrial, probabilisticResultsLog);
-            logger.info("Simulation completed: {} {}", output, sp.formatDate(date));
-        }
-    }
+    }   
 
     private static void runParticle(SettingsProperties sp, FileController fc, Logging particleResultsLog, OnOffOptions option, int kValue, GenerateTrialProperties tp) {
 
-        Date date = new Date();
         List<ParticleTrial> parTrialList = ParticleTrial.generate(option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), kValue, tp, sp.OUT_SEP());
-        String output = String.format("%s,%s,%s,%s", option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), kValue);
-        logger.info("Generated: {} {}", output, sp.formatDate(date));
+        
         Simulation.runParticle(sp, fc, parTrialList, particleResultsLog);
-        date = new Date();
-        logger.info("Simulation completed: {} {}", output, sp.formatDate(date));
-    }
-
-    private static void runParticle(SettingsProperties sp, FileController fc, Logging particleResultsLog, List<ParticleTrial> parTrialList) {
-
-        for (ParticleTrial parTrial : parTrialList) {
-            Date date = new Date();
-            String output = String.format("%s,%s,%s,%s", parTrial.isBSSIDMerged(), parTrial.isOrientationMerged(), parTrial.isForceToOfflineMap(), parTrial.getK());
-            logger.info("Specific: {} {}", output, sp.formatDate(date));
-
-            Simulation.runParticle(sp, fc, parTrial, particleResultsLog);
-
-            date = new Date();
-            logger.info("Simulation completed: {} {}", output, sp.formatDate(date));
-        }
-    }
+        
+    }  
 
 }

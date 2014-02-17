@@ -33,6 +33,8 @@ public class FileController {
     public File initialPointsFile;
     public File inertialDataFile;
     public File image;
+    public File specificParticle;
+    public File specificProb;
 
     public File resultsDir;
 
@@ -117,6 +119,8 @@ public class FileController {
         initialPointsFile = new File(externalDir, sp.INITIAL_POINTS());
         inertialDataFile = new File(externalDir, sp.INERTIAL_DATA());
         image = new File(externalDir, sp.FLOORPLAN_IMAGE());
+        specificParticle = new File(externalDir, sp.SPECIFIC_PARTICLE());
+        specificProb = new File(externalDir, sp.SPECIFIC_PROB());
     }
 
     private boolean checkFiles() {

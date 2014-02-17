@@ -11,13 +11,13 @@ import java.util.Properties;
  *
  * @author SST3ALBISG
  */
-public class TrialProperties extends BaseProperties{
+public class GenerateTrialProperties extends BaseProperties {
 
     @Override
     protected final String propsFilename() {
         return "trial.properties";
     }
-    
+
     private int K_MIN;
     private int K_MAX;
     private int K_INC;
@@ -41,12 +41,14 @@ public class TrialProperties extends BaseProperties{
     private Double cloudDispCoeff_MIN;
     private Double cloudDispCoeff_MAX;
     private Double cloudDispCoeff_INC;
+
+    private Boolean isLoaded = false;
     
     public enum TrialKeys {
 
         K_MIN,
         K_MAX,
-        K_INC,       
+        K_INC,
         initRSSIReadings_MIN,
         initRSSIReadings_MAX,
         initRSSIReadings_INC,
@@ -64,26 +66,28 @@ public class TrialProperties extends BaseProperties{
         cloudDispCoeff_INC
     };
 
-    public TrialProperties() {
+    public GenerateTrialProperties() {
         super();
-                
+
         try {
             Properties props = load();
-            checkAllKeys(props);
-            assignKeys(props);
-            
+            if (!props.isEmpty()) {
+                checkAllKeys(props);
+                assignKeys(props);
+                isLoaded = true;
+            }
         } catch (NumberFormatException ex) {
             System.out.println(propsFilename() + " parameter value incorrect.");
             System.out.println(ex.getMessage());
             throw new AssertionError();
         }
-    }  
+    }
 
     @Override
     protected final void assignKeys(Properties props) throws NumberFormatException {
         K_MIN = Integer.parseInt(props.getProperty(TrialKeys.K_MIN.name()));
         K_MAX = Integer.parseInt(props.getProperty(TrialKeys.K_MAX.name()));
-        K_INC = Integer.parseInt(props.getProperty(TrialKeys.K_INC.name()));        
+        K_INC = Integer.parseInt(props.getProperty(TrialKeys.K_INC.name()));
         initRSSIReadings_MIN = Integer.parseInt(props.getProperty(TrialKeys.initRSSIReadings_MIN.name()));
         initRSSIReadings_MAX = Integer.parseInt(props.getProperty(TrialKeys.initRSSIReadings_MAX.name()));
         initRSSIReadings_INC = Integer.parseInt(props.getProperty(TrialKeys.initRSSIReadings_INC.name()));
@@ -100,16 +104,15 @@ public class TrialProperties extends BaseProperties{
         cloudDispCoeff_MAX = Double.parseDouble(props.getProperty(TrialKeys.cloudDispCoeff_MAX.name()));
         cloudDispCoeff_INC = Double.parseDouble(props.getProperty(TrialKeys.cloudDispCoeff_INC.name()));
     }
-    
+
     @Override
-    protected final void checkAllKeys(Properties props)
-    {                        
+    protected final void checkAllKeys(Properties props) {
         for (TrialKeys key : TrialKeys.values()) {
-            if (!props.containsKey(key)) {                
+            if (!props.containsKey(key)) {
                 System.out.println(propsFilename() + " file not setup correctly: " + key);
-                throw new AssertionError();                
+                throw new AssertionError();
             }
-        }        
+        }
     }
 
     public int K_MIN() {
@@ -182,6 +185,10 @@ public class TrialProperties extends BaseProperties{
 
     public double CloudDispCoeff_INC() {
         return cloudDispCoeff_INC;
-    }  
+    }
+
+    public Boolean isLoaded() {
+        return isLoaded;
+    }
 
 }

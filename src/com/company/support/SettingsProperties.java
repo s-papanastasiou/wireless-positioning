@@ -49,6 +49,13 @@ public class SettingsProperties extends BaseProperties {
     
     private Double BUILD_ORIENT;
     
+    private String SPECIFIC_PARTICLE;
+    private String SPECIFIC_PROB;
+    
+    private final String[] PARTICLE_HEADER = {"BSSIDMerged", "OrientationMerged", "ForceToMap", "KValue", "InitialReadings", "SpeedBreak", "ParticleCount", "CloudRange", "CloudDisplacement"};
+    
+    private final String[] PROB_HEADER = {"BSSIDMerged", "OrientationMerged", "ForceToMap", "KValue"};
+    
     public enum SettingKeys {
         OUTPUT_IMAGE,
         OUTPUT_DETAIL,
@@ -65,7 +72,9 @@ public class SettingsProperties extends BaseProperties {
         INITIAL_POINTS,
         INERTIAL_DATA,
         FLOORPLAN_IMAGE,
-        BUILD_ORIENT
+        BUILD_ORIENT,
+        SPECIFIC_PARTICLE,
+        SPECIFIC_PROB
     };
     
     public SettingsProperties() {
@@ -92,8 +101,8 @@ public class SettingsProperties extends BaseProperties {
         OUT_SEP = props.getProperty(SettingKeys.OUT_SEP.name());
 
         TRIAL_HEADER = "Point_No" + OUT_SEP + "Trial_X" + OUT_SEP + "Trial_Y" + OUT_SEP + "Distance" + OUT_SEP + "Pos_X" + OUT_SEP + "Pos_Y";
-        PAR_RESULTS_HEADER = "BSSIDMerged" + OUT_SEP + "OrientationMerged" + OUT_SEP + "ForceToMap" + OUT_SEP + "KValue" + OUT_SEP + "InitialReadings" + OUT_SEP + "SpeedBreak" + OUT_SEP + "ParticleCount" + OUT_SEP + "CloudRange" + OUT_SEP + "CloudDisplacement" + OUT_SEP + "MeanDistance" + OUT_SEP + "StdDev";
-        PRO_RESULTS_HEADER = "BSSIDMerged" + OUT_SEP + "OrientationMerged" + OUT_SEP + "ForceToMap" + OUT_SEP + "KValue" + OUT_SEP + "MeanDistance" + OUT_SEP + "StdDev";
+        PAR_RESULTS_HEADER = PARTICLE_HEADER[0] + OUT_SEP + PARTICLE_HEADER[1] + OUT_SEP + PARTICLE_HEADER[2] + OUT_SEP + PARTICLE_HEADER[3] + OUT_SEP + PARTICLE_HEADER[4] + OUT_SEP + PARTICLE_HEADER[5] + OUT_SEP + PARTICLE_HEADER[6] + OUT_SEP + PARTICLE_HEADER[7] + OUT_SEP + PARTICLE_HEADER[8] + OUT_SEP + "MeanDistance" + OUT_SEP + "StdDev";
+        PRO_RESULTS_HEADER = PROB_HEADER[0] + OUT_SEP + PROB_HEADER[1] + OUT_SEP + PROB_HEADER[2] + OUT_SEP + PROB_HEADER[3] + OUT_SEP + "MeanDistance" + OUT_SEP + "StdDev";
         DATE_FORMAT = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
         IMAGE_WIDTH = Double.parseDouble(props.getProperty(SettingKeys.IMAGE_WIDTH.name()));
@@ -109,9 +118,12 @@ public class SettingsProperties extends BaseProperties {
         ONLINE_WIFI_DATA = props.getProperty(SettingKeys.ONLINE_WIFI_DATA.name());
         INITIAL_POINTS = props.getProperty(SettingKeys.INITIAL_POINTS.name());
         INERTIAL_DATA = props.getProperty(SettingKeys.INERTIAL_DATA.name());
-        FLOORPLAN_IMAGE = props.getProperty(SettingKeys.FLOORPLAN_IMAGE.name());    
+        FLOORPLAN_IMAGE = props.getProperty(SettingKeys.FLOORPLAN_IMAGE.name());
         
         BUILD_ORIENT = Double.parseDouble(props.getProperty(SettingKeys.BUILD_ORIENT.name()));
+        
+        SPECIFIC_PARTICLE = props.getProperty(SettingKeys.SPECIFIC_PARTICLE.name());
+        SPECIFIC_PROB = props.getProperty(SettingKeys.SPECIFIC_PROB.name());
     }
     
     @Override
@@ -207,6 +219,48 @@ public class SettingsProperties extends BaseProperties {
 
     public Double BUILD_ORIENT() {
         return BUILD_ORIENT;
-    }        
+    }
+    
+    public String SPECIFIC_PARTICLE() {
+        return SPECIFIC_PARTICLE;
+    }
+    
+    public String SPECIFIC_PROB() {
+        return SPECIFIC_PROB;
+    }
+    
+    public String[] getPARTICLE_HEADER() {
+        return PARTICLE_HEADER;
+    }
+
+    public String[] getPROB_HEADER() {
+        return PROB_HEADER;
+    }
+    
+    public static boolean headerCheck(String[] parts, String[]header){
+        boolean isCorrect = true;
+        
+        if (parts.length == header.length) {
+            for (int counter = 0; counter < parts.length; counter++) {
+                if (!parts[counter].equals(header[counter])) {
+                    isCorrect = false;
+                    break;
+                }
+            }
+        } else {
+            isCorrect = false;
+        }
+
+        return isCorrect;        
+    } 
+    
+    public static String toStringHeadings(final String separator, final String [] header){
+        
+        String result = header[0];
+        for(int counter = 1; counter < header.length; counter++){
+            result += separator + header[counter];
+        }        
+        return result;
+    }
     
 }

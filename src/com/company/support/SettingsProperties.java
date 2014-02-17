@@ -8,6 +8,8 @@ package com.company.support;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -15,6 +17,8 @@ import java.util.Properties;
  */
 public class SettingsProperties extends BaseProperties {
 
+    private static final Logger logger = LoggerFactory.getLogger(SettingsProperties.class);
+    
     @Override
     protected final String propsFilename() {
         return "settings.properties";
@@ -85,8 +89,8 @@ public class SettingsProperties extends BaseProperties {
             checkAllKeys(props);
             assignKeys(props);
         } catch (NumberFormatException ex) {
-            System.out.println(propsFilename() + " parameter value incorrect.");
-            System.out.println(ex.getMessage());
+            logger.info(propsFilename() + " parameter value incorrect.");
+            logger.info(ex.getMessage());
             throw new AssertionError();
         }        
     }
@@ -131,7 +135,7 @@ public class SettingsProperties extends BaseProperties {
     {                        
         for (SettingKeys key : SettingKeys.values()) {
             if (!props.containsKey(key)) {                
-                System.out.println(propsFilename() + " file not setup correctly: " + key);
+                logger.info(propsFilename() + " file not setup correctly: " + key);
                 throw new AssertionError();                
             }
         }        

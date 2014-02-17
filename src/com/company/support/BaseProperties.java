@@ -11,13 +11,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author SST3ALBISG
  */
 public abstract class BaseProperties {
-            
+    
+    private static final Logger logger = LoggerFactory.getLogger(BaseProperties.class);
+    
     protected abstract String propsFilename();
     //protected Enum Keys;
         
@@ -33,15 +37,15 @@ public abstract class BaseProperties {
                 in = new FileInputStream(propsFile);
                 props.load(in);
                 in.close();    
-                System.out.println(propsFilename() + " file located.");                
+                logger.info(propsFilename() + " file located.");                
                 //checkAllKeys(props);                
             }else{                
-                System.out.println(propsFilename() + " file not located.");
+                logger.info(propsFilename() + " file not located.");
             }                                    
 
         } catch (IOException ex) {
-            System.out.println(propsFilename() + " cannot be read.");
-            System.out.println(ex.getMessage());
+            logger.info(propsFilename() + " cannot be read.");
+            logger.info(ex.getMessage());
             throw new AssertionError();
         } 
         

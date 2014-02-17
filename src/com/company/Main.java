@@ -11,19 +11,20 @@ import com.company.support.SettingsProperties;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
 
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+    
     public static void main(String[] args) {
 
         SettingsProperties sp = new SettingsProperties();
         GenerateTrialProperties gtp = new GenerateTrialProperties();
         FileController fc = new FileController(sp);
         
-        if (fc.isSetupOk) {
-
-           
-            
+        if (fc.isSetupOk) {                       
             
             //Particle Results Logging
             Logging particleResultsLog = new Logging(new File(fc.resultsDir, "ParticleResults.csv"));
@@ -35,17 +36,17 @@ public class Main {
 
             //Loop through each set of settings
             if (gtp.isLoaded()) {
-                System.out.println("Generating settings");
+                logger.info("Generating settings");
                 runSimulations(sp, fc, gtp, particleResultsLog, probabilisticResultsLog);
             }
 
-            System.out.println("Specific Particle Trial settings");
+            logger.info("Specific Particle Trial settings");
             List<ParticleTrial> particleTrialList = ParticleTrial.load(sp, fc);
             if (!particleTrialList.isEmpty()) {            
                 runParticle(sp, fc, particleResultsLog, particleTrialList);
             }
             
-            System.out.println("Specific Probabilistic Trial settings");
+            logger.info("Specific Probabilistic Trial settings");
             List<ProbabilisticTrial> probabilisticTrialList = ProbabilisticTrial.load(sp, fc);
             if (!probabilisticTrialList.isEmpty()) {                
                 runProbablistic(sp, fc, particleResultsLog, probabilisticTrialList);
@@ -63,7 +64,7 @@ public class Main {
 
         //Particle Test
         for (int k_counter = tp.K_MIN(); k_counter <= tp.K_MAX(); k_counter += tp.K_INC()) {
-            System.out.println("Particle Test");
+            logger.info("Particle Test");
 
             for (OnOffOptions option : options) {
                 runParticle(sp, fc, particleResultsLog, option, k_counter, tp);
@@ -71,7 +72,7 @@ public class Main {
         }
 
         for (int k_counter = tp.K_MIN(); k_counter <= tp.K_MAX(); k_counter += tp.K_INC()) {
-            System.out.println("Probablistic Test");
+            logger.info("Probablistic Test");
             for (OnOffOptions option : options) {
                 runProbablistic(sp, fc, probabilisticResultsLog, option, k_counter);
             }
@@ -84,9 +85,9 @@ public class Main {
         ProbabilisticTrial proTrial = new ProbabilisticTrial(option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), kValue, sp.OUT_SEP());
 
         String output = String.format("%s,%s,%s,%s", option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), kValue);
-        System.out.println("Generated: " + output + " " + sp.formatDate(date));
+        logger.info("Generated: " + output + " " + sp.formatDate(date));
         Simulation.runProbabilistic(sp, fc, proTrial, probabilisticResultsLog);
-        System.out.println("Simulation completed: " + output + " " + sp.formatDate(date));
+        logger.info("Simulation completed: " + output + " " + sp.formatDate(date));
     }
 
     private static void runProbablistic(SettingsProperties sp, FileController fc, Logging probabilisticResultsLog, List<ProbabilisticTrial> proTrialList) {
@@ -94,9 +95,9 @@ public class Main {
         for (ProbabilisticTrial proTrial : proTrialList) {
             Date date = new Date();
             String output = String.format("%s,%s,%s,%s", proTrial.isBSSIDMerged(), proTrial.isOrientationMerged(), proTrial.isForceToOfflineMap(), proTrial.getK());
-            System.out.println("Specific: " + output + " " + sp.formatDate(date));
+            logger.info("Specific: " + output + " " + sp.formatDate(date));
             Simulation.runProbabilistic(sp, fc, proTrial, probabilisticResultsLog);
-            System.out.println("Simulation completed: " + output + " " + sp.formatDate(date));
+            logger.info("Simulation completed: " + output + " " + sp.formatDate(date));
         }
     }
 
@@ -105,10 +106,10 @@ public class Main {
         Date date = new Date();
         List<ParticleTrial> parTrialList = ParticleTrial.generate(option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), kValue, tp, sp.OUT_SEP());
         String output = String.format("%s,%s,%s,%s", option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), kValue);
-        System.out.println("Generated: " + output + " " + sp.formatDate(date));
+        logger.info("Generated: " + output + " " + sp.formatDate(date));
         Simulation.runParticle(sp, fc, parTrialList, particleResultsLog);
         date = new Date();
-        System.out.println("Simulation completed: " + output + " " + sp.formatDate(date));
+        logger.info("Simulation completed: " + output + " " + sp.formatDate(date));
     }
 
     private static void runParticle(SettingsProperties sp, FileController fc, Logging particleResultsLog, List<ParticleTrial> parTrialList) {
@@ -116,12 +117,12 @@ public class Main {
         for (ParticleTrial parTrial : parTrialList) {
             Date date = new Date();
             String output = String.format("%s,%s,%s,%s", parTrial.isBSSIDMerged(), parTrial.isOrientationMerged(), parTrial.isForceToOfflineMap(), parTrial.getK());
-            System.out.println("Specific: " + output + " " + sp.formatDate(date));
+            logger.info("Specific: " + output + " " + sp.formatDate(date));
 
             Simulation.runParticle(sp, fc, parTrial, particleResultsLog);
 
             date = new Date();
-            System.out.println("Simulation completed: " + output + " " + sp.formatDate(date));
+            logger.info("Simulation completed: " + output + " " + sp.formatDate(date));
         }
     }
 

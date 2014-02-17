@@ -10,6 +10,8 @@ import datastorage.RSSIData;
 import filehandling.RSSILoader;
 import java.io.File;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -17,6 +19,8 @@ import java.util.List;
  */
 public class FileController {
 
+    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+    
     private final static String RESULTS_DIRECTORY = "TrialResults";
     private final static String PARTICLE_IMAGE_DIRECTORY = "ParticleImages";
     private final static String PARTICLE_RESULTS_DIRECTORY = "ParticleResults";
@@ -83,7 +87,7 @@ public class FileController {
         String workDirPath = System.getProperty("user.dir");
         File workDir = new File(workDirPath);
         resultsDir = DataLoad.checkDir(workDir, RESULTS_DIRECTORY);
-        System.out.println("Results directory: " + resultsDir.getAbsolutePath());
+        logger.info("Results directory: " + resultsDir.getAbsolutePath());
 
         //Image directories
         if (isOutputImage) {
@@ -130,27 +134,27 @@ public class FileController {
         if (externalDir.isDirectory()) {
 
             if (!offlineMapFile.isFile()) {
-                System.out.println(String.format("%s not found", offlineMapFile.toString()));
+                logger.info(String.format("%s not found", offlineMapFile.toString()));
                 isFileCheck = false;
             }
             if (!onlinePointsFile.isFile()) {
-                System.out.println(String.format("%s not found", onlinePointsFile.toString()));
+                logger.info(String.format("%s not found", onlinePointsFile.toString()));
                 isFileCheck = false;
             }
             if (!initialPointsFile.isFile()) {
-                System.out.println(String.format("%s not found", initialPointsFile.toString()));
+                logger.info(String.format("%s not found", initialPointsFile.toString()));
                 isFileCheck = false;
             }
             if (!inertialDataFile.isFile()) {
-                System.out.println(String.format("%s not found", inertialDataFile.toString()));
+                logger.info(String.format("%s not found", inertialDataFile.toString()));
                 isFileCheck = false;
             }
             if (!image.isFile()) {
-                System.out.println(String.format("%s not found", image.toString()));
+                logger.info(String.format("%s not found", image.toString()));
                 isFileCheck = false;
             }
         } else {
-            System.out.println(String.format("%s not found", externalDir.toString()));
+            logger.info(String.format("%s not found", externalDir.toString()));
             isFileCheck = false;
         }
         return isFileCheck;
@@ -158,16 +162,16 @@ public class FileController {
 
     private void setupLists(String IN_SEP) {
 
-        System.out.println("Loading offline file");
+        logger.info("Loading offline file");
         offlineDataList = RSSILoader.load(offlineMapFile, IN_SEP);
 
-        System.out.println("Loading online file");
+        logger.info("Loading online file");
         onlineDataList = RSSILoader.load(onlinePointsFile, IN_SEP);
 
-        System.out.println("Loading initial file");
+        logger.info("Loading initial file");
         initialDataList = RSSILoader.load(initialPointsFile, IN_SEP);
 
-        System.out.println("Loading inertial file");
+        logger.info("Loading inertial file");
         inertialDataList = DataLoad.loadInertialData(inertialDataFile, IN_SEP);
     }
 

@@ -13,6 +13,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -20,6 +22,8 @@ import java.util.List;
  */
 public class DataLoad {
 
+    private static final Logger logger = LoggerFactory.getLogger(DataLoad.class);
+    
     /*
     public static List<ParticleSettings> loadSettings(File settingsFile, String INPUT_SEPARATOR) {
 
@@ -50,14 +54,14 @@ public class DataLoad {
 
                     settingsList.add(appSettings);
                 } else {
-                    System.out.println("Skipping line " + lineNumber);
+                    logger.info("Skipping line " + lineNumber);
                 }
             }
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
         }
 
-        System.out.println("Settings loaded: " + lineNumber);
+        logger.info("Settings loaded: " + lineNumber);
 
         return settingsList;
     }
@@ -96,14 +100,14 @@ public class DataLoad {
 
                     inertialDataList.add(data);
                 } else {
-                    System.out.println("Skipping line " + lineNumber);
+                    logger.info("Skipping line " + lineNumber);
                 }
             }
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
         }
 
-        System.out.println("Data loaded: " + lineNumber);
+        logger.info("Data loaded: " + lineNumber);
 
         return inertialDataList;
     }

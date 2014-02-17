@@ -8,13 +8,9 @@ import java.util.Random;
 import java.util.TreeSet;
 
 /**
- * Created with IntelliJ IDEA.
- * User: johanchateau
- * Date: 03/10/13
- * Time: 17:23
- * To change this template use File | Settings | File Templates.
+ * Created with IntelliJ IDEA. User: johanchateau Date: 03/10/13 Time: 17:23 To
+ * change this template use File | Settings | File Templates.
  */
-
 public class ParticleFilter {
 
     public static Cloud filter(Cloud cloud, Point posProba, InertialPoint inertialPoint, double particleCount, double cloudRange, double cloudDisplacement) {
@@ -42,27 +38,21 @@ public class ParticleFilter {
         return new Cloud(estiPosPart, newRandomCloudList, inertialPoint.getPoint());
     }
 
-    private static List<Particle> weightCloud(List<Particle> particles, Point posProba, double particleCount, double cloudRange) {
+    private static List<Particle> weightCloud(List<Particle> particles, Point posProba, double particleCount, double cloudRange) throws NullPointerException {
 
         TreeSet<Particle> sortedList = new TreeSet<>();
         List<Particle> finalList = new ArrayList<>();
 
-        try {
-            // We sort particles by weight
-            for (Particle particle : particles) {
-                particle.weight = ParticleFilter.weight(posProba, particle, cloudRange);
-                sortedList.add(particle);
-            }
-            // We take only the PARTICLE_MAX first particles
-            for (int i = 0; i < particleCount; i++) {
-                finalList.add(sortedList.pollLast());
-            }
-
-        } catch (NullPointerException e) {
-            String message = e.getMessage();
-            message = e.getLocalizedMessage();
-            //System.out.println(message);
+        // We sort particles by weight
+        for (Particle particle : particles) {
+            particle.weight = ParticleFilter.weight(posProba, particle, cloudRange);
+            sortedList.add(particle);
         }
+        // We take only the PARTICLE_MAX first particles
+        for (int i = 0; i < particleCount; i++) {
+            finalList.add(sortedList.pollLast());
+        }
+
         return finalList;
     }
 
@@ -73,14 +63,15 @@ public class ParticleFilter {
         for (Particle particle : particles) {
 
             if (particle != null) {
-                if (particle.weight > 0.75)
+                if (particle.weight > 0.75) {
                     newList.addAll(createParticles(particle.getPoint(), 4));
-                else if ((particle.weight <= 0.75) && (particle.weight > 0.5))
+                } else if ((particle.weight <= 0.75) && (particle.weight > 0.5)) {
                     newList.addAll(createParticles(particle.getPoint(), 3));
-                else if ((particle.weight <= 0.5) && (particle.weight > 0.25))
+                } else if ((particle.weight <= 0.5) && (particle.weight > 0.25)) {
                     newList.addAll(createParticles(particle.getPoint(), 2));
-                else
+                } else {
                     newList.addAll(createParticles(particle.getPoint(), 1));
+                }
             }
         }
 
@@ -171,7 +162,6 @@ public class ParticleFilter {
     }
 
     //  Weight
-
     private static double weight(Point estiPos, Particle partPos, double cloudRange) {
 
         double a = Math.pow((distance(estiPos, partPos)), 2);
@@ -179,6 +169,5 @@ public class ParticleFilter {
 
         return Math.exp(b);
     }
-
 
 }

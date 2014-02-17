@@ -6,6 +6,8 @@
 package com.company.support;
 
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -13,6 +15,8 @@ import java.util.Properties;
  */
 public class GenerateTrialProperties extends BaseProperties {
 
+    private static final Logger logger = LoggerFactory.getLogger(GenerateTrialProperties.class);
+    
     @Override
     protected final String propsFilename() {
         return "trial.properties";
@@ -77,8 +81,8 @@ public class GenerateTrialProperties extends BaseProperties {
                 isLoaded = true;
             }
         } catch (NumberFormatException ex) {
-            System.out.println(propsFilename() + " parameter value incorrect.");
-            System.out.println(ex.getMessage());
+            logger.info(propsFilename() + " parameter value incorrect.");
+            logger.info(ex.getMessage());
             throw new AssertionError();
         }
     }
@@ -109,7 +113,7 @@ public class GenerateTrialProperties extends BaseProperties {
     protected final void checkAllKeys(Properties props) {
         for (TrialKeys key : TrialKeys.values()) {
             if (!props.containsKey(key)) {
-                System.out.println(propsFilename() + " file not setup correctly: " + key);
+                logger.info(propsFilename() + " file not setup correctly: " + key);
                 throw new AssertionError();
             }
         }

@@ -13,12 +13,16 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Gerg
  */
 public class ProbabilisticTrial {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ProbabilisticTrial.class);
     
     private final boolean isBSSIDMerged;
     private final boolean isOrientationMerged;
@@ -101,25 +105,25 @@ public class ProbabilisticTrial {
                                     proTrialList.add(new ProbabilisticTrial(parts, sp.OUT_SEP()));
                                     
                                 } catch (ParseException ex) {
-                                    System.err.println("Error parsing line: " + lineCounter + " " + ex.getMessage());
+                                    logger.error("Error parsing line: " + lineCounter + " " + ex.getMessage());
                                 }
                             } else {
-                                System.err.println("Data items count do not match headings count. Line: " + lineCounter);
+                                logger.error("Data items count do not match headings count. Line: " + lineCounter);
                             }
                         }
                         
-                        System.out.println("Probabilistic Trials read successfully. Lines read: " + lineCounter);
+                        logger.info("Probabilistic Trials read successfully. Lines read: " + lineCounter);
                     } else {
-                        System.err.println("Headings are not as expected.");
+                        logger.error("Headings are not as expected.");
                         if (parts.length == 1) {
-                            System.err.println("Expecting separator: " + SEP + " Found: " + line);
+                            logger.error("Expecting separator: " + SEP + " Found: " + line);
                         } else {
-                            System.err.println("Expecting: " + SettingsProperties.toStringHeadings(SEP, HEADER) + " Found: " + line);
+                            logger.error("Expecting: " + SettingsProperties.toStringHeadings(SEP, HEADER) + " Found: " + line);
                         }
                     }
                 }
             } catch (IOException x) {
-                System.err.println(x);
+                logger.error(x.getLocalizedMessage());
             }
         } else {
             System.out.print("Probabilistic Trial file not found: " + inputFile.getPath());

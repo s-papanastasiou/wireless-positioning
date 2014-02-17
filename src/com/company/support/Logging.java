@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created with IntelliJ IDEA. User: pierre Date: 31/10/2013 Time: 18:27 To
@@ -11,6 +13,8 @@ import java.io.IOException;
  */
 public class Logging {
 
+    private static final Logger logger = LoggerFactory.getLogger(Logging.class);
+    
     private BufferedWriter writer = null;
     private boolean isLogged = true;
 
@@ -51,7 +55,7 @@ public class Logging {
                     writer.write(message);
                     writer.flush();
                 } else {
-                    System.out.println("Writer has been closed. No logging for message: " + message);
+                    logger.info("Writer has been closed. No logging for message: " + message);
                 }
             }
         } catch (IOException e) {

@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -19,6 +21,8 @@ import java.util.List;
  */
 public class ParticleTrial {
 
+    private static final Logger logger = LoggerFactory.getLogger(ParticleTrial.class);
+    
     private final boolean isBSSIDMerged;
     private final boolean isOrientationMerged;
     private final int K;
@@ -133,7 +137,7 @@ public class ParticleTrial {
                         for (double displacement_counter = tp.CloudDispCoeff_MIN(); displacement_counter <= tp.CloudDispCoeff_MAX(); displacement_counter += tp.CloudDispCoeff_INC()) {
                             ParticleTrial setting = new ParticleTrial(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, init_counter, particle_counter, speed_counter, range_counter, displacement_counter, OUT_SEP);
                             settings.add(setting);
-                            //System.out.println(setting.toString());
+                            //logger.info(setting.toString());
                         }
                     }
                 }
@@ -169,25 +173,25 @@ public class ParticleTrial {
                                     parTrialList.add(new ParticleTrial(parts, sp.OUT_SEP()));
 
                                 } catch (ParseException ex) {
-                                    System.err.println("Error parsing line: " + lineCounter + " " + ex.getMessage());
+                                    logger.error("Error parsing line: " + lineCounter + " " + ex.getMessage());
                                 }
                             } else {
-                                System.err.println("Data items count do not match headings count. Line: " + lineCounter);
+                                logger.error("Data items count do not match headings count. Line: " + lineCounter);
                             }
                         }
 
-                        System.out.println("Particle Trials read successfully. Lines read: " + lineCounter);
+                        logger.info("Particle Trials read successfully. Lines read: " + lineCounter);
                     } else {
-                        System.err.println("Headings are not as expected.");
+                        logger.error("Headings are not as expected.");
                         if (parts.length == 1) {
-                            System.err.println("Expecting separator: " + SEP + " Found: " + line);
+                            logger.error("Expecting separator: " + SEP + " Found: " + line);
                         } else {
-                            System.err.println("Expecting: " + SettingsProperties.toStringHeadings(SEP, HEADER) + " Found: " + line);
+                            logger.error("Expecting: " + SettingsProperties.toStringHeadings(SEP, HEADER) + " Found: " + line);
                         }
                     }
                 }
             } catch (IOException x) {
-                System.err.println(x);
+                logger.error(x.getLocalizedMessage());
             }
         } else {
             System.out.print("Particle Trial file not found: " + inputFile.getPath());

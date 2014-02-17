@@ -17,10 +17,10 @@ import java.util.Properties;
  * @author SST3ALBISG
  */
 public abstract class BaseProperties {
-        
+            
     protected abstract String propsFilename();
-    public enum Keys{};
-    
+    //protected Enum Keys;
+        
     protected Properties load(){
         String workDirPath = System.getProperty("user.dir");
         File workDir = new File(workDirPath);
@@ -31,18 +31,14 @@ public abstract class BaseProperties {
         try {
             if(propsFile.isFile()){
                 in = new FileInputStream(propsFile);
-                System.out.println(propsFilename() + " file located.");
-            }else{
-                in = getClass().getClassLoader().getResourceAsStream(propsFilename());
-                System.out.println(propsFilename() + " file not located. Default properties file used.");
-            }
-            
+                props.load(in);
+                in.close();    
+                System.out.println(propsFilename() + " file located.");                
+                //checkAllKeys(props);                
+            }else{                
+                System.out.println(propsFilename() + " file not located.");
+            }                                    
 
-            props.load(in);
-            in.close();
-            
-            checkAllKeys(props);           
-                        
         } catch (IOException ex) {
             System.out.println(propsFilename() + " cannot be read.");
             System.out.println(ex.getMessage());
@@ -51,16 +47,8 @@ public abstract class BaseProperties {
         
         return props;
     }        
-
-    private void checkAllKeys(Properties props) {
-                        
-        for (Keys key : Keys.values()) {
-            if (!props.containsKey(key.name())) {                
-                System.out.println(propsFilename() + " file not setup correctly: " + key.name());
-                throw new AssertionError();                
-            }
-        }        
-    }
+    
+    protected abstract void checkAllKeys(Properties props);        
     
     protected abstract void assignKeys(Properties props);    
 }

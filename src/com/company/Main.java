@@ -5,6 +5,7 @@ import com.company.support.FileController;
 import com.company.support.Simulation;
 import com.company.support.ParticleTrial;
 import com.company.support.Logging;
+import com.company.support.OnOffOptions;
 import com.company.support.ProbabilisticTrial;
 import com.company.support.SettingsProperties;
 import java.io.File;
@@ -38,11 +39,11 @@ public class Main {
 
             //Particle Results Logging
             Logging particleResultsLog = new Logging(new File(fc.resultsDir, "ParticleResults.csv"));
-            particleResultsLog.printLine(sp.ParticleResultsHeader());
+            particleResultsLog.printLine(sp.PAR_RESULTS_HEADER());
 
             //Probabilistic Results Logging
             Logging probabilisticResultsLog = new Logging(new File(fc.resultsDir, "ProbablisticResults.csv"));
-            probabilisticResultsLog.printLine(sp.ProbabilisticResultsHeader());
+            probabilisticResultsLog.printLine(sp.PRO_RESULTS_HEADER());
 
             //Loop through each set of settings
             if(isGeneratedSettings){
@@ -61,38 +62,31 @@ public class Main {
  
     private static void runSimulations(SettingsProperties sp, FileController fc, TrialProperties tp, Logging particleResultsLog, Logging probabilisticResultsLog) {
 
+        final List<OnOffOptions> options = OnOffOptions.allOptions();
+        
         //Particle Test
-        for (int k_counter = tp.getK_MIN(); k_counter <= tp.getK_MAX(); k_counter += tp.getK_INC()) {
+        for (int k_counter = tp.K_MIN(); k_counter <= tp.K_MAX(); k_counter += tp.K_INC()) {
             System.out.println("Particle Test");
-            runParticle(sp, fc, particleResultsLog, false, false, false, k_counter, tp);
-            runParticle(sp, fc, particleResultsLog, true, false, false, k_counter, tp);
-            runParticle(sp, fc, particleResultsLog, false, true, false, k_counter, tp);
-            runParticle(sp, fc, particleResultsLog, false, false, true, k_counter, tp);
-            runParticle(sp, fc, particleResultsLog, true, true, false, k_counter, tp);
-            runParticle(sp, fc, particleResultsLog, true, false, true, k_counter, tp);
-            runParticle(sp, fc, particleResultsLog, false, true, true, k_counter, tp);
-            runParticle(sp, fc, particleResultsLog, true, true, true, k_counter, tp);
+            
+            for(OnOffOptions option: options){
+                runParticle(sp, fc, particleResultsLog, option, k_counter, tp);
+            }
         }
         
-        for (int k_counter = tp.getK_MIN(); k_counter <= tp.getK_MAX(); k_counter += tp.getK_INC()) {
+        for (int k_counter = tp.K_MIN(); k_counter <= tp.K_MAX(); k_counter += tp.K_INC()) {
             System.out.println("Probablistic Test");
-            runProbablistic(sp, fc, probabilisticResultsLog, false, false, false, k_counter, tp);
-            runProbablistic(sp, fc, probabilisticResultsLog, true, false, false, k_counter, tp);
-            runProbablistic(sp, fc, probabilisticResultsLog, false, true, false, k_counter, tp);
-            runProbablistic(sp, fc, probabilisticResultsLog, false, false, true, k_counter, tp);
-            runProbablistic(sp, fc, probabilisticResultsLog, true, true, false, k_counter, tp);
-            runProbablistic(sp, fc, probabilisticResultsLog, true, false, true, k_counter, tp);
-            runProbablistic(sp, fc, probabilisticResultsLog, false, true, true, k_counter, tp);
-            runProbablistic(sp, fc, probabilisticResultsLog, true, true, true, k_counter, tp);
+            for(OnOffOptions option: options){
+                runProbablistic(sp, fc, probabilisticResultsLog, option, k_counter, tp);
+            }                      
         }
     }
     
-    private static void runProbablistic(SettingsProperties sp, FileController fc, Logging probabilisticResultsLog, boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue, TrialProperties tp) {
+    private static void runProbablistic(SettingsProperties sp, FileController fc, Logging probabilisticResultsLog, OnOffOptions option, int kValue, TrialProperties tp) {
 
         Date date = new Date();
-        ProbabilisticTrial proTrial = new ProbabilisticTrial(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, tp.getBuildingOrientation(), sp.OUT_SEP());
+        ProbabilisticTrial proTrial = new ProbabilisticTrial(option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), kValue, sp.OUT_SEP());
 
-        String output = String.format("%s,%s,%s,%s", isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue);
+        String output = String.format("%s,%s,%s,%s", option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), kValue);
         System.out.println("Generated: " + output + " " + sp.formatDate(date));
         Simulation.runProbabilistic(sp, fc, proTrial, probabilisticResultsLog);
         System.out.println("Simulation completed: " + output + " " + sp.formatDate(date));
@@ -107,11 +101,11 @@ public class Main {
         System.out.println("Simulation completed: " + output + " " + sp.formatDate(date));
     }
 
-    private static void runParticle(SettingsProperties sp, FileController fc, Logging particleResultsLog, boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue, TrialProperties tp) {
+    private static void runParticle(SettingsProperties sp, FileController fc, Logging particleResultsLog, OnOffOptions option, int kValue, TrialProperties tp) {
         
         Date date = new Date();
-        List<ParticleTrial> parTrialList = ParticleTrial.generate(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, tp, sp.OUT_SEP());
-        String output = String.format("%s,%s,%s,%s", isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue);
+        List<ParticleTrial> parTrialList = ParticleTrial.generate(option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), kValue, tp, sp.OUT_SEP());
+        String output = String.format("%s,%s,%s,%s", option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), kValue);
         System.out.println("Generated: " + output + " " + sp.formatDate(date));
         Simulation.runParticle(sp, fc, parTrialList, particleResultsLog);
         date = new Date();
@@ -142,21 +136,19 @@ public class Main {
         System.out.println("Trial Detail: " + isTrialDetail);        
     }*/
     
-    private static void specificSimulations(SettingsProperties sp, FileController fc, Logging particleResultsLog, Logging probabilisticResultsLog){
-                   
-        double buildingOrientation = -0.523598776;   
+    private static void specificSimulations(SettingsProperties sp, FileController fc, Logging particleResultsLog, Logging probabilisticResultsLog){                           
         
-        ProbabilisticTrial nonCompassProbabilistic = new ProbabilisticTrial(true, true, true, 4, buildingOrientation, sp.OUT_SEP());
+        ProbabilisticTrial nonCompassProbabilistic = new ProbabilisticTrial(true, true, true, 4, sp.OUT_SEP());
         runProbablistic(sp, fc, probabilisticResultsLog, nonCompassProbabilistic);
         
-        ProbabilisticTrial compassProbabilistic = new ProbabilisticTrial(true, false, true, 4,buildingOrientation, sp.OUT_SEP());
+        ProbabilisticTrial compassProbabilistic = new ProbabilisticTrial(true, false, true, 4, sp.OUT_SEP());
         runProbablistic(sp, fc, probabilisticResultsLog, compassProbabilistic);
                       
         
-        ParticleTrial particle2 = new ParticleTrial(true, true, true, 4, 10, 30, 1, 0.01, 3.5,buildingOrientation, sp.OUT_SEP());
+        ParticleTrial particle2 = new ParticleTrial(true, true, true, 4, 10, 30, 1, 0.01, 3.5, sp.OUT_SEP());
         runParticle(sp, fc, particleResultsLog, particle2);
         
-        ParticleTrial particle1 = new ParticleTrial(true, false, true, 4, 10, 30, 1, 0.01, 3.5,buildingOrientation, sp.OUT_SEP());
+        ParticleTrial particle1 = new ParticleTrial(true, false, true, 4, 10, 30, 1, 0.01, 3.5, sp.OUT_SEP());
         runParticle(sp, fc, particleResultsLog, particle1);
         
        

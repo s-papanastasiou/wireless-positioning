@@ -62,6 +62,8 @@ public class Simulation {
     public static void runProbabilistic(SettingsProperties sp, FileController fc, ProbabilisticTrial proTrial, Logging probabilisticResultsLog) {
 
         String OUT_SEP = sp.OUT_SEP();
+        final double BUILD_ORIENT = sp.BUILD_ORIENT();
+        final double ADJUSTED_ORIENT = HALF_PI - BUILD_ORIENT;
 
         //Load offline map, online points (trial scan points) and intial points (stationary readings at start of trial).
         HashMap<String, KNNFloorPoint> offlineMap = KNNRSSI.compile(fc.offlineDataList, proTrial.isBSSIDMerged(), proTrial.isOrientationMerged());
@@ -76,7 +78,7 @@ public class Simulation {
         fc.switchDirectories(proTrial.isOrientationMerged());
 
         Logging probabilisticTrialLog = new Logging(sp.isTrialDetail(), new File(fc.probabilisticTrialDir, String.format("Trial %s.csv", proTrial.getTitle())));
-        probabilisticTrialLog.printLine(sp.TrialHeader());
+        probabilisticTrialLog.printLine(sp.TRIAL_HEADER());
 
         //System.out.println("Running probabilistic trial:" + probabilisticTrialName);            
         //Initiliase variables for trial
@@ -96,8 +98,8 @@ public class Simulation {
                 Data sensorData = inertialDataList.get(i);
                 if (sensorData.getTimestamp() < knnTrialPoint.getTimestamp()) {  //Move using the sensor data
 
-                    sensorData.getOrientation()[0] += HALF_PI - proTrial.getBuildingOrientation();
-                    orientation = InertialData.getOrientation(proTrial.isOrientationMerged(), sensorData.getOrientation()[0], proTrial.getBuildingOrientation());
+                    sensorData.getOrientation()[0] += ADJUSTED_ORIENT;
+                    orientation = InertialData.getOrientation(proTrial.isOrientationMerged(), sensorData.getOrientation()[0], BUILD_ORIENT);
 
                 } else {      //Move using the wifi data
                     currentInertialIndex = i;   //store the next index to be used
@@ -148,6 +150,10 @@ public class Simulation {
     public static void runParticle(SettingsProperties sp, FileController fc, ParticleTrial parTrial, Logging particleResultsLog) {
 
             String OUT_SEP = sp.OUT_SEP();
+            
+            final double BUILD_ORIENT = sp.BUILD_ORIENT();
+            final double ADJUSTED_ORIENT = HALF_PI - BUILD_ORIENT;
+            
             //Load offline map, online points (trial scan points) and intial points (stationary readings at start of trial).
             HashMap<String, KNNFloorPoint> offlineMap = KNNRSSI.compile(fc.offlineDataList, parTrial.isBSSIDMerged(), parTrial.isOrientationMerged());
             List<KNNTrialPoint> onlinePoints = KNNRSSI.compileTrialList(fc.onlineDataList, parTrial.isBSSIDMerged(), parTrial.isOrientationMerged());
@@ -162,7 +168,7 @@ public class Simulation {
             fc.switchDirectories(parTrial.isOrientationMerged());
 
             Logging particleTrialLog = new Logging(sp.isTrialDetail(), new File(fc.particleTrialDir, String.format("Trial %s.csv", parTrial.getTitle())));
-            particleTrialLog.printLine(sp.TrialHeader());
+            particleTrialLog.printLine(sp.TRIAL_HEADER());
 
             //System.out.println("Running particle trial:" + particleTrialName);
             //Calculate initial points to calculate where the particle filter starts.
@@ -191,12 +197,12 @@ public class Simulation {
                     Data sensorData = inertialDataList.get(i);
                     if (sensorData.getTimestamp() < knnTrialPoint.getTimestamp()) {  //Move using the sensor data
 
-                        sensorData.getOrientation()[0] += HALF_PI - parTrial.getBuildingOrientation();
+                        sensorData.getOrientation()[0] += ADJUSTED_ORIENT;
                         InertialData results = InertialData.getDatas(sensorData.getInvertedMatrix(),
                                 sensorData.getLinearAcceleration(), sensorData.getOrientation(),
-                                parTrial.getBuildingOrientation());
+                                BUILD_ORIENT);
                         inertialPoint = InertialPoint.move(inertialPoint, results, sensorData.getTimestamp(), parTrial.getSpeedBreak());
-                        orientation = InertialData.getOrientation(parTrial.isOrientationMerged(), sensorData.getOrientation()[0], parTrial.getBuildingOrientation());
+                        orientation = InertialData.getOrientation(parTrial.isOrientationMerged(), sensorData.getOrientation()[0], BUILD_ORIENT);
 
                     } else {      //Move using the wifi data
                         currentInertialIndex = i;   //store the next index to be used

@@ -21,24 +21,24 @@ public class SettingsProperties extends BaseProperties {
     }
     
     // Logging headers /////////////////////////////////////////////////////////////////////////////////////////////        
-    private String trialHeader;
-    private String particleResultsHeader;
-    private String probabilisticResultsHeader;
+    private String TRIAL_HEADER;
+    private String PAR_RESULTS_HEADER;
+    private String PRO_RESULTS_HEADER;
     private SimpleDateFormat DATE_FORMAT;
 
     private String IN_SEP;
     private String OUT_SEP;
 
-    private boolean isOutputImage;
-    private boolean isTrialDetail;
+    private Boolean isOutputImage;
+    private Boolean isTrialDetail;
 
-    private double X_PIXELS;
-    private double Y_PIXELS;
+    private Double X_PIXELS;
+    private Double Y_PIXELS;
 
-    private double IMAGE_WIDTH;
-    private double IMAGE_HEIGHT;
-    private double FLOOR_WIDTH;
-    private double FLOOR_HEIGHT;
+    private Double IMAGE_WIDTH;
+    private Double IMAGE_HEIGHT;
+    private Double FLOOR_WIDTH;
+    private Double FLOOR_HEIGHT;
 
     private String EXTERNAL_DIRECTORY;
     private String OFFLINE_MAP;
@@ -46,9 +46,10 @@ public class SettingsProperties extends BaseProperties {
     private String INITIAL_POINTS;
     private String INERTIAL_DATA;
     private String FLOORPLAN_IMAGE;
-
-    public enum Keys {
-
+    
+    private Double BUILD_ORIENT;
+    
+    public enum SettingKeys {
         OUTPUT_IMAGE,
         OUTPUT_DETAIL,
         IN_SEP,
@@ -63,62 +64,77 @@ public class SettingsProperties extends BaseProperties {
         ONLINE_WIFI_DATA,
         INITIAL_POINTS,
         INERTIAL_DATA,
-        FLOORPLAN_IMAGE
+        FLOORPLAN_IMAGE,
+        BUILD_ORIENT
     };
-
+    
     public SettingsProperties() {
         super();
         
         try {
             Properties props = load();
+            checkAllKeys(props);
             assignKeys(props);
         } catch (NumberFormatException ex) {
             System.out.println(propsFilename() + " parameter value incorrect.");
             System.out.println(ex.getMessage());
             throw new AssertionError();
-        }
+        }        
     }
 
     @Override
     protected final void assignKeys(Properties props) {
 
-        isOutputImage = Boolean.parseBoolean(props.getProperty(Keys.OUTPUT_IMAGE.name()));
-        isTrialDetail = Boolean.parseBoolean(props.getProperty(Keys.OUTPUT_DETAIL.name()));
+        isOutputImage = Boolean.parseBoolean(props.getProperty(SettingKeys.OUTPUT_IMAGE.name()));
+        isTrialDetail = Boolean.parseBoolean(props.getProperty(SettingKeys.OUTPUT_DETAIL.name()));
 
-        IN_SEP = props.getProperty(Keys.IN_SEP.name());
-        OUT_SEP = props.getProperty(Keys.OUT_SEP.name());
+        IN_SEP = props.getProperty(SettingKeys.IN_SEP.name());
+        OUT_SEP = props.getProperty(SettingKeys.OUT_SEP.name());
 
-        trialHeader = "Point_No" + OUT_SEP + "Trial_X" + OUT_SEP + "Trial_Y" + OUT_SEP + "Distance" + OUT_SEP + "Pos_X" + OUT_SEP + "Pos_Y";
-        particleResultsHeader = "BSSIDMerged" + OUT_SEP + "OrientationMerged" + OUT_SEP + "ForceToMap" + OUT_SEP + "KValue" + OUT_SEP + "InitialReadings" + OUT_SEP + "SpeedBreak" + OUT_SEP + "ParticleCount" + OUT_SEP + "CloudRange" + OUT_SEP + "CloudDisplacement" + OUT_SEP + "MeanDistance" + OUT_SEP + "StdDev";
-        probabilisticResultsHeader = "BSSIDMerged" + OUT_SEP + "OrientationMerged" + OUT_SEP + "ForceToMap" + OUT_SEP + "KValue" + OUT_SEP + "MeanDistance" + OUT_SEP + "StdDev";
+        TRIAL_HEADER = "Point_No" + OUT_SEP + "Trial_X" + OUT_SEP + "Trial_Y" + OUT_SEP + "Distance" + OUT_SEP + "Pos_X" + OUT_SEP + "Pos_Y";
+        PAR_RESULTS_HEADER = "BSSIDMerged" + OUT_SEP + "OrientationMerged" + OUT_SEP + "ForceToMap" + OUT_SEP + "KValue" + OUT_SEP + "InitialReadings" + OUT_SEP + "SpeedBreak" + OUT_SEP + "ParticleCount" + OUT_SEP + "CloudRange" + OUT_SEP + "CloudDisplacement" + OUT_SEP + "MeanDistance" + OUT_SEP + "StdDev";
+        PRO_RESULTS_HEADER = "BSSIDMerged" + OUT_SEP + "OrientationMerged" + OUT_SEP + "ForceToMap" + OUT_SEP + "KValue" + OUT_SEP + "MeanDistance" + OUT_SEP + "StdDev";
         DATE_FORMAT = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
-        IMAGE_WIDTH = Double.parseDouble(props.getProperty(Keys.IMAGE_WIDTH.name()));
-        IMAGE_HEIGHT = Double.parseDouble(props.getProperty(Keys.IMAGE_HEIGHT.name()));
-        FLOOR_WIDTH = Double.parseDouble(props.getProperty(Keys.FLOOR_WIDTH.name()));
-        FLOOR_HEIGHT = Double.parseDouble(props.getProperty(Keys.FLOOR_HEIGHT.name()));
+        IMAGE_WIDTH = Double.parseDouble(props.getProperty(SettingKeys.IMAGE_WIDTH.name()));
+        IMAGE_HEIGHT = Double.parseDouble(props.getProperty(SettingKeys.IMAGE_HEIGHT.name()));
+        FLOOR_WIDTH = Double.parseDouble(props.getProperty(SettingKeys.FLOOR_WIDTH.name()));
+        FLOOR_HEIGHT = Double.parseDouble(props.getProperty(SettingKeys.FLOOR_HEIGHT.name()));
 
         X_PIXELS = IMAGE_WIDTH / FLOOR_WIDTH;
         Y_PIXELS = IMAGE_HEIGHT / FLOOR_HEIGHT;
         
-        EXTERNAL_DIRECTORY = props.getProperty(Keys.EXTERNAL_DIRECTORY.name());
-        OFFLINE_MAP = props.getProperty(Keys.OFFLINE_MAP.name());
-        ONLINE_WIFI_DATA = props.getProperty(Keys.ONLINE_WIFI_DATA.name());
-        INITIAL_POINTS = props.getProperty(Keys.INITIAL_POINTS.name());
-        INERTIAL_DATA = props.getProperty(Keys.INERTIAL_DATA.name());
-        FLOORPLAN_IMAGE = props.getProperty(Keys.FLOORPLAN_IMAGE.name());        
+        EXTERNAL_DIRECTORY = props.getProperty(SettingKeys.EXTERNAL_DIRECTORY.name());
+        OFFLINE_MAP = props.getProperty(SettingKeys.OFFLINE_MAP.name());
+        ONLINE_WIFI_DATA = props.getProperty(SettingKeys.ONLINE_WIFI_DATA.name());
+        INITIAL_POINTS = props.getProperty(SettingKeys.INITIAL_POINTS.name());
+        INERTIAL_DATA = props.getProperty(SettingKeys.INERTIAL_DATA.name());
+        FLOORPLAN_IMAGE = props.getProperty(SettingKeys.FLOORPLAN_IMAGE.name());    
+        
+        BUILD_ORIENT = Double.parseDouble(props.getProperty(SettingKeys.BUILD_ORIENT.name()));
+    }
+    
+    @Override
+    protected final void checkAllKeys(Properties props)
+    {                        
+        for (SettingKeys key : SettingKeys.values()) {
+            if (!props.containsKey(key)) {                
+                System.out.println(propsFilename() + " file not setup correctly: " + key);
+                throw new AssertionError();                
+            }
+        }        
     }
 
-    public String TrialHeader() {
-        return trialHeader;
+    public String TRIAL_HEADER() {
+        return TRIAL_HEADER;
     }
 
-    public String ParticleResultsHeader() {
-        return particleResultsHeader;
+    public String PAR_RESULTS_HEADER() {
+        return PAR_RESULTS_HEADER;
     }
 
-    public String ProbabilisticResultsHeader() {
-        return probabilisticResultsHeader;
+    public String PRO_RESULTS_HEADER() {
+        return PRO_RESULTS_HEADER;
     }
 
     public String formatDate(Date date) {
@@ -133,35 +149,35 @@ public class SettingsProperties extends BaseProperties {
         return OUT_SEP;
     }
 
-    public boolean isOutputImage() {
+    public Boolean isOutputImage() {
         return isOutputImage;
     }
 
-    public boolean isTrialDetail() {
+    public Boolean isTrialDetail() {
         return isTrialDetail;
     }
 
-    public double X_PIXELS() {
+    public Double X_PIXELS() {
         return X_PIXELS;
     }
 
-    public double Y_PIXELS() {
+    public Double Y_PIXELS() {
         return Y_PIXELS;
     }
 
-    public double IMAGE_WIDTH() {
+    public Double IMAGE_WIDTH() {
         return IMAGE_WIDTH;
     }
 
-    public double IMAGE_HEIGHT() {
+    public Double IMAGE_HEIGHT() {
         return IMAGE_HEIGHT;
     }
 
-    public double FLOOR_WIDTH() {
+    public Double FLOOR_WIDTH() {
         return FLOOR_WIDTH;
     }
 
-    public double FLOOR_HEIGHT() {
+    public Double FLOOR_HEIGHT() {
         return FLOOR_HEIGHT;
     }
 
@@ -188,7 +204,9 @@ public class SettingsProperties extends BaseProperties {
     public String FLOORPLAN_IMAGE() {
         return FLOORPLAN_IMAGE;
     }
-    
-    
+
+    public Double BUILD_ORIENT() {
+        return BUILD_ORIENT;
+    }        
     
 }

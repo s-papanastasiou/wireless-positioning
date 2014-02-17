@@ -21,7 +21,6 @@ public class TrialProperties extends BaseProperties{
     private int K_MIN;
     private int K_MAX;
     private int K_INC;
-    private Double buildingOrientation;
 
     private int initRSSIReadings_MIN;
     private int initRSSIReadings_MAX;
@@ -43,12 +42,11 @@ public class TrialProperties extends BaseProperties{
     private Double cloudDispCoeff_MAX;
     private Double cloudDispCoeff_INC;
     
-    public enum Keys {
+    public enum TrialKeys {
 
         K_MIN,
         K_MAX,
-        K_INC,
-        buildingOrientation,
+        K_INC,       
         initRSSIReadings_MIN,
         initRSSIReadings_MAX,
         initRSSIReadings_INC,
@@ -71,6 +69,7 @@ public class TrialProperties extends BaseProperties{
                 
         try {
             Properties props = load();
+            checkAllKeys(props);
             assignKeys(props);
             
         } catch (NumberFormatException ex) {
@@ -82,105 +81,107 @@ public class TrialProperties extends BaseProperties{
 
     @Override
     protected final void assignKeys(Properties props) throws NumberFormatException {
-        K_MIN = Integer.parseInt(props.getProperty(Keys.K_MIN.name()));
-        K_MAX = Integer.parseInt(props.getProperty(Keys.K_MAX.name()));
-        K_INC = Integer.parseInt(props.getProperty(Keys.K_INC.name()));
-        buildingOrientation = Double.parseDouble(props.getProperty(Keys.buildingOrientation.name()));
-        initRSSIReadings_MIN = Integer.parseInt(props.getProperty(Keys.initRSSIReadings_MIN.name()));
-        initRSSIReadings_MAX = Integer.parseInt(props.getProperty(Keys.initRSSIReadings_MAX.name()));
-        initRSSIReadings_INC = Integer.parseInt(props.getProperty(Keys.initRSSIReadings_INC.name()));
-        particleCount_MIN = Integer.parseInt(props.getProperty(Keys.particleCount_MIN.name()));
-        particleCount_MAX = Integer.parseInt(props.getProperty(Keys.particleCount_MAX.name()));
-        particleCount_INC = Integer.parseInt(props.getProperty(Keys.particleCount_INC.name()));
-        speedBreak_MIN = Integer.parseInt(props.getProperty(Keys.speedBreak_MIN.name()));
-        speedBreak_MAX = Integer.parseInt(props.getProperty(Keys.speedBreak_MAX.name()));
-        speedBreak_INC = Integer.parseInt(props.getProperty(Keys.speedBreak_INC.name()));
-        cloudRange_MIN = Double.parseDouble(props.getProperty(Keys.cloudRange_MIN.name()));
-        cloudRange_MAX = Double.parseDouble(props.getProperty(Keys.cloudRange_MAX.name()));
-        cloudRange_INC = Double.parseDouble(props.getProperty(Keys.cloudRange_INC.name()));
-        cloudDispCoeff_MIN = Double.parseDouble(props.getProperty(Keys.cloudDispCoeff_MIN.name()));
-        cloudDispCoeff_MAX = Double.parseDouble(props.getProperty(Keys.cloudDispCoeff_MAX.name()));
-        cloudDispCoeff_INC = Double.parseDouble(props.getProperty(Keys.cloudDispCoeff_INC.name()));
+        K_MIN = Integer.parseInt(props.getProperty(TrialKeys.K_MIN.name()));
+        K_MAX = Integer.parseInt(props.getProperty(TrialKeys.K_MAX.name()));
+        K_INC = Integer.parseInt(props.getProperty(TrialKeys.K_INC.name()));        
+        initRSSIReadings_MIN = Integer.parseInt(props.getProperty(TrialKeys.initRSSIReadings_MIN.name()));
+        initRSSIReadings_MAX = Integer.parseInt(props.getProperty(TrialKeys.initRSSIReadings_MAX.name()));
+        initRSSIReadings_INC = Integer.parseInt(props.getProperty(TrialKeys.initRSSIReadings_INC.name()));
+        particleCount_MIN = Integer.parseInt(props.getProperty(TrialKeys.particleCount_MIN.name()));
+        particleCount_MAX = Integer.parseInt(props.getProperty(TrialKeys.particleCount_MAX.name()));
+        particleCount_INC = Integer.parseInt(props.getProperty(TrialKeys.particleCount_INC.name()));
+        speedBreak_MIN = Integer.parseInt(props.getProperty(TrialKeys.speedBreak_MIN.name()));
+        speedBreak_MAX = Integer.parseInt(props.getProperty(TrialKeys.speedBreak_MAX.name()));
+        speedBreak_INC = Integer.parseInt(props.getProperty(TrialKeys.speedBreak_INC.name()));
+        cloudRange_MIN = Double.parseDouble(props.getProperty(TrialKeys.cloudRange_MIN.name()));
+        cloudRange_MAX = Double.parseDouble(props.getProperty(TrialKeys.cloudRange_MAX.name()));
+        cloudRange_INC = Double.parseDouble(props.getProperty(TrialKeys.cloudRange_INC.name()));
+        cloudDispCoeff_MIN = Double.parseDouble(props.getProperty(TrialKeys.cloudDispCoeff_MIN.name()));
+        cloudDispCoeff_MAX = Double.parseDouble(props.getProperty(TrialKeys.cloudDispCoeff_MAX.name()));
+        cloudDispCoeff_INC = Double.parseDouble(props.getProperty(TrialKeys.cloudDispCoeff_INC.name()));
+    }
+    
+    @Override
+    protected final void checkAllKeys(Properties props)
+    {                        
+        for (TrialKeys key : TrialKeys.values()) {
+            if (!props.containsKey(key)) {                
+                System.out.println(propsFilename() + " file not setup correctly: " + key);
+                throw new AssertionError();                
+            }
+        }        
     }
 
-    public int getK_MIN() {
+    public int K_MIN() {
         return K_MIN;
     }
 
-    public int getK_MAX() {
+    public int K_MAX() {
         return K_MAX;
     }
 
-    public int getK_INC() {
+    public int K_INC() {
         return K_INC;
     }
 
-    public double getBuildingOrientation() {
-        return buildingOrientation;
-    }
-
-    public int getInitRSSIReadings_MIN() {
+    public int InitRSSIReadings_MIN() {
         return initRSSIReadings_MIN;
     }
 
-    public int getInitRSSIReadings_MAX() {
+    public int InitRSSIReadings_MAX() {
         return initRSSIReadings_MAX;
     }
 
-    public int getInitRSSIReadings_INC() {
+    public int InitRSSIReadings_INC() {
         return initRSSIReadings_INC;
     }
 
-    public int getParticleCount_MIN() {
+    public int ParticleCount_MIN() {
         return particleCount_MIN;
     }
 
-    public int getParticleCount_MAX() {
+    public int ParticleCount_MAX() {
         return particleCount_MAX;
     }
 
-    public int getParticleCount_INC() {
+    public int ParticleCount_INC() {
         return particleCount_INC;
     }
 
-    public int getSpeedBreak_MIN() {
+    public int SpeedBreak_MIN() {
         return speedBreak_MIN;
     }
 
-    public int getSpeedBreak_MAX() {
+    public int SpeedBreak_MAX() {
         return speedBreak_MAX;
     }
 
-    public int getSpeedBreak_INC() {
+    public int SpeedBreak_INC() {
         return speedBreak_INC;
     }
 
-    public double getCloudRange_MIN() {
+    public double CloudRange_MIN() {
         return cloudRange_MIN;
     }
 
-    public double getCloudRange_MAX() {
+    public double CloudRange_MAX() {
         return cloudRange_MAX;
     }
 
-    public double getCloudRange_INC() {
+    public double CloudRange_INC() {
         return cloudRange_INC;
     }
 
-    public double getCloudDispCoeff_MIN() {
+    public double CloudDispCoeff_MIN() {
         return cloudDispCoeff_MIN;
     }
 
-    public double getCloudDispCoeff_MAX() {
+    public double CloudDispCoeff_MAX() {
         return cloudDispCoeff_MAX;
     }
 
-    public double getCloudDispCoeff_INC() {
+    public double CloudDispCoeff_INC() {
         return cloudDispCoeff_INC;
-    }
-
-    public String getPropsFilename() {
-        return propsFilename();
-    }
+    }  
 
 }

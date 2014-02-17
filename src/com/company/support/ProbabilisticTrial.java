@@ -15,17 +15,15 @@ public class ProbabilisticTrial {
     private final boolean isBSSIDMerged;
     private final boolean isOrientationMerged;
     private final int K;    
-    private final boolean isForceToOfflineMap;
-    private final double buildingOrientation;    
+    private final boolean isForceToOfflineMap;    
     private final String valuesStr;
     private final String titleStr;
 
-    public ProbabilisticTrial(boolean BSSIDMerged, boolean orientationMerged, boolean forceToOfflineMap, int k, double buildingOrientation, String OUT_SEP) {
+    public ProbabilisticTrial(boolean BSSIDMerged, boolean orientationMerged, boolean forceToOfflineMap, int k, String OUT_SEP) {
         this.isBSSIDMerged = BSSIDMerged;
         this.isOrientationMerged = orientationMerged;
         this.K = k;        
-        this.isForceToOfflineMap = forceToOfflineMap;
-        this.buildingOrientation = buildingOrientation;        
+        this.isForceToOfflineMap = forceToOfflineMap;        
         valuesStr = isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP + isForceToOfflineMap + OUT_SEP + K ;
         titleStr = "probablistic-" + isBSSIDMerged + "-" + isOrientationMerged + "-" + isForceToOfflineMap + "-" + K;
     }
@@ -45,10 +43,7 @@ public class ProbabilisticTrial {
     public boolean isForceToOfflineMap() {
         return isForceToOfflineMap;
     }
-
-    public double getBuildingOrientation() {
-        return buildingOrientation;
-    }    
+     
 
     public String getTitle() {
         return titleStr;
@@ -60,7 +55,7 @@ public class ProbabilisticTrial {
 
     @Override
     public String toString() {
-        return isBSSIDMerged + ":" + isOrientationMerged + ":" + isForceToOfflineMap + ":" + K + ":" + buildingOrientation;
+        return isBSSIDMerged + ":" + isOrientationMerged + ":" + isForceToOfflineMap + ":" + K;
     }
 
 }

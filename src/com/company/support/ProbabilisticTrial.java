@@ -82,7 +82,7 @@ public class ProbabilisticTrial {
     public static List<ProbabilisticTrial> load(SettingsProperties sp, FileController fc) {
         
         String SEP = sp.IN_SEP();
-        String[] HEADER = sp.getPROB_HEADER();
+        String[] HEADER = sp.PROB_HEADER();
         File inputFile = fc.specificProb;
         
         List<ProbabilisticTrial> proTrialList = new ArrayList<>();
@@ -129,5 +129,15 @@ public class ProbabilisticTrial {
             logger.error("Probabilistic Trial file not found: {}", inputFile.getPath());
         }
         return proTrialList;        
-    }    
+    }   
+    
+    public static List<ProbabilisticTrial> generate(boolean isBSSIDMerged, boolean isOrientationMerged, boolean isForcedToOfflineMap, int kValue, String OUT_SEP){
+    
+        List<ProbabilisticTrial> trialList = new ArrayList<>();
+        
+        ProbabilisticTrial trial = new ProbabilisticTrial(isBSSIDMerged, isOrientationMerged, isForcedToOfflineMap, kValue, OUT_SEP);
+        trialList.add(trial);
+        
+        return trialList;
+    }
 }

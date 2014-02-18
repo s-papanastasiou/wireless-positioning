@@ -56,6 +56,11 @@ public class SettingsProperties extends BaseProperties {
     private String SPECIFIC_PARTICLE;
     private String SPECIFIC_PROB;
     
+    private Boolean GENERATE_PARTICLE_TRIALS;
+    private Boolean GENERATE_PROB_TRIALS;
+    private Boolean RUN_PARTICLE_TRIALS;
+    private Boolean RUN_PROB_TRIALS;
+    
     private final String[] PARTICLE_HEADER = {"BSSIDMerged", "OrientationMerged", "ForceToMap", "KValue", "InitialReadings", "SpeedBreak", "ParticleCount", "CloudRange", "CloudDisplacement"};
     
     private final String[] PROB_HEADER = {"BSSIDMerged", "OrientationMerged", "ForceToMap", "KValue"};
@@ -78,7 +83,11 @@ public class SettingsProperties extends BaseProperties {
         FLOORPLAN_IMAGE,
         BUILD_ORIENT,
         SPECIFIC_PARTICLE,
-        SPECIFIC_PROB
+        SPECIFIC_PROB,
+        GENERATE_PARTICLE_TRIALS,
+        GENERATE_PROB_TRIALS,
+        RUN_PARTICLE_TRIALS,
+        RUN_PROB_TRIALS
     };
     
     public SettingsProperties() {
@@ -128,6 +137,11 @@ public class SettingsProperties extends BaseProperties {
         
         SPECIFIC_PARTICLE = props.getProperty(SettingKeys.SPECIFIC_PARTICLE.name());
         SPECIFIC_PROB = props.getProperty(SettingKeys.SPECIFIC_PROB.name());
+        
+        GENERATE_PARTICLE_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.RUN_PARTICLE_TRIALS.name()));
+        GENERATE_PROB_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.GENERATE_PROB_TRIALS.name()));
+        RUN_PARTICLE_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.RUN_PARTICLE_TRIALS.name()));
+        RUN_PROB_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.RUN_PROB_TRIALS.name()));
     }
     
     @Override
@@ -232,12 +246,28 @@ public class SettingsProperties extends BaseProperties {
     public String SPECIFIC_PROB() {
         return SPECIFIC_PROB;
     }
+
+    public Boolean GENERATE_PARTICLE_TRIALS() {
+        return GENERATE_PARTICLE_TRIALS;
+    }
+
+    public Boolean GENERATE_PROB_TRIALS() {
+        return GENERATE_PROB_TRIALS;
+    }
+
+    public Boolean RUN_PARTICLE_TRIALS() {
+        return RUN_PARTICLE_TRIALS;
+    }
+
+    public Boolean RUN_PROB_TRIALS() {
+        return RUN_PROB_TRIALS;
+    }        
     
-    public String[] getPARTICLE_HEADER() {
+    public String[] PARTICLE_HEADER() {
         return PARTICLE_HEADER;
     }
 
-    public String[] getPROB_HEADER() {
+    public String[] PROB_HEADER() {
         return PROB_HEADER;
     }
     

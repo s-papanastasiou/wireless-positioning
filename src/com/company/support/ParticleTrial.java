@@ -150,7 +150,7 @@ public class ParticleTrial {
     public static List<ParticleTrial> load(SettingsProperties sp, FileController fc) {
 
         String SEP = sp.IN_SEP();
-        String[] HEADER = sp.getPARTICLE_HEADER();
+        String[] HEADER = sp.PARTICLE_HEADER();
         File inputFile = fc.specificParticle;
 
         List<ParticleTrial> parTrialList = new ArrayList<>();

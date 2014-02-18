@@ -88,7 +88,7 @@ public class ProbabilisticTrial {
         List<ProbabilisticTrial> proTrialList = new ArrayList<>();
         
         if (!inputFile.isFile()) {
-            int lineCounter = 1;            
+            int lineCounter = 0;            
             try {
                 
                 try (BufferedReader dataReader = new BufferedReader(new FileReader(inputFile))) {

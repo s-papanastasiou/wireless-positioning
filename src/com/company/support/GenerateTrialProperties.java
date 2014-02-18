@@ -44,7 +44,7 @@ public class GenerateTrialProperties extends BaseProperties {
 
     private Boolean isLoaded = false;
     private File propsFile;
-    
+
     public enum TrialKeys {
 
         K_MIN,
@@ -67,7 +67,7 @@ public class GenerateTrialProperties extends BaseProperties {
         cloudDispCoeff_INC
     };
 
-    public GenerateTrialProperties(File propsFile) {
+    public GenerateTrialProperties(File propsFile, Boolean isVerbose) {
         super();
 
         try {
@@ -76,6 +76,7 @@ public class GenerateTrialProperties extends BaseProperties {
             if (!props.isEmpty()) {
                 checkAllKeys(props);
                 assignKeys(props);
+                status(isVerbose);
                 isLoaded = true;
             }
         } catch (NumberFormatException ex) {
@@ -84,12 +85,12 @@ public class GenerateTrialProperties extends BaseProperties {
             throw new AssertionError();
         }
     }
-        
+
     @Override
     protected final String propsFilename() {
         return propsFile.getName();
     }
-    
+
     @Override
     protected final void assignKeys(Properties props) throws NumberFormatException {
         K_MIN = Integer.parseInt(props.getProperty(TrialKeys.K_MIN.name()));
@@ -119,6 +120,17 @@ public class GenerateTrialProperties extends BaseProperties {
                 logger.info("{} file not setup correctly: {}", propsFilename(), key);
                 throw new AssertionError();
             }
+        }
+    }
+
+    private void status(Boolean isVerbose) {
+        if (isVerbose) {
+            logger.debug("K min: {} max: {} inc: {}", K_MIN, K_MAX, K_INC);
+            logger.debug("Init RSSI Readings min: {} max: {} inc: {}", initRSSIReadings_MIN, initRSSIReadings_MAX, initRSSIReadings_INC);
+            logger.debug("Particle Count min: {} max: {} inc: {}", particleCount_MIN, particleCount_MAX, particleCount_INC);
+            logger.debug("Speed Break min: {} max: {} inc: {}", speedBreak_MIN, speedBreak_MAX, speedBreak_INC);
+            logger.debug("Cloud Range min: {} max: {} inc: {}", cloudRange_MIN, cloudRange_MAX, cloudRange_INC);
+            logger.debug("Cloud Displacement min: {} max: {} inc: {}", cloudDispCoeff_MIN, cloudDispCoeff_MAX, cloudDispCoeff_INC);
         }
     }
 

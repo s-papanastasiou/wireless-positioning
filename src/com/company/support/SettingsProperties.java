@@ -18,12 +18,12 @@ import org.slf4j.LoggerFactory;
 public class SettingsProperties extends BaseProperties {
 
     private static final Logger logger = LoggerFactory.getLogger(SettingsProperties.class);
-    
+
     @Override
     protected final String propsFilename() {
         return "settings.properties";
     }
-    
+
     // Logging headers /////////////////////////////////////////////////////////////////////////////////////////////        
     private String TRIAL_HEADER;
     private String PAR_RESULTS_HEADER;
@@ -33,6 +33,7 @@ public class SettingsProperties extends BaseProperties {
     private String IN_SEP;
     private String OUT_SEP;
 
+    private Boolean isVerbose;
     private Boolean isOutputImage;
     private Boolean isTrialDetail;
 
@@ -53,22 +54,24 @@ public class SettingsProperties extends BaseProperties {
     private String FLOORPLAN_IMAGE;
     private String GENERATE_TRIAL_PROPERTIES;
     private String FILTER_PROPERTIES;
-    
+
     private Double BUILD_ORIENT;
-    
+
     private String SPECIFIC_PARTICLE;
     private String SPECIFIC_PROB;
-    
+
     private Boolean GENERATE_PARTICLE_TRIALS;
     private Boolean GENERATE_PROB_TRIALS;
     private Boolean RUN_PARTICLE_TRIALS;
     private Boolean RUN_PROB_TRIALS;
-    
+
     private final String[] PARTICLE_HEADER = {"BSSIDMerged", "OrientationMerged", "ForceToMap", "KValue", "InitialReadings", "SpeedBreak", "ParticleCount", "CloudRange", "CloudDisplacement"};
-    
+
     private final String[] PROB_HEADER = {"BSSIDMerged", "OrientationMerged", "ForceToMap", "KValue"};
-    
+
     public enum SettingKeys {
+
+        VERBOSE,
         OUTPUT_IMAGE,
         OUTPUT_DETAIL,
         IN_SEP,
@@ -95,10 +98,10 @@ public class SettingsProperties extends BaseProperties {
         RUN_PARTICLE_TRIALS,
         RUN_PROB_TRIALS
     };
-    
+
     public SettingsProperties() {
         super();
-        
+
         try {
             Properties props = load();
             checkAllKeys(props);
@@ -108,12 +111,13 @@ public class SettingsProperties extends BaseProperties {
             logger.info("{} parameter value incorrect.", propsFilename());
             logger.info(ex.getMessage());
             throw new AssertionError();
-        }        
+        }
     }
 
     @Override
     protected final void assignKeys(Properties props) {
 
+        isVerbose = Boolean.parseBoolean(props.getProperty(SettingKeys.VERBOSE.name()));
         isOutputImage = Boolean.parseBoolean(props.getProperty(SettingKeys.OUTPUT_IMAGE.name()));
         isTrialDetail = Boolean.parseBoolean(props.getProperty(SettingKeys.OUTPUT_DETAIL.name()));
 
@@ -132,7 +136,7 @@ public class SettingsProperties extends BaseProperties {
 
         X_PIXELS = IMAGE_WIDTH / FLOOR_WIDTH;
         Y_PIXELS = IMAGE_HEIGHT / FLOOR_HEIGHT;
-        
+
         OUTPUT_DIRECTORY = props.getProperty(SettingKeys.OUTPUT_DIRECTORY.name());
         INPUT_DIRECTORY = props.getProperty(SettingKeys.INPUT_DIRECTORY.name());
         OFFLINE_MAP = props.getProperty(SettingKeys.OFFLINE_MAP.name());
@@ -142,43 +146,44 @@ public class SettingsProperties extends BaseProperties {
         FLOORPLAN_IMAGE = props.getProperty(SettingKeys.FLOORPLAN_IMAGE.name());
         GENERATE_TRIAL_PROPERTIES = props.getProperty(SettingKeys.GENERATE_TRIAL_PROPERTIES.name());
         FILTER_PROPERTIES = props.getProperty(SettingKeys.FILTER_PROPERTIES.name());
-        
+
         BUILD_ORIENT = Double.parseDouble(props.getProperty(SettingKeys.BUILD_ORIENT.name()));
-        
+
         SPECIFIC_PARTICLE = props.getProperty(SettingKeys.SPECIFIC_PARTICLE.name());
         SPECIFIC_PROB = props.getProperty(SettingKeys.SPECIFIC_PROB.name());
-        
+
         GENERATE_PARTICLE_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.GENERATE_PARTICLE_TRIALS.name()));
         GENERATE_PROB_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.GENERATE_PROB_TRIALS.name()));
         RUN_PARTICLE_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.RUN_PARTICLE_TRIALS.name()));
         RUN_PROB_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.RUN_PROB_TRIALS.name()));
     }
-    
-    private void status(){
-        logger.debug("OUTPUT IMAGE: {}", isOutputImage);
-        logger.debug("TRIAL DETAIL: {}", isTrialDetail);
-        logger.debug("INPUT SEPARATOR: {}", IN_SEP);
-        logger.debug("OUTPUT SEPARATOR: {}", OUT_SEP);
-        logger.debug("INPUT DIRECTORY: {}", INPUT_DIRECTORY);
-        logger.debug("OUTPUT DIRECTORY: {}", OUTPUT_DIRECTORY);
-        logger.debug("BUILD ORIENT: {}", BUILD_ORIENT);
-        logger.debug("X PIXELS: {}", X_PIXELS);
-        logger.debug("Y PIXELS: {}", Y_PIXELS);        
-        logger.debug("GENERATE TRIAL PROPERTIES: {}", GENERATE_TRIAL_PROPERTIES);
-        logger.debug("FILTER PROPERTIES: {}", FILTER_PROPERTIES);
-        logger.debug("SPECIFIC PARTICLE FILENAME: {}", SPECIFIC_PARTICLE);
-        logger.debug("SPECIFIC PROB FILENAME: {}", SPECIFIC_PROB);
+
+    private void status() {
+        if (isVerbose) {
+            logger.debug("OUTPUT IMAGE: {}", isOutputImage);
+            logger.debug("TRIAL DETAIL: {}", isTrialDetail);
+            logger.debug("INPUT SEPARATOR: {}", IN_SEP);
+            logger.debug("OUTPUT SEPARATOR: {}", OUT_SEP);
+            logger.debug("INPUT DIRECTORY: {}", INPUT_DIRECTORY);
+            logger.debug("OUTPUT DIRECTORY: {}", OUTPUT_DIRECTORY);
+            logger.debug("BUILD ORIENT: {}", BUILD_ORIENT);
+            logger.debug("X PIXELS: {}", X_PIXELS);
+            logger.debug("Y PIXELS: {}", Y_PIXELS);
+            logger.debug("GENERATE TRIAL PROPERTIES: {}", GENERATE_TRIAL_PROPERTIES);
+            logger.debug("FILTER PROPERTIES: {}", FILTER_PROPERTIES);
+            logger.debug("SPECIFIC PARTICLE FILENAME: {}", SPECIFIC_PARTICLE);
+            logger.debug("SPECIFIC PROB FILENAME: {}", SPECIFIC_PROB);
+        }
     }
-    
+
     @Override
-    protected final void checkAllKeys(Properties props)
-    {                        
+    protected final void checkAllKeys(Properties props) {
         for (SettingKeys key : SettingKeys.values()) {
-            if (!props.containsKey(key.name())) {                
+            if (!props.containsKey(key.name())) {
                 logger.info("{} file not setup correctly: {}", propsFilename(), key);
-                throw new AssertionError();                
+                throw new AssertionError();
             }
-        }        
+        }
     }
 
     public String TRIAL_HEADER() {
@@ -205,6 +210,10 @@ public class SettingsProperties extends BaseProperties {
         return OUT_SEP;
     }
 
+    public Boolean isVerbose() {
+        return isVerbose;
+    }
+    
     public Boolean isOutputImage() {
         return isOutputImage;
     }
@@ -236,7 +245,7 @@ public class SettingsProperties extends BaseProperties {
     public Double FLOOR_HEIGHT() {
         return FLOOR_HEIGHT;
     }
-    
+
     public String OUTPUT_DIRECTORY() {
         return OUTPUT_DIRECTORY;
     }
@@ -268,19 +277,19 @@ public class SettingsProperties extends BaseProperties {
     public String GENERATE_TRIAL_PROPERTIES() {
         return GENERATE_TRIAL_PROPERTIES;
     }
-    
+
     public String FILTER_PROPERTIES() {
         return FILTER_PROPERTIES;
     }
-    
+
     public Double BUILD_ORIENT() {
         return BUILD_ORIENT;
     }
-    
+
     public String SPECIFIC_PARTICLE() {
         return SPECIFIC_PARTICLE;
     }
-    
+
     public String SPECIFIC_PROB() {
         return SPECIFIC_PROB;
     }
@@ -299,8 +308,8 @@ public class SettingsProperties extends BaseProperties {
 
     public Boolean RUN_PROB_TRIALS() {
         return RUN_PROB_TRIALS;
-    }        
-    
+    }
+
     public String[] PARTICLE_HEADER() {
         return PARTICLE_HEADER;
     }
@@ -308,10 +317,10 @@ public class SettingsProperties extends BaseProperties {
     public String[] PROB_HEADER() {
         return PROB_HEADER;
     }
-    
-    public static boolean headerCheck(String[] parts, String[]header){
+
+    public static boolean headerCheck(String[] parts, String[] header) {
         boolean isCorrect = true;
-        
+
         if (parts.length == header.length) {
             for (int counter = 0; counter < parts.length; counter++) {
                 if (!parts[counter].equals(header[counter])) {
@@ -323,16 +332,16 @@ public class SettingsProperties extends BaseProperties {
             isCorrect = false;
         }
 
-        return isCorrect;        
-    } 
-    
-    public static String toStringHeadings(final String separator, final String [] header){
-        
+        return isCorrect;
+    }
+
+    public static String toStringHeadings(final String separator, final String[] header) {
+
         String result = header[0];
-        for(int counter = 1; counter < header.length; counter++){
+        for (int counter = 1; counter < header.length; counter++) {
             result += separator + header[counter];
-        }        
+        }
         return result;
     }
-    
+
 }

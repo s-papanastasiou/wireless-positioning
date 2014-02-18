@@ -40,7 +40,7 @@ public class Main {
             Logging probabilisticResultsLog = new Logging(new File(fc.outputDir, "ProbablisticResults.csv"));
             probabilisticResultsLog.printLine(sp.PRO_RESULTS_HEADER());
 
-            FilterProperties fp = new FilterProperties(fc.filterProperties);
+            FilterProperties fp = new FilterProperties(fc.filterProperties, sp.isVerbose());
             
             //Loop through each set of settings
             if (sp.GENERATE_PARTICLE_TRIALS() || sp.GENERATE_PROB_TRIALS()) {
@@ -77,7 +77,7 @@ public class Main {
 
     private static void generateTrials(SettingsProperties sp, FileController fc, FilterProperties fp, Logging particleResultsLog, Logging probabilisticResultsLog) {
 
-        GenerateTrialProperties gtp = new GenerateTrialProperties(fc.generateTrial);
+        GenerateTrialProperties gtp = new GenerateTrialProperties(fc.generateTrial, sp.isVerbose());
         if (gtp.isLoaded()) {
 
             final List<OnOffOptions> options = OnOffOptions.allOptions();

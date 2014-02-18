@@ -21,7 +21,7 @@ public class FileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
     
-    private final static String RESULTS_DIRECTORY = "TrialResults";
+    private final String OUTPUT_DIRECTORY;
     private final static String PARTICLE_IMAGE_DIRECTORY = "ParticleImages";
     private final static String PARTICLE_RESULTS_DIRECTORY = "ParticleResults";
     private final static String PROBABILISTIC_IMAGE_DIRECTORY = "ProbablisticImages";
@@ -31,16 +31,17 @@ public class FileController {
     private final static String PROBABILISTIC_COMPASS_IMAGE_DIRECTORY = "ProbablisticCompassImages";
     private final static String PROBABILISTIC_COMPASS_RESULTS_DIRECTORY = "ProbablisticCompassResults";
 
-    public File externalDir;
+    public File inputDir;
     public File offlineMapFile;
     public File onlinePointsFile;
     public File initialPointsFile;
     public File inertialDataFile;
     public File image;
+    public File generateTrial;
     public File specificParticle;
     public File specificProb;
 
-    public File resultsDir;
+    public File outputDir;
 
     private File particleImageDir;
     private File particleResultsDir;
@@ -70,9 +71,10 @@ public class FileController {
     public FileController(SettingsProperties sp) {
         this.isOutputImage = sp.isOutputImage();
         this.isTrialDetail = sp.isTrialDetail();
-        setupDirectories(isOutputImage, isTrialDetail);
+        this.OUTPUT_DIRECTORY = sp.OUTPUT_DIRECTORY();
+        setupDirectories();
 
-        setupExternalFiles(sp);
+        setupInputFiles(sp);
 
         if (checkFiles()) {
             setupLists(sp.IN_SEP());
@@ -82,19 +84,19 @@ public class FileController {
         }
     }
 
-    private void setupDirectories(boolean isOutputImage, boolean isTrialDetail) {
+    private void setupDirectories() {
         // Output directories //////////////////////////////////////////////////////////////////////////////////////////
         String workDirPath = System.getProperty("user.dir");
         File workDir = new File(workDirPath);
-        resultsDir = DataLoad.checkDir(workDir, RESULTS_DIRECTORY);
-        logger.info("Results directory: {}", resultsDir.getAbsolutePath());
+        outputDir = DataLoad.checkDir(workDir, OUTPUT_DIRECTORY);
+        logger.info("Results directory: {}", outputDir.getAbsolutePath());
 
         //Image directories
         if (isOutputImage) {
-            particleImageDir = DataLoad.checkDir(resultsDir, PARTICLE_IMAGE_DIRECTORY);
-            probabilisticImageDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_IMAGE_DIRECTORY);
-            particleCompassImageDir = DataLoad.checkDir(resultsDir, PARTICLE_COMPASS_IMAGE_DIRECTORY);
-            probabilisticCompassImageDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_COMPASS_IMAGE_DIRECTORY);
+            particleImageDir = DataLoad.checkDir(outputDir, PARTICLE_IMAGE_DIRECTORY);
+            probabilisticImageDir = DataLoad.checkDir(outputDir, PROBABILISTIC_IMAGE_DIRECTORY);
+            particleCompassImageDir = DataLoad.checkDir(outputDir, PARTICLE_COMPASS_IMAGE_DIRECTORY);
+            probabilisticCompassImageDir = DataLoad.checkDir(outputDir, PROBABILISTIC_COMPASS_IMAGE_DIRECTORY);
 
             //Actual output directories
             partImageDir = particleImageDir;
@@ -103,10 +105,10 @@ public class FileController {
 
         //Results directories
         if (isTrialDetail) {
-            particleResultsDir = DataLoad.checkDir(resultsDir, PARTICLE_RESULTS_DIRECTORY);
-            probabilisticResultsDir = DataLoad.checkDir(resultsDir, PROBABLISTIC_RESULTS_DIRECTORY);
-            particleCompassResultsDir = DataLoad.checkDir(resultsDir, PARTICLE_COMPASS_RESULTS_DIRECTORY);
-            probabilisticCompassResultsDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_COMPASS_RESULTS_DIRECTORY);
+            particleResultsDir = DataLoad.checkDir(outputDir, PARTICLE_RESULTS_DIRECTORY);
+            probabilisticResultsDir = DataLoad.checkDir(outputDir, PROBABLISTIC_RESULTS_DIRECTORY);
+            particleCompassResultsDir = DataLoad.checkDir(outputDir, PARTICLE_COMPASS_RESULTS_DIRECTORY);
+            probabilisticCompassResultsDir = DataLoad.checkDir(outputDir, PROBABILISTIC_COMPASS_RESULTS_DIRECTORY);
 
             //Actual output directories
             particleTrialDir = particleResultsDir;
@@ -115,23 +117,25 @@ public class FileController {
         }
     }
 
-    private void setupExternalFiles(SettingsProperties sp) {
+    private void setupInputFiles(SettingsProperties sp) {
         // External files //////////////////////////////////////////////////////////////////////////////////////////////
-        externalDir = new File(sp.EXTERNAL_DIRECTORY());
-        offlineMapFile = new File(externalDir, sp.OFFLINE_MAP());
-        onlinePointsFile = new File(externalDir, sp.ONLINE_WIFI_DATA());
-        initialPointsFile = new File(externalDir, sp.INITIAL_POINTS());
-        inertialDataFile = new File(externalDir, sp.INERTIAL_DATA());
-        image = new File(externalDir, sp.FLOORPLAN_IMAGE());
-        specificParticle = new File(externalDir, sp.SPECIFIC_PARTICLE());
-        specificProb = new File(externalDir, sp.SPECIFIC_PROB());
+        inputDir = new File(sp.INPUT_DIRECTORY());
+        offlineMapFile = new File(inputDir, sp.OFFLINE_MAP());
+        onlinePointsFile = new File(inputDir, sp.ONLINE_WIFI_DATA());
+        initialPointsFile = new File(inputDir, sp.INITIAL_POINTS());
+        inertialDataFile = new File(inputDir, sp.INERTIAL_DATA());
+        image = new File(inputDir, sp.FLOORPLAN_IMAGE());
+        generateTrial = new File(inputDir, sp.GENERATE_TRIAL_PROPERTIES());
+        specificParticle = new File(inputDir, sp.SPECIFIC_PARTICLE());
+        specificProb = new File(inputDir, sp.SPECIFIC_PROB());
+        
     }
 
     private boolean checkFiles() {
 
         boolean isFileCheck = true;
 
-        if (externalDir.isDirectory()) {
+        if (inputDir.isDirectory()) {
 
             if (!offlineMapFile.isFile()) {
                 logger.info("{} not found", offlineMapFile.toString());
@@ -154,7 +158,7 @@ public class FileController {
                 isFileCheck = false;
             }
         } else {
-            logger.info("{} not found", externalDir.toString());
+            logger.info("{} not found", inputDir.toString());
             isFileCheck = false;
         }
         return isFileCheck;

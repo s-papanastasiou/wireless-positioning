@@ -27,16 +27,18 @@ public class Main {
 
         SettingsProperties sp = new SettingsProperties();
 
+        sp.status();
+        
         FileController fc = new FileController(sp);
 
-        if (fc.isSetupOk) {
-
+        if (fc.isSetupOk) {           
+            
             //Particle Results Logging
-            Logging particleResultsLog = new Logging(new File(fc.resultsDir, "ParticleResults.csv"));
+            Logging particleResultsLog = new Logging(new File(fc.outputDir, "ParticleResults.csv"));
             particleResultsLog.printLine(sp.PAR_RESULTS_HEADER());
 
             //Probabilistic Results Logging
-            Logging probabilisticResultsLog = new Logging(new File(fc.resultsDir, "ProbablisticResults.csv"));
+            Logging probabilisticResultsLog = new Logging(new File(fc.outputDir, "ProbablisticResults.csv"));
             probabilisticResultsLog.printLine(sp.PRO_RESULTS_HEADER());
 
             //Loop through each set of settings
@@ -74,7 +76,7 @@ public class Main {
 
     private static void generateTrials(SettingsProperties sp, FileController fc, Logging particleResultsLog, Logging probabilisticResultsLog) {
 
-        GenerateTrialProperties gtp = new GenerateTrialProperties();
+        GenerateTrialProperties gtp = new GenerateTrialProperties(fc.generateTrial);
         if (gtp.isLoaded()) {
 
             final List<OnOffOptions> options = OnOffOptions.allOptions();

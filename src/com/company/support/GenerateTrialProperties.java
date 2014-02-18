@@ -5,6 +5,7 @@
  */
 package com.company.support;
 
+import java.io.File;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +17,6 @@ import org.slf4j.LoggerFactory;
 public class GenerateTrialProperties extends BaseProperties {
 
     private static final Logger logger = LoggerFactory.getLogger(GenerateTrialProperties.class);
-    
-    @Override
-    protected final String propsFilename() {
-        return "trial.properties";
-    }
 
     private int K_MIN;
     private int K_MAX;
@@ -47,6 +43,7 @@ public class GenerateTrialProperties extends BaseProperties {
     private Double cloudDispCoeff_INC;
 
     private Boolean isLoaded = false;
+    private File propsFile;
     
     public enum TrialKeys {
 
@@ -70,11 +67,12 @@ public class GenerateTrialProperties extends BaseProperties {
         cloudDispCoeff_INC
     };
 
-    public GenerateTrialProperties() {
+    public GenerateTrialProperties(File propsFile) {
         super();
 
         try {
-            Properties props = load();
+            this.propsFile = propsFile;
+            Properties props = load(propsFile);
             if (!props.isEmpty()) {
                 checkAllKeys(props);
                 assignKeys(props);
@@ -86,7 +84,12 @@ public class GenerateTrialProperties extends BaseProperties {
             throw new AssertionError();
         }
     }
-
+        
+    @Override
+    protected final String propsFilename() {
+        return propsFile.getName();
+    }
+    
     @Override
     protected final void assignKeys(Properties props) throws NumberFormatException {
         K_MIN = Integer.parseInt(props.getProperty(TrialKeys.K_MIN.name()));

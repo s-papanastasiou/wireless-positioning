@@ -44,12 +44,14 @@ public class SettingsProperties extends BaseProperties {
     private Double FLOOR_WIDTH;
     private Double FLOOR_HEIGHT;
 
-    private String EXTERNAL_DIRECTORY;
+    private String OUTPUT_DIRECTORY;
+    private String INPUT_DIRECTORY;
     private String OFFLINE_MAP;
     private String ONLINE_WIFI_DATA;
     private String INITIAL_POINTS;
     private String INERTIAL_DATA;
     private String FLOORPLAN_IMAGE;
+    private String GENERATE_TRIAL_PROPERTIES;
     
     private Double BUILD_ORIENT;
     
@@ -75,12 +77,14 @@ public class SettingsProperties extends BaseProperties {
         IMAGE_HEIGHT,
         FLOOR_WIDTH,
         FLOOR_HEIGHT,
-        EXTERNAL_DIRECTORY,
+        OUTPUT_DIRECTORY,
+        INPUT_DIRECTORY,
         OFFLINE_MAP,
         ONLINE_WIFI_DATA,
         INITIAL_POINTS,
         INERTIAL_DATA,
         FLOORPLAN_IMAGE,
+        GENERATE_TRIAL_PROPERTIES,
         BUILD_ORIENT,
         SPECIFIC_PARTICLE,
         SPECIFIC_PROB,
@@ -126,12 +130,14 @@ public class SettingsProperties extends BaseProperties {
         X_PIXELS = IMAGE_WIDTH / FLOOR_WIDTH;
         Y_PIXELS = IMAGE_HEIGHT / FLOOR_HEIGHT;
         
-        EXTERNAL_DIRECTORY = props.getProperty(SettingKeys.EXTERNAL_DIRECTORY.name());
+        OUTPUT_DIRECTORY = props.getProperty(SettingKeys.OUTPUT_DIRECTORY.name());
+        INPUT_DIRECTORY = props.getProperty(SettingKeys.INPUT_DIRECTORY.name());
         OFFLINE_MAP = props.getProperty(SettingKeys.OFFLINE_MAP.name());
         ONLINE_WIFI_DATA = props.getProperty(SettingKeys.ONLINE_WIFI_DATA.name());
         INITIAL_POINTS = props.getProperty(SettingKeys.INITIAL_POINTS.name());
         INERTIAL_DATA = props.getProperty(SettingKeys.INERTIAL_DATA.name());
         FLOORPLAN_IMAGE = props.getProperty(SettingKeys.FLOORPLAN_IMAGE.name());
+        GENERATE_TRIAL_PROPERTIES = props.getProperty(SettingKeys.GENERATE_TRIAL_PROPERTIES.name());
         
         BUILD_ORIENT = Double.parseDouble(props.getProperty(SettingKeys.BUILD_ORIENT.name()));
         
@@ -142,6 +148,22 @@ public class SettingsProperties extends BaseProperties {
         GENERATE_PROB_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.GENERATE_PROB_TRIALS.name()));
         RUN_PARTICLE_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.RUN_PARTICLE_TRIALS.name()));
         RUN_PROB_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.RUN_PROB_TRIALS.name()));
+    }
+    
+    public final void status(){
+        logger.info("OUTPUT IMAGE: {}", isOutputImage);
+        logger.info("TRIAL DETAIL: {}", isTrialDetail);
+        logger.info("INPUT SEPARATOR: {}", IN_SEP);
+        logger.info("OUTPUT SEPARATOR: {}", OUT_SEP);
+        logger.info("INPUT DIRECTORY: {}", INPUT_DIRECTORY);
+        logger.info("OUTPUT DIRECTORY: {}", OUTPUT_DIRECTORY);
+        logger.info("BUILD ORIENT: {}", BUILD_ORIENT);
+        logger.info("X PIXELS: {}", X_PIXELS);
+        logger.info("Y PIXELS: {}", Y_PIXELS);
+        
+        logger.info("GENERATE TRIAL PROPERTIES: {}", GENERATE_TRIAL_PROPERTIES);
+        logger.info("SPECIFIC PARTICLE FILENAME: {}", SPECIFIC_PARTICLE);
+        logger.info("SPECIFIC PROB FILENAME: {}", SPECIFIC_PROB);
     }
     
     @Override
@@ -210,9 +232,13 @@ public class SettingsProperties extends BaseProperties {
     public Double FLOOR_HEIGHT() {
         return FLOOR_HEIGHT;
     }
+    
+    public String OUTPUT_DIRECTORY() {
+        return OUTPUT_DIRECTORY;
+    }
 
-    public String EXTERNAL_DIRECTORY() {
-        return EXTERNAL_DIRECTORY;
+    public String INPUT_DIRECTORY() {
+        return INPUT_DIRECTORY;
     }
 
     public String OFFLINE_MAP() {
@@ -235,6 +261,10 @@ public class SettingsProperties extends BaseProperties {
         return FLOORPLAN_IMAGE;
     }
 
+    public String GENERATE_TRIAL_PROPERTIES() {
+        return GENERATE_TRIAL_PROPERTIES;
+    }
+    
     public Double BUILD_ORIENT() {
         return BUILD_ORIENT;
     }

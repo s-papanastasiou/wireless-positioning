@@ -23,12 +23,17 @@ public abstract class BaseProperties {
     private static final Logger logger = LoggerFactory.getLogger(BaseProperties.class);
     
     protected abstract String propsFilename();
-    //protected Enum Keys;
-        
+   
     protected Properties load(){
         String workDirPath = System.getProperty("user.dir");
         File workDir = new File(workDirPath);
         File propsFile = new File(workDir, propsFilename());
+                
+        return load(propsFile);
+    }   
+    
+    protected Properties load(File propsFile){
+        
         InputStream in;
         
         Properties props = new Properties();
@@ -37,8 +42,7 @@ public abstract class BaseProperties {
                 in = new FileInputStream(propsFile);
                 props.load(in);
                 in.close();    
-                logger.info("{} file located.", propsFilename());
-                //checkAllKeys(props);                
+                logger.info("{} file located.", propsFilename());                           
             }else{                
                 logger.info("{} file not located.", propsFilename());
             }                                    
@@ -50,7 +54,7 @@ public abstract class BaseProperties {
         } 
         
         return props;
-    }        
+    }   
     
     protected abstract void checkAllKeys(Properties props);        
     

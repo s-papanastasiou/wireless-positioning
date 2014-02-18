@@ -26,9 +26,7 @@ public class Main {
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         StatusPrinter.print(lc);
 
-        SettingsProperties sp = new SettingsProperties();
-
-        sp.status();
+        SettingsProperties sp = new SettingsProperties();       
         
         FileController fc = new FileController(sp);
 

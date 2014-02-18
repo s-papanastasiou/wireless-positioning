@@ -103,6 +103,7 @@ public class SettingsProperties extends BaseProperties {
             Properties props = load();
             checkAllKeys(props);
             assignKeys(props);
+            status();
         } catch (NumberFormatException ex) {
             logger.info("{} parameter value incorrect.", propsFilename());
             logger.info(ex.getMessage());
@@ -153,7 +154,7 @@ public class SettingsProperties extends BaseProperties {
         RUN_PROB_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.RUN_PROB_TRIALS.name()));
     }
     
-    public final void status(){
+    private void status(){
         logger.debug("OUTPUT IMAGE: {}", isOutputImage);
         logger.debug("TRIAL DETAIL: {}", isTrialDetail);
         logger.debug("INPUT SEPARATOR: {}", IN_SEP);
@@ -162,9 +163,9 @@ public class SettingsProperties extends BaseProperties {
         logger.debug("OUTPUT DIRECTORY: {}", OUTPUT_DIRECTORY);
         logger.debug("BUILD ORIENT: {}", BUILD_ORIENT);
         logger.debug("X PIXELS: {}", X_PIXELS);
-        logger.debug("Y PIXELS: {}", Y_PIXELS);
-        
+        logger.debug("Y PIXELS: {}", Y_PIXELS);        
         logger.debug("GENERATE TRIAL PROPERTIES: {}", GENERATE_TRIAL_PROPERTIES);
+        logger.debug("FILTER PROPERTIES: {}", FILTER_PROPERTIES);
         logger.debug("SPECIFIC PARTICLE FILENAME: {}", SPECIFIC_PARTICLE);
         logger.debug("SPECIFIC PROB FILENAME: {}", SPECIFIC_PROB);
     }

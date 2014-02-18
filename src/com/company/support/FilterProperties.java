@@ -53,6 +53,7 @@ public class FilterProperties extends BaseProperties {
             if (!props.isEmpty()) {
                 checkAllKeys(props);
                 assignKeys(props);
+                status();
                 isLoaded = true;
             }
         } catch (NumberFormatException ex) {
@@ -103,6 +104,13 @@ public class FilterProperties extends BaseProperties {
                 throw new AssertionError();
             }
         }
+    }
+    
+    private void status(){
+        logger.debug("JITTER OFFSET: {}", JITTER_OFFSET);
+        logger.debug("ACCELERATION OFFSET x: {} y: {} z: {}", ACCELERATION_OFFSET[0], ACCELERATION_OFFSET[1], ACCELERATION_OFFSET[2]);
+        logger.debug("CLOUD BOUNDARY upper: {} mid: {} lower: {} base: {}", CLOUD_BOUNDARY.get(Threshold.UPPER), CLOUD_BOUNDARY.get(Threshold.MID), CLOUD_BOUNDARY.get(Threshold.LOWER), CLOUD_BOUNDARY.get(Threshold.BASE));
+        logger.debug("CLOUD PARTICLE CREATION upper : {} mid: {} lower: {} base: {}", CLOUD_PARTICLE_CREATION.get(Threshold.UPPER), CLOUD_PARTICLE_CREATION.get(Threshold.MID), CLOUD_PARTICLE_CREATION.get(Threshold.LOWER), CLOUD_PARTICLE_CREATION.get(Threshold.BASE));
     }
 
     public Double JITTER_OFFSET() {

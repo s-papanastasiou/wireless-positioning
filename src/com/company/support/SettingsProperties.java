@@ -154,19 +154,19 @@ public class SettingsProperties extends BaseProperties {
     }
     
     public final void status(){
-        logger.info("OUTPUT IMAGE: {}", isOutputImage);
-        logger.info("TRIAL DETAIL: {}", isTrialDetail);
-        logger.info("INPUT SEPARATOR: {}", IN_SEP);
-        logger.info("OUTPUT SEPARATOR: {}", OUT_SEP);
-        logger.info("INPUT DIRECTORY: {}", INPUT_DIRECTORY);
-        logger.info("OUTPUT DIRECTORY: {}", OUTPUT_DIRECTORY);
-        logger.info("BUILD ORIENT: {}", BUILD_ORIENT);
-        logger.info("X PIXELS: {}", X_PIXELS);
-        logger.info("Y PIXELS: {}", Y_PIXELS);
+        logger.debug("OUTPUT IMAGE: {}", isOutputImage);
+        logger.debug("TRIAL DETAIL: {}", isTrialDetail);
+        logger.debug("INPUT SEPARATOR: {}", IN_SEP);
+        logger.debug("OUTPUT SEPARATOR: {}", OUT_SEP);
+        logger.debug("INPUT DIRECTORY: {}", INPUT_DIRECTORY);
+        logger.debug("OUTPUT DIRECTORY: {}", OUTPUT_DIRECTORY);
+        logger.debug("BUILD ORIENT: {}", BUILD_ORIENT);
+        logger.debug("X PIXELS: {}", X_PIXELS);
+        logger.debug("Y PIXELS: {}", Y_PIXELS);
         
-        logger.info("GENERATE TRIAL PROPERTIES: {}", GENERATE_TRIAL_PROPERTIES);
-        logger.info("SPECIFIC PARTICLE FILENAME: {}", SPECIFIC_PARTICLE);
-        logger.info("SPECIFIC PROB FILENAME: {}", SPECIFIC_PROB);
+        logger.debug("GENERATE TRIAL PROPERTIES: {}", GENERATE_TRIAL_PROPERTIES);
+        logger.debug("SPECIFIC PARTICLE FILENAME: {}", SPECIFIC_PARTICLE);
+        logger.debug("SPECIFIC PROB FILENAME: {}", SPECIFIC_PROB);
     }
     
     @Override

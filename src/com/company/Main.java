@@ -81,8 +81,9 @@ public class Main {
 
             //Particle Test
             if (sp.GENERATE_PARTICLE_TRIALS()) {
+                logger.info("Particle Test");
                 for (int k_counter = gtp.K_MIN(); k_counter <= gtp.K_MAX(); k_counter += gtp.K_INC()) {
-                    logger.info("Particle Test");
+                    
                     for (OnOffOptions option : options) {
                         List<ParticleTrial> parTrialList = ParticleTrial.generate(option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), k_counter, gtp, sp.OUT_SEP());
                         Simulation.runParticleList(sp, fc, parTrialList, particleResultsLog);
@@ -91,8 +92,8 @@ public class Main {
             }
 
             if (sp.GENERATE_PROB_TRIALS()) {
-                for (int k_counter = gtp.K_MIN(); k_counter <= gtp.K_MAX(); k_counter += gtp.K_INC()) {
-                    logger.info("Probablistic Test");
+                logger.info("Probablistic Test");
+                for (int k_counter = gtp.K_MIN(); k_counter <= gtp.K_MAX(); k_counter += gtp.K_INC()) {                    
                     for (OnOffOptions option : options) {
                         List<ProbabilisticTrial> proTrialList = ProbabilisticTrial.generate(option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), k_counter, sp.OUT_SEP());
                         Simulation.runProbabList(sp, fc, proTrialList, probabilisticResultsLog);

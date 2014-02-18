@@ -106,8 +106,8 @@ public class ParticleSimulation {
 
             //Store the points for drawing
             if (sp.isOutputImage()) {
-                trialPoints.add(new Point(knnTrialPoint.getxRef() * sp.X_PIXELS(), knnTrialPoint.getyRef() * sp.Y_PIXELS()));
-                particleFinalPoints.add(new Point(bestPoint.getX() * sp.X_PIXELS(), bestPoint.getY() * sp.Y_PIXELS()));
+                trialPoints.add(knnTrialPoint.drawPoint(sp.X_PIXELS(), sp.Y_PIXELS()));
+                particleFinalPoints.add(bestPoint.drawPoint(sp.X_PIXELS(), sp.Y_PIXELS()));
             }
             //Log the trial results
             if (particleTrialLog.isLogging()) {

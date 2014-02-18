@@ -16,6 +16,7 @@ import datastorage.KNNFloorPoint;
 import datastorage.KNNTrialPoint;
 import filehandling.KNNRSSI;
 import general.AvgValue;
+import general.Locate;
 import general.Point;
 import java.io.File;
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public class ParticleSimulation {
                 cloud = new Cloud(initialPoint, particles);
             }
 
-            Point bestPoint = ForceToMap.findBestPoint(offlineMap, cloud.getEstiPos(), parTrial.isForceToOfflineMap());
+            Point bestPoint = Locate.forceToMap(offlineMap, cloud.getEstiPos(), parTrial.isForceToOfflineMap());
 
             double trialDistance = knnTrialPoint.distance(bestPoint);
             totalDistance.add(trialDistance);

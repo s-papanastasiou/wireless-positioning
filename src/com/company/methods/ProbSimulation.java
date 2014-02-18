@@ -15,6 +15,7 @@ import datastorage.KNNFloorPoint;
 import datastorage.KNNTrialPoint;
 import filehandling.KNNRSSI;
 import general.AvgValue;
+import general.Locate;
 import general.Point;
 import java.io.File;
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class ProbSimulation {
 
             Point probabilisticPoint = Probabilistic.run(knnTrialPoint, offlineMap, proTrial.getK(), orientation);
 
-            Point bestPoint = ForceToMap.findBestPoint(offlineMap, probabilisticPoint, proTrial.isForceToOfflineMap());
+            Point bestPoint = Locate.forceToMap(offlineMap, probabilisticPoint, proTrial.isForceToOfflineMap());
 
             double trialDistance = knnTrialPoint.distance(bestPoint);
             totalDistance.add(trialDistance);

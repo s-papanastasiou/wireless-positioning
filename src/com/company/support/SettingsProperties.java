@@ -138,7 +138,7 @@ public class SettingsProperties extends BaseProperties {
         SPECIFIC_PARTICLE = props.getProperty(SettingKeys.SPECIFIC_PARTICLE.name());
         SPECIFIC_PROB = props.getProperty(SettingKeys.SPECIFIC_PROB.name());
         
-        GENERATE_PARTICLE_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.RUN_PARTICLE_TRIALS.name()));
+        GENERATE_PARTICLE_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.GENERATE_PARTICLE_TRIALS.name()));
         GENERATE_PROB_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.GENERATE_PROB_TRIALS.name()));
         RUN_PARTICLE_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.RUN_PARTICLE_TRIALS.name()));
         RUN_PROB_TRIALS = Boolean.parseBoolean(props.getProperty(SettingKeys.RUN_PROB_TRIALS.name()));

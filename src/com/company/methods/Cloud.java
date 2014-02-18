@@ -38,7 +38,7 @@ public class Cloud {
     }
 
     public String getParticleCount() {
-        return String.format("ParticleNb : %s", particles.size());
+        return "ParticleNb : " + particles.size();
     }
 
     public Point getEstiPos() {

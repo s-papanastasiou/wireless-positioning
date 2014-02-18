@@ -6,6 +6,7 @@
 
 package com.company.methods;
 
+import com.company.support.FilterProperties;
 import com.company.support.FileController;
 import com.company.support.Logging;
 import com.company.support.ParticleTrial;
@@ -18,6 +19,7 @@ import general.AvgValue;
 import general.Point;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import visualinfo.DisplayRoute;
@@ -27,12 +29,16 @@ import visualinfo.DisplayRoute;
  * @author SST3ALBISG
  */
 public class ParticleSimulation {
-    public static void run(SettingsProperties sp, FileController fc, ParticleTrial parTrial, Logging particleResultsLog) {
+    public static void run(SettingsProperties sp, FileController fc, FilterProperties fp, ParticleTrial parTrial, Logging particleResultsLog) {
 
         String OUT_SEP = sp.OUT_SEP();
 
-        final double BUILD_ORIENT = sp.BUILD_ORIENT();
-        final double ADJUSTED_ORIENT = Simulation.HALF_PI - BUILD_ORIENT;
+        final Double BUILD_ORIENT = sp.BUILD_ORIENT();
+        final Double ADJUSTED_ORIENT = Simulation.HALF_PI - BUILD_ORIENT;
+        final Double JITTER_OFFSET = fp.JITTER_OFFSET();
+        final Float[] ACCELERATION_OFFSET = fp.ACCELERATION_OFFSET();
+        final EnumMap<FilterProperties.Threshold, Float> CLOUD_BOUNDARY = fp.CLOUD_BOUNDARY();
+        final EnumMap<FilterProperties.Threshold, Integer> CLOUD_PARTICLE_CREATION = fp.CLOUD_PARTICLE_CREATION();
 
         //Load offline map, online points (trial scan points) and intial points (stationary readings at start of trial).
         HashMap<String, KNNFloorPoint> offlineMap = KNNRSSI.compile(fc.offlineDataList, parTrial.isBSSIDMerged(), parTrial.isOrientationMerged());
@@ -80,7 +86,7 @@ public class ParticleSimulation {
                     sensorData.getOrientation()[0] += ADJUSTED_ORIENT;
                     InertialData results = InertialData.getDatas(sensorData.getInvertedMatrix(),
                             sensorData.getLinearAcceleration(), sensorData.getOrientation(),
-                            BUILD_ORIENT);
+                            BUILD_ORIENT, JITTER_OFFSET, ACCELERATION_OFFSET);
                     inertialPoint = InertialPoint.move(inertialPoint, results, sensorData.getTimestamp(), parTrial.getSpeedBreak());
                     orientation = InertialData.getOrientation(parTrial.isOrientationMerged(), sensorData.getOrientation()[0], BUILD_ORIENT);
 
@@ -93,7 +99,7 @@ public class ParticleSimulation {
             Point probabilisticPoint = Probabilistic.run(knnTrialPoint, offlineMap, parTrial.getK(), orientation);
 
             if (cloud != null) {
-                cloud = ParticleFilter.filter(cloud, probabilisticPoint, inertialPoint, parTrial.getParticleCount(), parTrial.getCloudRange(), parTrial.getCloudDisplacementCoefficient());
+                cloud = ParticleFilter.filter(cloud, probabilisticPoint, inertialPoint, parTrial.getParticleCount(), parTrial.getCloudRange(), parTrial.getCloudDisplacementCoefficient(), CLOUD_BOUNDARY, CLOUD_PARTICLE_CREATION);
             } else {
                 List<Particle> particles = ParticleFilter.createParticles(initialPoint, parTrial.getParticleCount());
                 cloud = new Cloud(initialPoint, particles);

@@ -52,6 +52,7 @@ public class SettingsProperties extends BaseProperties {
     private String INERTIAL_DATA;
     private String FLOORPLAN_IMAGE;
     private String GENERATE_TRIAL_PROPERTIES;
+    private String FILTER_PROPERTIES;
     
     private Double BUILD_ORIENT;
     
@@ -85,6 +86,7 @@ public class SettingsProperties extends BaseProperties {
         INERTIAL_DATA,
         FLOORPLAN_IMAGE,
         GENERATE_TRIAL_PROPERTIES,
+        FILTER_PROPERTIES,
         BUILD_ORIENT,
         SPECIFIC_PARTICLE,
         SPECIFIC_PROB,
@@ -138,6 +140,7 @@ public class SettingsProperties extends BaseProperties {
         INERTIAL_DATA = props.getProperty(SettingKeys.INERTIAL_DATA.name());
         FLOORPLAN_IMAGE = props.getProperty(SettingKeys.FLOORPLAN_IMAGE.name());
         GENERATE_TRIAL_PROPERTIES = props.getProperty(SettingKeys.GENERATE_TRIAL_PROPERTIES.name());
+        FILTER_PROPERTIES = props.getProperty(SettingKeys.FILTER_PROPERTIES.name());
         
         BUILD_ORIENT = Double.parseDouble(props.getProperty(SettingKeys.BUILD_ORIENT.name()));
         
@@ -263,6 +266,10 @@ public class SettingsProperties extends BaseProperties {
 
     public String GENERATE_TRIAL_PROPERTIES() {
         return GENERATE_TRIAL_PROPERTIES;
+    }
+    
+    public String FILTER_PROPERTIES() {
+        return FILTER_PROPERTIES;
     }
     
     public Double BUILD_ORIENT() {

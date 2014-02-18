@@ -38,6 +38,7 @@ public class FileController {
     public File inertialDataFile;
     public File image;
     public File generateTrial;
+    public File filterProperties;
     public File specificParticle;
     public File specificProb;
 
@@ -126,6 +127,7 @@ public class FileController {
         inertialDataFile = new File(inputDir, sp.INERTIAL_DATA());
         image = new File(inputDir, sp.FLOORPLAN_IMAGE());
         generateTrial = new File(inputDir, sp.GENERATE_TRIAL_PROPERTIES());
+        filterProperties = new File(inputDir, sp.FILTER_PROPERTIES());
         specificParticle = new File(inputDir, sp.SPECIFIC_PARTICLE());
         specificProb = new File(inputDir, sp.SPECIFIC_PROB());
         

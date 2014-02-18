@@ -4,6 +4,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 import com.company.support.GenerateTrialProperties;
 import com.company.support.FileController;
+import com.company.support.FilterProperties;
 import com.company.support.Simulation;
 import com.company.support.ParticleTrial;
 import com.company.support.Logging;
@@ -41,10 +42,12 @@ public class Main {
             Logging probabilisticResultsLog = new Logging(new File(fc.outputDir, "ProbablisticResults.csv"));
             probabilisticResultsLog.printLine(sp.PRO_RESULTS_HEADER());
 
+            FilterProperties fp = new FilterProperties(fc.filterProperties);
+            
             //Loop through each set of settings
             if (sp.GENERATE_PARTICLE_TRIALS() || sp.GENERATE_PROB_TRIALS()) {
                 logger.info("Generating settings: ENABLED");
-                generateTrials(sp, fc, particleResultsLog, probabilisticResultsLog);
+                generateTrials(sp, fc, fp, particleResultsLog, probabilisticResultsLog);
             } else {
                 logger.info("Generating settings: DISABLED");
             }
@@ -53,7 +56,7 @@ public class Main {
                 logger.info("Specific Particle Trials: ENABLED");
                 List<ParticleTrial> particleTrialList = ParticleTrial.load(sp, fc);
                 if (!particleTrialList.isEmpty()) {
-                    Simulation.runParticleList(sp, fc, particleTrialList, particleResultsLog);
+                    Simulation.runParticleList(sp, fc, fp, particleTrialList, particleResultsLog);
                 }
             } else {
                 logger.info("Specific Particle Trials: DISABLED");
@@ -74,7 +77,7 @@ public class Main {
 
     }
 
-    private static void generateTrials(SettingsProperties sp, FileController fc, Logging particleResultsLog, Logging probabilisticResultsLog) {
+    private static void generateTrials(SettingsProperties sp, FileController fc, FilterProperties fp, Logging particleResultsLog, Logging probabilisticResultsLog) {
 
         GenerateTrialProperties gtp = new GenerateTrialProperties(fc.generateTrial);
         if (gtp.isLoaded()) {
@@ -88,7 +91,7 @@ public class Main {
                     
                     for (OnOffOptions option : options) {
                         List<ParticleTrial> parTrialList = ParticleTrial.generate(option.isBSSIDMerged(), option.isOrientationMerged(), option.isForceToOfflineMap(), k_counter, gtp, sp.OUT_SEP());
-                        Simulation.runParticleList(sp, fc, parTrialList, particleResultsLog);
+                        Simulation.runParticleList(sp, fc, fp, parTrialList, particleResultsLog);
                     }
                 }
             }

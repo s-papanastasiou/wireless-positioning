@@ -1,8 +1,10 @@
 package com.company.methods;
 
+import com.company.support.FilterProperties.Threshold;
 import general.Point;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Random;
 import java.util.TreeSet;
@@ -13,24 +15,20 @@ import java.util.TreeSet;
  */
 public class ParticleFilter {
 
-    public static Cloud filter(Cloud cloud, Point posProba, InertialPoint inertialPoint, double particleCount, double cloudRange, double cloudDisplacement) {
+    public static Cloud filter(Cloud cloud, Point posProba, InertialPoint inertialPoint, double particleCount, double cloudRange, double cloudDisplacement, EnumMap<Threshold, Float> boundaries, EnumMap<Threshold, Integer> particleCreation) {
 
         // Weight calculus
         List<Particle> weightList = weightCloud(cloud.getParticles(), posProba, particleCount, cloudRange);
-        //String message0 = String.format("WeightList :%s",weightList.size());
-        //Logging.printLine(message0);
+        
         // Resample
-        List<Particle> reSampleList = reSample(weightList);
-        //String message1 = String.format("reSampleList :%s",reSampleList.size());
-        //Logging.printLine(message1);
+        List<Particle> reSampleList = reSample(weightList, boundaries, particleCreation);
+        
         // Move the cloud
         List<Particle> moveCloudList = moveCloud(reSampleList, cloud.getInerPoint(), inertialPoint);
-        //String message2 = String.format("MoveCloudList :%s",moveCloudList.size());
-        //Logging.printLine(message2);
+        
         // Create new cloud of particles
         List<Particle> newRandomCloudList = newRandomCloud(moveCloudList, cloudDisplacement);
-        //String message3 = String.format("NewRandomCloudList :%s",newRandomCloudList.size());
-        //Logging.printLine(message3);
+        
         // Calculation of barycentre
         Point estiPosPart = position(newRandomCloudList);
 
@@ -56,21 +54,21 @@ public class ParticleFilter {
         return finalList;
     }
 
-    private static List<Particle> reSample(List<Particle> particles) {
+    private static List<Particle> reSample(List<Particle> particles, EnumMap<Threshold, Float> boundaries, EnumMap<Threshold, Integer> particleCreation) {
 
         List<Particle> newList = new ArrayList<>();
 
         for (Particle particle : particles) {
 
             if (particle != null) {
-                if (particle.weight > 0.75) {
-                    newList.addAll(createParticles(particle.getPoint(), 4));
-                } else if ((particle.weight <= 0.75) && (particle.weight > 0.5)) {
-                    newList.addAll(createParticles(particle.getPoint(), 3));
-                } else if ((particle.weight <= 0.5) && (particle.weight > 0.25)) {
-                    newList.addAll(createParticles(particle.getPoint(), 2));
+                if (particle.weight > boundaries.get(Threshold.UPPER)) {
+                    newList.addAll(createParticles(particle.getPoint(), particleCreation.get(Threshold.UPPER)));
+                } else if ((particle.weight <= boundaries.get(Threshold.UPPER)) && (particle.weight > boundaries.get(Threshold.MID))) {
+                    newList.addAll(createParticles(particle.getPoint(), particleCreation.get(Threshold.MID)));
+                } else if ((particle.weight <= boundaries.get(Threshold.MID)) && (particle.weight > boundaries.get(Threshold.LOWER))) {
+                    newList.addAll(createParticles(particle.getPoint(), particleCreation.get(Threshold.LOWER)));
                 } else {
-                    newList.addAll(createParticles(particle.getPoint(), 1));
+                    newList.addAll(createParticles(particle.getPoint(), particleCreation.get(Threshold.BASE)));
                 }
             }
         }

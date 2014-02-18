@@ -47,12 +47,12 @@ public class Simulation {
         }
     }                 
 
-    public static void runParticleList(SettingsProperties sp, FileController fc, List<ParticleTrial> parTrialList, Logging particleResultsLog) {
+    public static void runParticleList(SettingsProperties sp, FileController fc, FilterProperties fp, List<ParticleTrial> parTrialList, Logging particleResultsLog) {
         for (ParticleTrial parTrial : parTrialList) {
             Date date = new Date();        
             
             logger.info("Particle Started: {} {}", parTrial.toString(), sp.formatDate(date));        
-            ParticleSimulation.run(sp, fc, parTrial, particleResultsLog);
+            ParticleSimulation.run(sp, fc, fp, parTrial, particleResultsLog);
             
             date = new Date();
             logger.info("Completed: {} {}", parTrial.toString(), sp.formatDate(date));                        

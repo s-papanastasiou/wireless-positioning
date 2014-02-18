@@ -33,7 +33,7 @@ public class ParticleTrial {
     private final double cloudDisplacementCoefficient;
     private final boolean isForceToOfflineMap;
     private final String valuesStr;
-    private final String titleStr;
+    private final String titleStr;    
 
     public ParticleTrial(boolean BSSIDMerged, boolean orientationMerged, boolean forceToOfflineMap, int k, int initRSSIReadings, int particleCount, int speedBreak, double cloudRange, double cloudDisplacementCoefficient, String OUT_SEP) {
         this.isBSSIDMerged = BSSIDMerged;

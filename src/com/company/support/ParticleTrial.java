@@ -33,7 +33,9 @@ public class ParticleTrial {
     private final double cloudDisplacementCoefficient;
     private final boolean isForceToOfflineMap;
     private final String valuesStr;
-    private final String titleStr;    
+    private final String titleStr;
+    private final String prefix = "particle";
+    private final String sep = "-";
 
     public ParticleTrial(boolean BSSIDMerged, boolean orientationMerged, boolean forceToOfflineMap, int k, int initRSSIReadings, int particleCount, int speedBreak, double cloudRange, double cloudDisplacementCoefficient, String OUT_SEP) {
         this.isBSSIDMerged = BSSIDMerged;
@@ -50,9 +52,9 @@ public class ParticleTrial {
                 + K + OUT_SEP + initRSSIReadings + OUT_SEP
                 + particleCount + OUT_SEP + speedBreak + OUT_SEP + cloudRange + OUT_SEP
                 + cloudDisplacementCoefficient;
-        this.titleStr = "particle-" + isBSSIDMerged + "-" + isOrientationMerged + "-" + isForceToOfflineMap + "-"
-                + K + "-" + initRSSIReadings + "-"
-                + particleCount + "-" + speedBreak + "-" + cloudRange + "-"
+        this.titleStr = prefix + sep + isBSSIDMerged + sep + isOrientationMerged + sep + isForceToOfflineMap + sep
+                + K + sep + initRSSIReadings + sep
+                + particleCount + sep + speedBreak + sep + cloudRange + sep
                 + cloudDisplacementCoefficient;
     }
 
@@ -71,9 +73,9 @@ public class ParticleTrial {
                 + K + OUT_SEP + initRSSIReadings + OUT_SEP
                 + particleCount + OUT_SEP + speedBreak + OUT_SEP + cloudRange + OUT_SEP
                 + cloudDisplacementCoefficient;
-        this.titleStr = "particle-" + isBSSIDMerged + "-" + isOrientationMerged + "-" + isForceToOfflineMap + "-"
-                + K + "-" + initRSSIReadings + "-"
-                + particleCount + "-" + speedBreak + "-" + cloudRange + "-"
+        this.titleStr = prefix + sep + isBSSIDMerged + sep + isOrientationMerged + sep + isForceToOfflineMap + sep
+                + K + sep + initRSSIReadings + sep
+                + particleCount + sep + speedBreak + sep + cloudRange + sep
                 + cloudDisplacementCoefficient;
     }
 

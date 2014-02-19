@@ -30,6 +30,8 @@ public class ProbabilisticTrial {
     private final boolean isForceToOfflineMap;    
     private final String valuesStr;
     private final String titleStr;
+    private final String prefix = "probabilistic";
+    private final String sep = "-";
     
     public ProbabilisticTrial(boolean BSSIDMerged, boolean orientationMerged, boolean forceToOfflineMap, int k, String OUT_SEP) {
         this.isBSSIDMerged = BSSIDMerged;
@@ -37,7 +39,7 @@ public class ProbabilisticTrial {
         this.K = k;        
         this.isForceToOfflineMap = forceToOfflineMap;        
         this.valuesStr = isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP + isForceToOfflineMap + OUT_SEP + K;
-        this.titleStr = "probablistic-" + isBSSIDMerged + "-" + isOrientationMerged + "-" + isForceToOfflineMap + "-" + K;
+        this.titleStr = prefix + sep + isBSSIDMerged + sep + isOrientationMerged + sep + isForceToOfflineMap + sep + K;
     }
     
     public ProbabilisticTrial(String[] parts, String OUT_SEP) throws ParseException {
@@ -47,7 +49,7 @@ public class ProbabilisticTrial {
         this.K = Integer.parseInt(parts[3]);
         
         this.valuesStr = isBSSIDMerged + OUT_SEP + isOrientationMerged + OUT_SEP + isForceToOfflineMap + OUT_SEP + K;
-        this.titleStr = "probablistic-" + isBSSIDMerged + "-" + isOrientationMerged + "-" + isForceToOfflineMap + "-" + K;
+        this.titleStr = prefix + sep + isBSSIDMerged + sep + isOrientationMerged + sep + isForceToOfflineMap + sep + K;
     }
     
     public boolean isBSSIDMerged() {

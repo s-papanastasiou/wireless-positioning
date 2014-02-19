@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+        >
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent" android:layout_gravity="left|center_horizontal">
+        <view android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              class="com.example.Sensor.Visualisation" android:id="@+id/view"/>
+        <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New ToggleButton"
+                android:id="@android:id/toggle" android:layout_alignLeft="@+id/view"
+                android:layout_alignTop="@+id/view" android:onClick="onSensorButtonClick"/>
+        <TextView
+                android:layout_width="658dp"
+                android:layout_height="wrap_content"
+                android:text=" "
+                android:id="@+id/datasView"
+                android:lines="10" android:textColor="#007aa6"
+                android:layout_alignParentLeft="true" android:layout_marginLeft="622dp"
+                android:layout_alignTop="@+id/view"/>
+        <ToggleButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New ToggleButton"
+                android:id="@+id/movingButton"
+                android:layout_alignLeft="@+id/view" android:layout_alignParentTop="true"
+                android:layout_marginTop="473dp" android:onClick="onMovingButtonClick"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Moving"
+                android:id="@+id/textView"
+                android:layout_alignLeft="@+id/view" android:layout_alignParentTop="true"
+                android:layout_marginTop="431dp"/>
+    </RelativeLayout>
+
+</LinearLayout>
+

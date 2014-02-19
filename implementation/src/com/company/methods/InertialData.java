@@ -12,11 +12,9 @@ public class InertialData {
 
     private final static double DEG_IN_CIRCLE = 360;
     private final static double RAD2DEG = 180.0 / Math.PI;
-    private final static float[] EXP_OBS = {0.005f, 0.03f, -0.17f};
+    
     public final static double HALF_PI = Math.PI / 2;
-    public static int NO_ORIENTATION = -1;
-
-    private final static double JITTER_OFFSET = 0.3;  //compensate for small non-zero values when tablet is stationary
+    public static int NO_ORIENTATION = -1;    
 
     private Double accelerationX = 0.0;
     private Double accelerationY = 0.0;
@@ -47,24 +45,24 @@ public class InertialData {
         return String.format("accX:%s;accY:%s;accZ:%s;azi:%s;pit:%s;roll:%s", accelerationX, accelerationY, accelerationZ, azimuth, pitch, roll);
     }
 
-    public static InertialData getDatas(float[] iR, float[] mLinearAcceleration, float[] orientation, double buildingOrientation) {
+    public static InertialData getDatas(float[] iR, float[] mLinearAcceleration, float[] orientation, Double buildingOrientation, Double jitterOffset, Float[] accelerationOffset) {
 
         float aX, aY, aZ, trueX, trueY, trueZ;
 
-        aX = mLinearAcceleration[0] * iR[0] + mLinearAcceleration[1] * iR[1] + mLinearAcceleration[2] * iR[2] + EXP_OBS[0];
-        aY = mLinearAcceleration[0] * iR[4] + mLinearAcceleration[1] * iR[5] + mLinearAcceleration[2] * iR[6] + EXP_OBS[1];
-        aZ = mLinearAcceleration[0] * iR[8] + mLinearAcceleration[1] * iR[9] + mLinearAcceleration[2] * iR[10] + EXP_OBS[2];
+        aX = mLinearAcceleration[0] * iR[0] + mLinearAcceleration[1] * iR[1] + mLinearAcceleration[2] * iR[2] + accelerationOffset[0];
+        aY = mLinearAcceleration[0] * iR[4] + mLinearAcceleration[1] * iR[5] + mLinearAcceleration[2] * iR[6] + accelerationOffset[1];
+        aZ = mLinearAcceleration[0] * iR[8] + mLinearAcceleration[1] * iR[9] + mLinearAcceleration[2] * iR[10] + accelerationOffset[2];
 
         trueX = (float) (0.01 * Math.floor(100 * (aY * Math.sin(buildingOrientation) - aX * Math.cos(buildingOrientation))));
         trueY = (float) (0.01 * Math.floor(100 * (aX * Math.sin(buildingOrientation) + aY * Math.cos(buildingOrientation))));
         trueZ = (float) (0.01 * Math.floor(100 * (-aZ)));
 
         //compensate for small non-zero values when tablet is stationary
-        if ((trueX < 0.3) && (trueX > -0.3))
+        if ((trueX < jitterOffset) && (trueX > -jitterOffset))
             trueX = 0;
-        if ((trueY < 0.3) && (trueY > -0.3))
+        if ((trueY < jitterOffset) && (trueY > -jitterOffset))
             trueY = 0;
-        if ((trueZ < 0.3) && (trueZ > -0.3))
+        if ((trueZ < jitterOffset) && (trueZ > -jitterOffset))
             trueZ = 0;
 
         return new InertialData(trueX, trueY, trueZ, degrees360(orientation[0] - buildingOrientation + HALF_PI), -orientation[2] * RAD2DEG, -orientation[1] * RAD2DEG);

@@ -13,6 +13,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -20,48 +22,8 @@ import java.util.List;
  */
 public class DataLoad {
 
-    /*
-    public static List<ParticleSettings> loadSettings(File settingsFile, String INPUT_SEPARATOR) {
-
-        List<ParticleSettings> settingsList = new ArrayList<>();
-        //Load files
-
-        int lineNumber = 0;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(settingsFile))) {
-
-            String header = reader.readLine();
-            int headerSize = header.split(INPUT_SEPARATOR).length;
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-
-                lineNumber++;
-                String[] columns = line.split(INPUT_SEPARATOR);
-
-                if (columns.length == headerSize) {
-
-          ParticleSettingsppSettings appSettings
-                   ParticleSettingsnew AppSettings(Boolean.parseBoolean(columns[0]), Boolean.parseBoolean(columns[1]),
-                                    Integer.parseInt(columns[2]), Integer.parseInt(columns[3]),
-                                    Integer.parseInt(columns[4]), Integer.parseInt(columns[5]),
-                                    Double.parseDouble(columns[6]), Double.parseDouble(columns[7]),
-                                    Boolean.parseBoolean(columns[8]), Double.parseDouble(columns[9]));
-
-                    settingsList.add(appSettings);
-                } else {
-                    System.out.println("Skipping line " + lineNumber);
-                }
-            }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
-
-        System.out.println("Settings loaded: " + lineNumber);
-
-        return settingsList;
-    }
-*/
+    private static final Logger logger = LoggerFactory.getLogger(DataLoad.class);
+    
     public static List<Data> loadInertialData(File inertialDataFile, String INPUT_SEPARATOR) {
 
         int lineNumber = 0;
@@ -96,14 +58,14 @@ public class DataLoad {
 
                     inertialDataList.add(data);
                 } else {
-                    System.out.println("Skipping line " + lineNumber);
+                    logger.info("Skipping line: {}", lineNumber);
                 }
             }
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            logger.error(e.getMessage());
         }
 
-        System.out.println("Data loaded: " + lineNumber);
+        logger.info("Data loaded: {}", lineNumber);
 
         return inertialDataList;
     }

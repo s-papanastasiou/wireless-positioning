@@ -10,6 +10,8 @@ import datastorage.RSSIData;
 import filehandling.RSSILoader;
 import java.io.File;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -17,13 +19,9 @@ import java.util.List;
  */
 public class FileController {
 
-    private final static String OFFLINE_MAP = "offlineMap.csv";
-    private final static String ONLINE_WIFI_DATA = "onlineWifiDataA.csv";
-    private final static String INITIAL_POINTS = "initialPointsA.csv";
-    private final static String INERTIAL_DATA = "inertialDataA.csv";
-    private final static String IMAGE = "floor2final.png";
-
-    private final static String RESULTS_DIRECTORY = "TrialResults";
+    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
+    
+    private final String OUTPUT_DIRECTORY;
     private final static String PARTICLE_IMAGE_DIRECTORY = "ParticleImages";
     private final static String PARTICLE_RESULTS_DIRECTORY = "ParticleResults";
     private final static String PROBABILISTIC_IMAGE_DIRECTORY = "ProbablisticImages";
@@ -33,13 +31,18 @@ public class FileController {
     private final static String PROBABILISTIC_COMPASS_IMAGE_DIRECTORY = "ProbablisticCompassImages";
     private final static String PROBABILISTIC_COMPASS_RESULTS_DIRECTORY = "ProbablisticCompassResults";
 
+    public File inputDir;
     public File offlineMapFile;
     public File onlinePointsFile;
     public File initialPointsFile;
     public File inertialDataFile;
     public File image;
+    public File generateTrial;
+    public File filterProperties;
+    public File specificParticle;
+    public File specificProb;
 
-    public File resultsDir;
+    public File outputDir;
 
     private File particleImageDir;
     private File particleResultsDir;
@@ -66,34 +69,35 @@ public class FileController {
     private final boolean isOutputImage;
     private final boolean isTrialDetail;
 
-    public FileController(String IN_SEP, boolean isOutputImage, boolean isTrialDetail) {
-        this.isOutputImage = isOutputImage;
-        this.isTrialDetail = isTrialDetail;
-        setupDirectories(isOutputImage, isTrialDetail);
+    public FileController(SettingsProperties sp) {
+        this.isOutputImage = sp.isOutputImage();
+        this.isTrialDetail = sp.isTrialDetail();
+        this.OUTPUT_DIRECTORY = sp.OUTPUT_DIRECTORY();
+        setupDirectories();
 
-        setupExternalFiles();
+        setupInputFiles(sp);
 
         if (checkFiles()) {
-            setupLists(IN_SEP);
+            setupLists(sp.IN_SEP());
             isSetupOk = true;
         } else {
             isSetupOk = false;
         }
     }
 
-    private void setupDirectories(boolean isOutputImage, boolean isTrialDetail) {
+    private void setupDirectories() {
         // Output directories //////////////////////////////////////////////////////////////////////////////////////////
         String workDirPath = System.getProperty("user.dir");
         File workDir = new File(workDirPath);
-        resultsDir = DataLoad.checkDir(workDir, RESULTS_DIRECTORY);
-        System.out.println("Results directory: " + resultsDir.getAbsolutePath());
+        outputDir = DataLoad.checkDir(workDir, OUTPUT_DIRECTORY);
+        logger.info("Results directory: {}", outputDir.getAbsolutePath());
 
         //Image directories
         if (isOutputImage) {
-            particleImageDir = DataLoad.checkDir(resultsDir, PARTICLE_IMAGE_DIRECTORY);
-            probabilisticImageDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_IMAGE_DIRECTORY);
-            particleCompassImageDir = DataLoad.checkDir(resultsDir, PARTICLE_COMPASS_IMAGE_DIRECTORY);
-            probabilisticCompassImageDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_COMPASS_IMAGE_DIRECTORY);
+            particleImageDir = DataLoad.checkDir(outputDir, PARTICLE_IMAGE_DIRECTORY);
+            probabilisticImageDir = DataLoad.checkDir(outputDir, PROBABILISTIC_IMAGE_DIRECTORY);
+            particleCompassImageDir = DataLoad.checkDir(outputDir, PARTICLE_COMPASS_IMAGE_DIRECTORY);
+            probabilisticCompassImageDir = DataLoad.checkDir(outputDir, PROBABILISTIC_COMPASS_IMAGE_DIRECTORY);
 
             //Actual output directories
             partImageDir = particleImageDir;
@@ -102,10 +106,10 @@ public class FileController {
 
         //Results directories
         if (isTrialDetail) {
-            particleResultsDir = DataLoad.checkDir(resultsDir, PARTICLE_RESULTS_DIRECTORY);
-            probabilisticResultsDir = DataLoad.checkDir(resultsDir, PROBABLISTIC_RESULTS_DIRECTORY);
-            particleCompassResultsDir = DataLoad.checkDir(resultsDir, PARTICLE_COMPASS_RESULTS_DIRECTORY);
-            probabilisticCompassResultsDir = DataLoad.checkDir(resultsDir, PROBABILISTIC_COMPASS_RESULTS_DIRECTORY);
+            particleResultsDir = DataLoad.checkDir(outputDir, PARTICLE_RESULTS_DIRECTORY);
+            probabilisticResultsDir = DataLoad.checkDir(outputDir, PROBABLISTIC_RESULTS_DIRECTORY);
+            particleCompassResultsDir = DataLoad.checkDir(outputDir, PARTICLE_COMPASS_RESULTS_DIRECTORY);
+            probabilisticCompassResultsDir = DataLoad.checkDir(outputDir, PROBABILISTIC_COMPASS_RESULTS_DIRECTORY);
 
             //Actual output directories
             particleTrialDir = particleResultsDir;
@@ -114,55 +118,66 @@ public class FileController {
         }
     }
 
-    private void setupExternalFiles() {
+    private void setupInputFiles(SettingsProperties sp) {
         // External files //////////////////////////////////////////////////////////////////////////////////////////////
-        offlineMapFile = new File(OFFLINE_MAP);
-        onlinePointsFile = new File(ONLINE_WIFI_DATA);
-        initialPointsFile = new File(INITIAL_POINTS);
-        inertialDataFile = new File(INERTIAL_DATA);
-        image = new File(IMAGE);
+        inputDir = new File(sp.INPUT_DIRECTORY());
+        offlineMapFile = new File(inputDir, sp.OFFLINE_MAP());
+        onlinePointsFile = new File(inputDir, sp.ONLINE_WIFI_DATA());
+        initialPointsFile = new File(inputDir, sp.INITIAL_POINTS());
+        inertialDataFile = new File(inputDir, sp.INERTIAL_DATA());
+        image = new File(inputDir, sp.FLOORPLAN_IMAGE());
+        generateTrial = new File(inputDir, sp.GENERATE_TRIAL_PROPERTIES());
+        filterProperties = new File(inputDir, sp.FILTER_PROPERTIES());
+        specificParticle = new File(inputDir, sp.SPECIFIC_PARTICLE());
+        specificProb = new File(inputDir, sp.SPECIFIC_PROB());
+        
     }
 
     private boolean checkFiles() {
 
         boolean isFileCheck = true;
 
-        if (!offlineMapFile.isFile()) {
-            System.out.println(String.format("%s not found", offlineMapFile.toString()));
-            isFileCheck = false;
-        }
-        if (!onlinePointsFile.isFile()) {
-            System.out.println(String.format("%s not found", onlinePointsFile.toString()));
-            isFileCheck = false;
-        }
-        if (!initialPointsFile.isFile()) {
-            System.out.println(String.format("%s not found", initialPointsFile.toString()));
-            isFileCheck = false;
-        }
-        if (!inertialDataFile.isFile()) {
-            System.out.println(String.format("%s not found", inertialDataFile.toString()));
-            isFileCheck = false;
-        }
-        if (!image.isFile()) {
-            System.out.println(String.format("%s not found", image.toString()));
-            isFileCheck = false;
-        }
+        if (inputDir.isDirectory()) {
 
+            if (!offlineMapFile.isFile()) {
+                logger.info("{} not found", offlineMapFile.toString());
+                isFileCheck = false;
+            }
+            if (!onlinePointsFile.isFile()) {
+                logger.info("{} not found", onlinePointsFile.toString());
+                isFileCheck = false;
+            }
+            if (!initialPointsFile.isFile()) {
+                logger.info("{} not found", initialPointsFile.toString());
+                isFileCheck = false;
+            }
+            if (!inertialDataFile.isFile()) {
+                logger.info("{} not found", inertialDataFile.toString());
+                isFileCheck = false;
+            }
+            if (!image.isFile()) {
+                logger.info("{} not found", image.toString());
+                isFileCheck = false;
+            }
+        } else {
+            logger.info("{} not found", inputDir.toString());
+            isFileCheck = false;
+        }
         return isFileCheck;
     }
 
     private void setupLists(String IN_SEP) {
 
-        System.out.println("Loading offline file");
+        logger.info("Loading offline file");
         offlineDataList = RSSILoader.load(offlineMapFile, IN_SEP);
 
-        System.out.println("Loading online file");
+        logger.info("Loading online file");
         onlineDataList = RSSILoader.load(onlinePointsFile, IN_SEP);
 
-        System.out.println("Loading initial file");
+        logger.info("Loading initial file");
         initialDataList = RSSILoader.load(initialPointsFile, IN_SEP);
 
-        System.out.println("Loading inertial file");
+        logger.info("Loading inertial file");
         inertialDataList = DataLoad.loadInertialData(inertialDataFile, IN_SEP);
     }
 

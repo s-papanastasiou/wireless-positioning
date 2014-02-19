@@ -35,6 +35,7 @@ public class InertialPoint {
     public InertialPoint() {
     }
 
+    @Override
     public String toString() {
 
         return String.format("x:%s;y:%s;vX:%s;vY:%s;t:%s;%s", x, y, vX, vY, t, inertialData.toString());

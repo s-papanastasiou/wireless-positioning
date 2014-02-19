@@ -29,7 +29,7 @@ public class Intialise {
             throw new AssertionError("Initial points is less than inital readings parameter");
         }
         for (int i = 0; i < initReadings; i++) {
-            Point probabilisticPoint = Probabilistic.run(initialPoints.get(i).getFloorPoint(), offlineMap, k, orientation);
+            Point probabilisticPoint = Probabilistic.run(initialPoints.get(i), offlineMap, k, orientation);
             x += probabilisticPoint.getX();
             y += probabilisticPoint.getY();
         }

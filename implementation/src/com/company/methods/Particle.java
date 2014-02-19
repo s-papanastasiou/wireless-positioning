@@ -29,7 +29,7 @@ public class Particle implements Comparable {
         return new Point(x, y);
     }
 
-
+    @Override
     public int compareTo(Object o) throws NullPointerException, ClassCastException {
         int result = 1;
 

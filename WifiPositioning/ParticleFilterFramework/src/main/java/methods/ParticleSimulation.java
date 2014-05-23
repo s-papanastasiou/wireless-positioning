@@ -133,8 +133,7 @@ public class ParticleSimulation {
 
         //Draw the image for the trial
         if (sp.isOutputImage()) {
-            File particleOutputImageFile = new File(fc.partImageDir, "Trial " + parTrial.getTitle());
-            DisplayRoute.draw(trialPoints, particleFinalPoints, particleOutputImageFile, fc.image);
+            DisplayRoute.draw(fc.partImageDir, "Trial " + parTrial.getTitle(), fc.image, trialPoints, particleFinalPoints);
         }
     }
 }

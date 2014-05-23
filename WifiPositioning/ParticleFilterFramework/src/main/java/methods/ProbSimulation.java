@@ -104,10 +104,9 @@ public class ProbSimulation {
         String probabilisticResults = proTrial.getValues() + OUT_SEP + totalDistance.getMean() + OUT_SEP + totalDistance.getStdDev();
         probabilisticResultsLog.printLine(probabilisticResults);
 
-        //Draw the image for the trial  
+        //Draw the image for the trial
         if (sp.isOutputImage()) {
-            File probabilisticOutputImageFile = new File(fc.probImageDir, "Trial " + proTrial.getTitle());
-            DisplayRoute.draw(trialPoints, probabilisticFinalPoints, probabilisticOutputImageFile, fc.image);
+            DisplayRoute.draw(fc.probImageDir, "Trial " + proTrial.getTitle(), fc.image, trialPoints, probabilisticFinalPoints);
         }
     }
     

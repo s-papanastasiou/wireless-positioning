@@ -27,14 +27,7 @@ proguard/
 *.ipr
 *.iws
 .idea/
-/ParticleFilterFramework/build/
-/KNearestNeighbourLib/build/
-/KNearestNeighbourLib/dist/
-/WifiPositioningLib/build/
-/WifiPositioningLib/dist/
-/KNearestNeighbourLib/nbproject/private/
-/ParticleFilterFramework/nbproject/private/
-/WifiPositioningLib/nbproject/private/
+
 /WifiPositioning/BaseLibrary/target/
 /WifiPositioning/KNNLibrary/target/
 /WifiPositioning/ParticleFilterFramework/target/

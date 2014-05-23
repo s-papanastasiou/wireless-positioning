@@ -46,6 +46,12 @@
             <artifactId>KNNLibrary</artifactId>
             <version>1.0</version>
         </dependency>
+        
+        <dependency>
+            <groupId>me.gregalbiston</groupId>
+            <artifactId>ProbabilisticLibrary</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>${project.artifactId}</finalName>

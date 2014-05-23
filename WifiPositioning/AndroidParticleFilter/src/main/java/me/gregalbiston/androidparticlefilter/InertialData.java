@@ -1,5 +1,7 @@
 package me.gregalbiston.androidparticlefilter;
 
+import datastorage.KNNFloorPoint;
+
 /**
  * Created with IntelliJ IDEA.
  * User: pierre
@@ -13,8 +15,7 @@ public class InertialData {
     private final static double DEG_IN_CIRCLE = 360;
     private final static double RAD2DEG = 180.0 / Math.PI;
     private final static float[] EXP_OBS = {0.005f, 0.03f, -0.17f};
-    public final static double HALF_PI = Math.PI / 2;
-    public static int NO_ORIENTATION = -1;
+    public final static double HALF_PI = Math.PI / 2;    
 
     private final static double JITTER_OFFSET = 0.3;  //compensate for small non-zero values when tablet is stationary
 
@@ -83,7 +84,7 @@ public class InertialData {
     // Is useful if we want to pick only the orientated point of the offlineMap
     public static int getOrientation(boolean isOrientationMerged, double azimuth, double buildingOrientation) {
 
-        int orientation = NO_ORIENTATION;
+        int orientation = KNNFloorPoint.NO_ORIENTATION;
 
         if (!isOrientationMerged) {
 

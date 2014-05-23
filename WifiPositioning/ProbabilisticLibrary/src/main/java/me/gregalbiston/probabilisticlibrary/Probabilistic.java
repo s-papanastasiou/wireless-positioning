@@ -1,30 +1,29 @@
-package me.gregalbiston.probabilisticmethod;
-
+package me.gregalbiston.probabilisticlibrary;
 
 import datastorage.KNNFloorPoint;
 import general.AvgValue;
 import general.Point;
-
-import java.util.*;
-import me.gregalbiston.androidparticlefilter.InertialData;
-import me.gregalbiston.androidparticlefilter.Logging;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Probabilistic {
 
+    private static final Logger logger = LoggerFactory.getLogger(Probabilistic.class);
+             
     public static Point run(KNNFloorPoint onlinepoint, HashMap<String, KNNFloorPoint> offlineMap, int kLimit, int orientation) {
 
         Point point;
 
         if (!onlinepoint.getAttributes().isEmpty()) {
-
+                         
+            HashMap<String, KNNFloorPoint> orientatedMap = KNNFloorPoint.filterMap(offlineMap, orientation);            
             TreeSet<ProbResult> results = new TreeSet<>();
-            HashMap<String, KNNFloorPoint> orientatedMap;
-
-            if (orientation != InertialData.NO_ORIENTATION)
-                orientatedMap = filterMap(offlineMap, orientation);
-            else
-                orientatedMap = offlineMap;
-
+            
             Set<String> keys = orientatedMap.keySet();
 
             for (String key : keys) {
@@ -42,27 +41,11 @@ public class Probabilistic {
             point = position(kList, orientatedMap);
         } else {
             point = new Point(-1, -1);
-            Logging.printLine("Crasssshhhhhhh!!!!!!!!!! No wifi?!?!?!");
+            logger.error("Online point is empty");
         }
 
         return point;
-    }
-
-    private static HashMap<String, KNNFloorPoint> filterMap(HashMap<String, KNNFloorPoint> offlineMap, int orientation) {
-        HashMap<String, KNNFloorPoint> orientatedMap;
-
-        orientatedMap = new HashMap<>();
-        Set<String> keys = offlineMap.keySet();
-
-        for (String key : keys) {
-            KNNFloorPoint orientatedPoint = offlineMap.get(key);
-            if (orientatedPoint.getwRef() == orientation) {
-                orientatedMap.put(key, orientatedPoint);
-            }
-        }
-
-        return orientatedMap;
-    }
+    }   
 
     private static Point position(List<ProbResult> kList, HashMap<String, KNNFloorPoint> orientatedMap) {
         double x = 0;

@@ -20,7 +20,7 @@ import java.util.Set;
 import me.gregalbiston.filter.Cloud;
 import me.gregalbiston.filter.Particle;
 import me.gregalbiston.filter.ParticleFilter;
-import me.gregalbiston.probabilisticmethod.Probabilistic;
+import me.gregalbiston.probabilisticlibrary.Probabilistic;
 
 /**
  * Created with IntelliJ IDEA.

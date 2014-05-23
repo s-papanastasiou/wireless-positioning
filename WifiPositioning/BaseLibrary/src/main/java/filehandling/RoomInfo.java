@@ -119,6 +119,10 @@ public class RoomInfo {
         return point;
     }  
 
+    public Location findLocation(String room, final Point point) {
+        return findLocation(room, point.getX(), point.getY());
+    }
+    
     //assumes that working on a 1m grid
     public Location findLocation(String room, final double x, final double y) {
 
@@ -236,8 +240,8 @@ public class RoomInfo {
         for (String key : keys) {
             RoomInfo room = roomInfo.get(key);
             Rectangle rect = room.getRoomRect();
-            if (rect.contains(point.getXfl(), point.getYfl())) {
-                location = room.findLocation(key, point.getX(), point.getY());
+            if (rect.contains(point)) {
+                location = room.findLocation(key, point);
                 break;
             }
         }

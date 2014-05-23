@@ -24,28 +24,63 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Draws heat map of RSSI values onto an image.
+ * 
  * @author Greg Albiston
  */
 public class HeatMap {
     
     private static final Logger logger = LoggerFactory.getLogger(HeatMap.class);
     
-    public static void print(File workingPath, File floorPlanFile, HashMap<String, RoomInfo> roomInfo, List<RSSIData> rssiDataList, boolean isBSSIDMerge, boolean isOrientationMerge, String fieldSeparator) {
+    /**
+     * Draw heat map of RSSI values onto an image, based on "Heatmap-xx-xx-xx-xx-xx-xx.png", and stores the
+     * new image on the specified file path.
+     * 
+     * Also, writes the associated RSSI values information to file.
+     * 
+     * @param workingPath Path to store the image. 
+     * @param floorPlanFile Floor plan image to draw upon.
+     * @param roomInfo Information about the location coordinates.     
+     * @param rssiDataList List of locations to draw.                  
+     * @param isBSSIDMerged True, if last hex pair of BSSID is to be ignored.
+     * @param isOrientationMerged True, if W-Ref of location is to be ignored.
+     * @param fieldSeparator Separator used between each heading in output file.
+     */
+    public static void print(File workingPath, File floorPlanFile, HashMap<String, RoomInfo> roomInfo, List<RSSIData> rssiDataList, boolean isBSSIDMerged, boolean isOrientationMerged, String fieldSeparator) {
+        
+        print(workingPath, "Heatmap", floorPlanFile, roomInfo, rssiDataList, isBSSIDMerged, isOrientationMerged, fieldSeparator);    
+    }
     
+    /**
+     * Draw heat map of RSSI values onto an image, based on "Heatmap-xx-xx-xx-xx-xx-xx.png", and stores the
+     * new image on the specified file path.
+     * 
+     * Also, writes the associated RSSI values information to file.
+     * 
+     * @param workingPath Path to store the image. 
+     * @param filename Name of file to print, without file extension.
+     * @param floorPlanFile Floor plan image to draw upon.
+     * @param roomInfo Information about the location coordinates.     
+     * @param rssiDataList List of locations to draw.                  
+     * @param isBSSIDMerged True, if last hex pair of BSSID is to be ignored.
+     * @param isOrientationMerged True, if W-Ref of location is to be ignored.
+     * @param fieldSeparator Separator used between each heading in output file.
+     */
+    public static void print(File workingPath, String filename, File floorPlanFile, HashMap<String, RoomInfo> roomInfo, List<RSSIData> rssiDataList, boolean isBSSIDMerged, boolean isOrientationMerged, String fieldSeparator) {
+                
        //create sub-folder
         String bssidStub = "";
         String orientationStub = "";
-        if(!isOrientationMerge)
+        if(!isOrientationMerged)
             orientationStub = "not";
         
-        if(!isBSSIDMerge)
+        if(!isBSSIDMerged)
             bssidStub = "not";
                 
         File heatPath = new File(workingPath, String.format("heatmaps (orientation %s merge, BSSID %s merge)", orientationStub, bssidStub));
         heatPath.mkdir();
         
-        HashMap<String, APData> apDataMap = APFormat.compile(rssiDataList, isBSSIDMerge, isOrientationMerge);
+        HashMap<String, APData> apDataMap = APFormat.compile(rssiDataList, isBSSIDMerged, isOrientationMerged);
         String bssidDataFile = "BSSIDAverage.csv";
         logger.info("Outputting BSSID average data to file: {}", bssidDataFile);
         APFormat.print(new File(heatPath,bssidDataFile), apDataMap, fieldSeparator);
@@ -58,12 +93,12 @@ public class HeatMap {
             APData apData = apDataMap.get(key);
             try {
                 BufferedImage heatImage = drawRSSIHeat(floorPlanFile, roomInfo, apData, maxFrequency);                
-                File outputFile = new File(heatPath, "HeatMap-" + apData.getBSSID().replace(':', '-') + ".png");                        
+                File outputFile = new File(heatPath, filename + "-" + apData.getBSSID().replace(':', '-') + ".png");                        
                 ImageIO.write(heatImage, "png", outputFile);
                 logger.info("Heatmap created: {}", outputFile.toString());
                 
             } catch (IOException ex) {                
-                logger.error("Error writing HeatMap-{}.png", apData.getBSSID().replace(':', '-'));
+                logger.error("Error writing {}-{}.png", filename, apData.getBSSID().replace(':', '-'));
             }
         } 
     }

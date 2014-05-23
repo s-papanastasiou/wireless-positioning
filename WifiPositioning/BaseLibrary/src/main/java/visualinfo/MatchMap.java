@@ -25,18 +25,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Identifies points with matching or similar values from a list and draws onto an image.
+ * 
  * @author Greg Albiston
  */
 public class MatchMap {
 
     private static final Logger logger = LoggerFactory.getLogger(MatchMap.class);
     
+    /**
+     * Identifies points with matching or similar values from a list and draws onto an image, based on "MatchAnalysis-xx" filename, and stores the
+     * new image on the specified file path.
+     * 
+     * Also, outputs a list of matching locations to text file.
+     *
+     * @param workingPath Path to store the image.     
+     * @param floorPlanFile Floor plan image to draw upon.
+     * @param rssiDataList List of locations to draw.
+     * @param roomInfo Information about the location coordinates.     
+     */
     public static void print(File workingPath, File floorPlanFile, final HashMap<String, RoomInfo> roomInfo, List<RSSIData> rssiDataList) {
-        print(workingPath, floorPlanFile, roomInfo, rssiDataList, 0.0f, false, false, ",");
+        print(workingPath, "MatchAnalysis", floorPlanFile, roomInfo, rssiDataList, 0.0f, false, false, ",");
     }
 
-    public static void print(File workingPath, File floorPlanFile, final HashMap<String, RoomInfo> roomInfo, List<RSSIData> rssiDataList, final double rangeValue, final boolean isBSSIDMerge, final boolean isOrientationMerge, final String fieldSeparator) {
+    /**
+     * Identifies points with matching or similar values from a list and draws onto an image and stores the
+     * new image on the specified file path.
+     * 
+     * Also, outputs a list of matching locations to text file.
+     *
+     * @param workingPath Path to store the image.
+     * @param filename Name of file to print, without file extension.
+     * @param floorPlanFile Floor plan image to draw upon.
+     * @param rssiDataList List of locations to draw.
+     * @param roomInfo Information about the location coordinates.     
+     * @param rangeValue Range of values considered to be matches.
+     * @param isBSSIDMerged True, if last hex pair of BSSID is to be ignored.
+     * @param isOrientationMerged True, if W-Ref of location is to be ignored.
+     * @param fieldSeparator Separator used between each heading in output file.        
+     */
+    public static void print(File workingPath, String filename, File floorPlanFile, final HashMap<String, RoomInfo> roomInfo, List<RSSIData> rssiDataList, final double rangeValue, final boolean isBSSIDMerged, final boolean isOrientationMerged, final String fieldSeparator) {
 
         //create sub-folder
         File matchPath = new File(workingPath, "matchmaps");
@@ -45,14 +73,14 @@ public class MatchMap {
         logger.info("Starting match analysis.");
         logger.info("Range value +/- {}", rangeValue);
 
-        final String IMAGE_FILE_STEM = String.format("MatchAnalysis %s ", rangeValue);
-        final String LOG_FILE = String.format("MatchAnalysis %s.txt", rangeValue);
+        final String IMAGE_FILE_STEM = String.format("%s-%s ", filename, rangeValue);
+        final String LOG_FILE = String.format("%s-%s.txt", filename, rangeValue);
 
         File logFile = new File(matchPath, LOG_FILE);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, false))) {
 
-            List<APData> accessPoints = APFormat.compileList(rssiDataList, isBSSIDMerge, isOrientationMerge);
+            List<APData> accessPoints = APFormat.compileList(rssiDataList, isBSSIDMerged, isOrientationMerged);
             
             int matchCounter = 0;
             int noMatchCounter = 0;

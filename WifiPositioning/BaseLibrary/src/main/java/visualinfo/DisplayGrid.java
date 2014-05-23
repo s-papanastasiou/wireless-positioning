@@ -41,7 +41,7 @@ public class DisplayGrid {
     private static final Logger logger = LoggerFactory.getLogger(DisplayGrid.class);
 
     /**
-     * Draw list of locations onto an image, called DataGrid.png, and store the
+     * Draw list of locations onto an image, called DataGrid.png, and stores the
      * new image on the specified file path. Use default colours of red for
      * points and blue for room outlines.
      *
@@ -57,7 +57,7 @@ public class DisplayGrid {
     }
 
     /**
-     * Draw list of locations onto an image, called DataGrid.png, and store the
+     * Draw list of locations onto an image, based on supplied filename, and stores the
      * new image on the specified file path.
      *
      * @param workingPath Path to store the image.

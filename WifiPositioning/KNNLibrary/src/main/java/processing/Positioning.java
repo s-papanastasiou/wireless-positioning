@@ -23,7 +23,7 @@ import general.Locate;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class Positioning {      
 

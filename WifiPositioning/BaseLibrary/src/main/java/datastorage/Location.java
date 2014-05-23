@@ -10,7 +10,7 @@ import java.util.Objects;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class Location implements Serializable {
      

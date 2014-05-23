@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston, Johan Chateau & Pierre Rousseau
  */
 public class Simulation {
 

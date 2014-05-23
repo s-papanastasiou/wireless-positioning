@@ -7,7 +7,7 @@ package processing;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class PositioningSettings {
     

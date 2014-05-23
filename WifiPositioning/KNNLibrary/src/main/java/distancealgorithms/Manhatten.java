@@ -10,7 +10,7 @@ import general.AvgValue;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class Manhatten {
     public static double distance(final HashMap<String, AvgValue> scanAccessPoints, final HashMap<String, AvgValue> floorAccessPoints) {

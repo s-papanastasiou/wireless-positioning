@@ -6,7 +6,7 @@ package processing;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public enum DistanceMeasure {
     Euclidian, EuclidianSquared, Manhatten, Chebyshev

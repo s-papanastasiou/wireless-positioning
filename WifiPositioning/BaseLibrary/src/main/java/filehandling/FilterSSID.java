@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class FilterSSID {            
     

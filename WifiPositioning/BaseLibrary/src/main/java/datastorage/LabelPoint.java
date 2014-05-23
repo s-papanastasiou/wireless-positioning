@@ -8,7 +8,7 @@ import general.Point;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class LabelPoint extends Point {
     

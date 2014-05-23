@@ -10,7 +10,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class MagneticData  extends Location {
        

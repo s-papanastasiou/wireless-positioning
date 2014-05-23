@@ -29,6 +29,8 @@
         </plugins>
     </build>
     <dependencies>
+        
+        <!-- SLF4j & Logback -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -46,12 +48,19 @@
             <artifactId>logback-core</artifactId>
             <version>1.1.2</version>
         </dependency>
+        
+        <!-- Apache Commons -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.3.2</version>
+        </dependency>
     </dependencies>
-  <modules>
-    <module>BaseLibrary</module>
-    <module>KNNLibrary</module>
-    <module>ParticleFilterFramework</module>
-  </modules>
+    <modules>
+        <module>BaseLibrary</module>
+        <module>KNNLibrary</module>
+        <module>ParticleFilterFramework</module>
+    </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

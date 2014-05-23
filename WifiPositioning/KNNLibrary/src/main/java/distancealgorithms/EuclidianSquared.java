@@ -10,7 +10,7 @@ import general.AvgValue;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class EuclidianSquared {
     

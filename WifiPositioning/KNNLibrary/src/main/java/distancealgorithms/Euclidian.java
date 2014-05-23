@@ -10,7 +10,7 @@ import general.AvgValue;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class Euclidian {
     //Distance equations based on http://www.statsoft.com/textbook/k-nearest-neighbors/

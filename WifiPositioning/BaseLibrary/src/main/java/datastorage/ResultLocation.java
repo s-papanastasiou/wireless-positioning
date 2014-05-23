@@ -6,7 +6,7 @@ package datastorage;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class ResultLocation extends Location implements Comparable {
     

@@ -7,6 +7,7 @@ package datastorage;
 
 import general.TimeStamp;
 import java.text.ParseException;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  *
@@ -19,11 +20,11 @@ public class RSSIData extends Location {
     private final String BSSID;
     private final String SSID;
     private final int RSSI;
-    private final int channel; 
+    private final int channel;         
     
-    public static final String[] HEADINGS = {"Timestamp", "Room", "X Ref", "Y Ref", "W Ref", "BSSID", "SSID", "RSSI", "Channel"};
-    
-    //private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private static final String[] LOCAL_HEADINGS_START = {"Timestamp"};
+    private static final String[] LOCAL_HEADINGS_END = {"BSSID", "SSID", "RSSI", "Channel"};
+    public static final String[] HEADINGS = ArrayUtils.addAll(LOCAL_HEADINGS_START, ArrayUtils.addAll(Location.LOC_HEADINGS, LOCAL_HEADINGS_END));
            
     public RSSIData(final String[] parts) throws ParseException
     {
@@ -66,20 +67,20 @@ public class RSSIData extends Location {
     }
      
     @Override
-    public String toString(final String sep){                
-        return TimeStamp.formatDateTime(timestamp) + sep + super.toString(sep) + sep + BSSID + sep + SSID + sep + RSSI + sep + channel;        
+    public String toString(final String fieldSeparator){                
+        return TimeStamp.formatDateTime(timestamp) + fieldSeparator + super.toString(fieldSeparator) + fieldSeparator + BSSID + fieldSeparator + SSID + fieldSeparator + RSSI + fieldSeparator + channel;        
     }
     
     @Override
-    public String toString(final String sep, final int accuracy){                
-        return TimeStamp.formatDateTime(timestamp) + sep + super.toString(sep, accuracy) + sep + BSSID + sep + SSID + sep + RSSI + sep + channel;        
+    public String toString(final String fieldSeparator, final int accuracy){                
+        return TimeStamp.formatDateTime(timestamp) + fieldSeparator + super.toString(fieldSeparator, accuracy) + fieldSeparator + BSSID + fieldSeparator + SSID + fieldSeparator + RSSI + fieldSeparator + channel;        
     }
     
-    public static String toStringHeadings(final String separator){
+    public static String toStringHeadings(final String fieldSeparator){
         
         String result =HEADINGS[0];
         for(int counter = 1; counter < HEADINGS.length; counter++){
-            result += separator + HEADINGS[counter];
+            result += fieldSeparator + HEADINGS[counter];
         }        
         return result;
     }

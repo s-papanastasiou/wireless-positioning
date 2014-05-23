@@ -6,6 +6,7 @@ package datastorage;
 
 import general.TimeStamp;
 import java.text.ParseException;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  *
@@ -19,7 +20,9 @@ public class MagneticData  extends Location {
     private final double zValue;
     private final int sensorAccuracy;    
     
-    public static final String[] HEADINGS = {"Timestamp", "Room", "X Ref", "Y Ref", "W Ref", "X Value", "Y Value", "Z Value", "Accuracy"};
+    private static final String[] LOCAL_HEADINGS_START = {"Timestamp"};
+    private static final String[] LOCAL_HEADINGS_END = {"X Value", "Y Value", "Z Value", "Accuracy"};
+    public static final String[] HEADINGS = ArrayUtils.addAll(LOCAL_HEADINGS_START, ArrayUtils.addAll(Location.LOC_HEADINGS, LOCAL_HEADINGS_END));            
     
     public static final String X_Key = "X";
     public static final String Y_Key = "Y";
@@ -65,20 +68,20 @@ public class MagneticData  extends Location {
     }
     
     @Override
-    public String toString(final String sep){                
-        return timestamp + sep + super.toString(sep) + sep + xValue + sep + yValue + sep + zValue + sep + sensorAccuracy;        
+    public String toString(final String fieldSeparator){                
+        return timestamp + fieldSeparator + super.toString(fieldSeparator) + fieldSeparator + xValue + fieldSeparator + yValue + fieldSeparator + zValue + fieldSeparator + sensorAccuracy;        
     }
     
     @Override
-    public String toString(final String sep, final int accuracy){                
-        return timestamp + sep + super.toString(sep, accuracy) + sep + xValue + sep + yValue + sep + zValue + sep + sensorAccuracy;        
+    public String toString(final String fieldSeparator, final int accuracy){                
+        return timestamp + fieldSeparator + super.toString(fieldSeparator, accuracy) + fieldSeparator + xValue + fieldSeparator + yValue + fieldSeparator + zValue + fieldSeparator + sensorAccuracy;        
     }
     
-    public static String toStringHeadings(final String sep){
+    public static String toStringHeadings(final String fieldSeparator){
         
         String result =HEADINGS[0];
         for(int counter = 1; counter < HEADINGS.length; counter++){
-            result += sep + HEADINGS[counter];
+            result += fieldSeparator + HEADINGS[counter];
         }
         return result;
     }

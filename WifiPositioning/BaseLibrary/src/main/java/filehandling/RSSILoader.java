@@ -62,7 +62,7 @@ public class RSSILoader {
                 } else {
                     logger.error("Headings are not as expected.");
                     if(parts.length==1)
-                        logger.error("Expecting separator: {} Found: {}", seperator, line );
+                        logger.error("Expecting field separator: {} Found: {}", seperator, line );
                     else
                         logger.error("Expecting: {} Found: {}", RSSIData.toStringHeadings(seperator), line );
                 }
@@ -87,8 +87,8 @@ public class RSSILoader {
     }
 
     //extracts data based either data type - assumes comma separated
-    public static List<RSSIData> load(final File dataFile, final String separator) {
+    public static List<RSSIData> load(final File dataFile, final String fieldSeparator) {
 
-        return load(dataFile, new ArrayList<String>(), separator);
+        return load(dataFile, new ArrayList<String>(), fieldSeparator);
     }
 }

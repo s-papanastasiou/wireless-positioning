@@ -14,6 +14,8 @@ import java.util.Objects;
  */
 public class Location implements Serializable {
      
+    protected static final String[] LOC_HEADINGS = {"Room", "X Ref", "Y Ref", "W Ref"};
+    
     protected String room;
     protected int xRef;
     protected int yRef;
@@ -98,13 +100,13 @@ public class Location implements Serializable {
         return room + " " + xRef + ":" + yRef + ":" + wRef;
     } 
     
-    public String toString(String separator){
-        return room + separator + xRef + separator + yRef + separator + wRef;
+    public String toString(String fieldSeparator){
+        return room + fieldSeparator + xRef + fieldSeparator + yRef + fieldSeparator + wRef;
     } 
     
     //adjusts the references by the specified accuracy i.e. converts the values to a 1m grid spacing
-    public String toString(String separator, int accuracy){
-        return room + separator + (xRef*accuracy) + separator + (yRef*accuracy) + separator + (wRef*accuracy);
+    public String toString(String fieldSeparator, int accuracy){
+        return room + fieldSeparator + (xRef*accuracy) + fieldSeparator + (yRef*accuracy) + fieldSeparator + (wRef*accuracy);
     }
     
    
@@ -148,6 +150,21 @@ public class Location implements Serializable {
      */
     public Point drawPoint(double xPixels, double yPixels){        
         return new Point(this.xRef * xPixels, this.yRef * yPixels);        
+    }
+    
+    /**
+     * Formatted heading to show the information relating to a location.
+     * 
+     * @param fieldSeparator Separator used between each heading.
+     * @return 
+     */
+    public static String toStringHeadings(String fieldSeparator){
+        
+        String result =LOC_HEADINGS[0];
+        for(int counter = 1; counter < LOC_HEADINGS.length; counter++){
+            result += fieldSeparator + LOC_HEADINGS[counter];
+        }        
+        return result;              
     }
     
 }

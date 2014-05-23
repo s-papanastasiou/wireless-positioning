@@ -68,8 +68,8 @@ public class Point {
         return (int)y;
     }
     
-    public String toString(String separator){
-        return x + separator + y;
+    public String toString(String fieldSeparator){
+        return x + fieldSeparator + y;
     }   
     
     /**

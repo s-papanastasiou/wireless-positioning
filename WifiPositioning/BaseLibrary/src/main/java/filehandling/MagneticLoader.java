@@ -69,8 +69,8 @@ public class MagneticLoader {
     }
 
     //extracts data based either data type - assumes comma separated
-    public static List<MagneticData> load(final File dataFile, final String separator) {
+    public static List<MagneticData> load(final File dataFile, final String fieldSeparator) {
 
-        return load(dataFile, new ArrayList<String>(), separator);
+        return load(dataFile, new ArrayList<String>(), fieldSeparator);
     }
 }

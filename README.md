@@ -20,4 +20,4 @@ The code is licenced under the GNU GPL v2.0 or any later version (at your option
 # Repository Overview
 * AndroidParticleFilter: Android project implementing Particle Filter for indoor positioning.
 * WifiPositioning: Maven POM Project containing analysis application and supporting libraries.
-* iscc-2014: Results of trials presented to IEEE SYMPOSIUM ON COMPUTERS AND COMMUNICATIONS 2014.
+* iscc-2014: Results of trials presented to iscc-2014.

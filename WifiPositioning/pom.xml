@@ -60,7 +60,8 @@
         <module>BaseLibrary</module>
         <module>KNNLibrary</module>
         <module>ParticleFilterFramework</module>
-    </modules>
+    <module>AndroidParticleFilter</module>
+  </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

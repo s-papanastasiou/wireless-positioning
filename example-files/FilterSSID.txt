@@ -1,0 +1,9 @@
+ntu-student
+ntu-staff
+eduroam
+ntu-mobile
+ntu-wirelessHelp
+ntu-visitor
+Blackwells Private
+Blackwells FREE WIFI
+ntu-wifi

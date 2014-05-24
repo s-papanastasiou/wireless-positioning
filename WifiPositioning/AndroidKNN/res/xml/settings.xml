@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/settings_knn">
+        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="dist_measure"
+                                                                 android:title="@string/dist_measure"
+                                                                 android:entries="@array/distance_measures_entries"
+                                                                 android:entryValues="@array/distance_measures_values"
+                                                                 android:defaultValue="0" android:summary="%s"/>
+        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="k_limit" android:title="@string/k_limit"
+                                                                 android:numeric="integer"
+                                                                 android:entries="@array/k_limit_values"
+                                                                 android:entryValues="@array/k_limit_values"
+                                                                 android:defaultValue="5" android:summary="%s"/>
+
+        <SwitchPreference android:key="filter_ssid" android:defaultValue="false" android:title="@string/filter_ssid"/>
+        <SwitchPreference android:key="data_type" android:title="@string/data_type" android:switchTextOn="@string/rssi"
+                          android:switchTextOff="@string/magnetic" android:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_display">
+        <SwitchPreference android:key="show_log" android:defaultValue="false" android:title="@string/show_log"
+                          android:switchTextOn="On"
+                          android:switchTextOff="Off"/>
+        <SwitchPreference android:key="show_grid" android:defaultValue="false" android:title="@string/show_grid"
+                          android:switchTextOn="On"
+                          android:switchTextOff="Off"/>
+        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="colour_grid"
+                                                                 android:title="@string/colour_grid"
+                                                                 android:entries="@array/colours_entries"
+                                                                 android:entryValues="@array/colours_entries"
+                                                                 android:defaultValue="Blue" android:summary="%s"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_points">
+        <SwitchPreference android:key="show_path" android:defaultValue="false"
+                          android:title="@string/show_path" android:switchTextOn="On"
+                          android:switchTextOff="Off"/>
+        <SwitchPreference android:key="show_estimates" android:defaultValue="false"
+                          android:title="@string/show_estimates" android:switchTextOn="On"
+                          android:switchTextOff="Off"/>
+        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="colour_final"
+                                                                 android:title="@string/colour_final"
+                                                                 android:entries="@array/colours_entries"
+                                                                 android:entryValues="@array/colours_entries"
+                                                                 android:defaultValue="Blue" android:summary="%s"/>
+        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="colour_scan"
+                                                                 android:title="@string/colour_scan"
+                                                                 android:entries="@array/colours_entries"
+                                                                 android:entryValues="@array/colours_entries"
+                                                                 android:defaultValue="Red" android:summary="%s"/>
+        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="colour_estimates"
+                                                                 android:title="@string/colour_estimates"
+                                                                 android:entries="@array/colours_entries"
+                                                                 android:entryValues="@array/colours_entries"
+                                                                 android:defaultValue="Magenta" android:summary="%s"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_variance_filter">
+        <SwitchPreference android:key="use_variance" android:defaultValue="false" android:switchTextOn="On"
+                          android:switchTextOff="Off" android:title="@string/use_variance"/>
+        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="var_count"
+                                                                 android:title="@string/var_count"
+                                                                 android:numeric="integer"
+                                                                 android:entries="@array/var_count_values"
+                                                                 android:entryValues="@array/var_count_values"
+                                                                 android:defaultValue="5" android:summary="%s"/>
+        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="var_limit"
+                                                                 android:title="@string/var_limit"
+                                                                 android:numeric="decimal"
+                                                                 android:entries="@array/var_limit_values"
+                                                                 android:entryValues="@array/var_limit_values"
+                                                                 android:defaultValue="1.0" android:summary="%s"/>
+    </PreferenceCategory>
+</PreferenceScreen>

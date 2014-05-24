@@ -72,7 +72,8 @@
         <module>AndroidParticleFilter</module>
         <module>ProbabilisticLibrary</module>
         <module>KNNFramework</module>
-    </modules>
+    <module>AndroidKNN</module>
+  </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

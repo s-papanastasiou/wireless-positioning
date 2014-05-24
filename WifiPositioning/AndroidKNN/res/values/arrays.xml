@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="distance_measures_entries">
+        <item>Euclidean</item>
+        <item>EuclideanSquared</item>
+        <item>Manhatten</item>
+        <item>Chebyshev</item>
+    </string-array>
+
+    <string-array name="distance_measures_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="k_limit_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+    <string-array name="var_count_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+    <string-array name="var_limit_values">
+        <item>0.0</item>
+        <item>0.1</item>
+        <item>0.25</item>
+        <item>0.5</item>
+        <item>0.75</item>
+        <item>1.0</item>
+        <item>1.25</item>
+        <item>1.5</item>
+        <item>1.75</item>
+        <item>2.0</item>
+        <item>2.25</item>
+        <item>2.5</item>
+        <item>2.75</item>
+        <item>3.0</item>
+        <item>3.25</item>
+        <item>3.5</item>
+        <item>3.75</item>
+        <item>4.0</item>
+        <item>4.25</item>
+        <item>4.5</item>
+        <item>4.75</item>
+        <item>5.0</item>
+    </string-array>
+
+    <string-array name="colours_entries">
+        <item>Red</item>
+        <item>Green</item>
+        <item>Yellow</item>
+        <item>Blue</item>
+        <item>Black</item>
+        <item>White</item>
+        <item>Grey</item>
+        <item>Cyan</item>
+        <item>Magenta</item>
+        <item>Lightgrey</item>
+        <item>Darkgrey</item>
+        <item>Aqua</item>
+        <item>Fuschia</item>
+        <item>Lime</item>
+        <item>Maroon</item>
+        <item>Navy</item>
+        <item>Olive</item>
+        <item>Navy</item>
+        <item>Purple</item>
+        <item>Silver</item>
+        <item>Teal</item>
+    </string-array>
+
+</resources>

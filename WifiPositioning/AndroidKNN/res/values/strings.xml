@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">KNNVisualiser</string>
+    <string name="dist_measure">Measure:</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="use_variance">Use Variance:</string>
+    <string name="k_limit">K Limit:</string>
+
+
+    <string name="rssi_on">RSSI:</string>
+    <string name="rssi">RSSI</string>
+    <string name="magnetic">Magnetic</string>
+    <string name="nodata_message">No data loaded for either RSSI or Magnetic. Add "RSSIKNNData.knn" and
+        "MagneticKNNData.knn" files to KNN folder of external storage.
+    </string>
+    <string name="nofile_title">Missing File</string>
+    <string name="rssi_error_message">Error reading RSSI data</string>
+    <string name="magnetic_error_message">Error reading Magnetic data</string>
+    <string name="noroominfo_message">No room info loaded. Add "RoomInfo.csv" to KNN folder of external storage.
+    </string>
+    <string name="nofloorplan_message">No floor plan loaded. Add "floorplan.png" to KNN folder of external storage to
+        replace the default floor plan.
+    </string>
+    <string name="no_data_files">Neither RSSI data or Magnetic data found. Add RSSIKNNData.knn and/or
+        MagneticKNNData.knn to KNN folder on device.
+    </string>
+    <string name="ok">OK</string>
+    <string name="app_start">Application Started</string>
+    <string name="new_route">New Route</string>
+    <string name="nofilter_message">No SSID filter found: Add SSIDFilter.txt to KNN folder on device.</string>
+
+
+    <!-- /////////////////////////////////////////Settings Strings//////////////////////////////////// -->
+    <string name="var_limit">Var Limit:</string>
+    <string name="var_count">Var Count:</string>
+
+    <string name="data_type">Display Type:</string>
+
+    <string name="show_path">Show Paths:</string>
+    <string name="show_estimates">Show Estimates:</string>
+    <string name="show_grid">Show Grid:</string>
+    <string name="show_log">Show Log:</string>
+    <string name="filter_ssid">Filter SSID:</string>
+
+
+    <string name="colour_final">Final Point Colour:</string>
+    <string name="colour_scan">Scan Point Colour:</string>
+    <string name="colour_estimates">Estimates Point Colour:</string>
+    <string name="colour_grid">Grid Colour:</string>
+
+    <string name="settings_knn">K Nearest Neighbour</string>
+    <string name="settings_display">Display</string>
+    <string name="settings_points">Points</string>
+    <string name="settings_variance_filter">Variance Filter</string>
+
+    <string name="menu_new_route">New Route</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_exit">Exit</string>
+    <!--////////////////////////////////////////////////////////////////////////////////////////////// -->
+</resources>

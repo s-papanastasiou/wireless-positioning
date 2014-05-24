@@ -73,6 +73,7 @@
         <module>ProbabilisticLibrary</module>
         <module>KNNFramework</module>
     <module>AndroidKNN</module>
+    <module>AndroidDetector</module>
   </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RSSI Detector</string>
+    <string name="labelRooms">Room:</string>
+    <string name="labelDuration">Duration\n(secs)</string>
+    <string name="labelScan">Scan</string>
+    <string name="labelSampling">Magnetic\nSample (Hz)</string>
+    <string name="labelXXX">X</string>
+    <string name="labelYYY">Y</string>
+    <string name="labelWWW">W</string>
+    <string name="labelGrid">Grid:</string>
+    <string name="labelRSSIResults">RSSI Results</string>
+    <string name="labelMagnetometer">Geo-Magnetic Results</string>
+    <string name="labelSwitchRSSI">RSSI:</string>
+    <string name="labelSwitchMagnetic">Magnetic:</string>
+    <string name="labelMagneticStart">Retrieving Geo-Magnetic Data</string>
+    <string name="labelRSSIStart">Retrieving RSSI Data</string>
+    <string name="labelUpload">Upload Results</string>
+    <string name="labelUploadAccount">Account:</string>
+    <string name="labalUploadAccountHint">Not Signed In</string>
+    <string name="ChangeAccount">Sign In Account</string>
+    <string name="labelAccuracy">Accuracy\n(m):</string>
+    <string name="labelOrientation">Orientation:</string>
+    <string name="buttonSettings">Download Settings</string>
+    <string name="uploadAll">Upload All Stored Results</string>
+    <string name="confirm">Confirm</string>
+    <string name="decline">Decline</string>
+    <string name="titleStoreScan">Do you wish to store this scan?</string>
+
+</resources>

@@ -31,3 +31,8 @@ proguard/
 /WifiPositioning/BaseLibrary/target/
 /WifiPositioning/KNNLibrary/target/
 /WifiPositioning/ParticleFilterFramework/target/
+/AndroidParticleFilter/nbandroid/
+/WifiPositioning/AndroidParticleFilter/target/
+/WifiPositioning/ProbabilisticLibrary/target/
+/WifiPositioning/AndroidKNN/target/
+/WifiPositioning/AndroidDetector/target/

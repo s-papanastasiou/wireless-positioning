@@ -1,4 +1,4 @@
-package me.gregalbiston.probabilisticlibrary;
+package probabilisticlibrary;
 
 /**
  * Created with IntelliJ IDEA.

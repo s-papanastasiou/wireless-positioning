@@ -1,4 +1,4 @@
-package me.gregalbiston.probabilisticlibrary;
+package probabilisticlibrary;
 
 import datastorage.KNNFloorPoint;
 import general.AvgValue;

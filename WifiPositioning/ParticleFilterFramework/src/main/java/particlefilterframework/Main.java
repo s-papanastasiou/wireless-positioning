@@ -1,16 +1,16 @@
 package particlefilterframework;
 
+import configuration.FilterProperties;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
-import support.GenerateTrialProperties;
-import support.FileController;
-import support.FilterProperties;
-import support.Simulation;
-import support.ParticleTrial;
-import support.Logging;
-import support.OnOffOptions;
-import support.ProbabilisticTrial;
-import support.SettingsProperties;
+import configuration.GenerateTrialProperties;
+import configuration.FileController;
+import simulation.Simulation;
+import simulation.ParticleTrial;
+import configuration.Logging;
+import configuration.OnOffOptions;
+import simulation.ProbabilisticTrial;
+import configuration.SettingsProperties;
 import java.io.File;
 import java.util.List;
 import org.slf4j.Logger;

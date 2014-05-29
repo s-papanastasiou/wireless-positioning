@@ -1,5 +1,6 @@
 package me.gregalbiston.androidparticlefilter;
 
+import particlefilterlibrary.NavigationResults;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,10 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import me.gregalbiston.filter.Cloud;
-import me.gregalbiston.filter.Particle;
-import me.gregalbiston.filter.ParticleFilter;
-import me.gregalbiston.probabilisticlibrary.Probabilistic;
+import particlefilterlibrary.InertialData;
+import particlefilterlibrary.InertialPoint;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,6 +48,10 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
     private float[] mGravity = null;
     private List<ScanResult> scanResults;
     private boolean isWifiResultsReady = false;
+    
+    private static final Double JITTER_OFFSET = 0.3;
+    private static final Float ACCELERATION_OFFSET[] = {0.005f, 0.03f, -0.17f};
+    private static final int SPEED_BREAK = 40;
 
     private final AppSettings appSettings;
 
@@ -223,8 +226,8 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
                     boolean invert = android.opengl.Matrix.invertM(iR, 0, R, 0);
                     if (invert) {
 
-                        InertialData results = InertialData.getDatas(iR, mLinearAcceleration, orientation, appSettings.getBuildingOrientation());
-                        inertialPoint = InertialPoint.move(inertialPoint, results, System.nanoTime());
+                        InertialData results = InertialData.getDatas(iR, mLinearAcceleration, orientation, appSettings.getBuildingOrientation(), JITTER_OFFSET, ACCELERATION_OFFSET);
+                        inertialPoint = InertialPoint.move(inertialPoint, results, System.nanoTime(), SPEED_BREAK);
 
                     }
                 }

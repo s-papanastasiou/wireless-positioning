@@ -1,5 +1,6 @@
 package me.gregalbiston.androidparticlefilter;
 
+import particlefilterlibrary.NavigationResults;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;

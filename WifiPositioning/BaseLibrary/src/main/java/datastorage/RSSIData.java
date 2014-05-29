@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package datastorage;
 
 import general.TimeStamp;
@@ -10,84 +9,153 @@ import java.text.ParseException;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
+ * Stores information relating to geomagnetic survey.
  *
  * @author Greg Albiston
  */
 public class RSSIData extends Location {
-    
-    //private Date timestamp;     //String implemented for convenience not currently using timestamp.
-    private final long timestamp;        
+
+    private final long timestamp;
     private final String BSSID;
     private final String SSID;
     private final int RSSI;
-    private final int channel;         
-    
+    private final int channel;
+
     private static final String[] LOCAL_HEADINGS_START = {"Timestamp"};
     private static final String[] LOCAL_HEADINGS_END = {"BSSID", "SSID", "RSSI", "Channel"};
     public static final String[] HEADINGS = ArrayUtils.addAll(LOCAL_HEADINGS_START, ArrayUtils.addAll(Location.LOC_HEADINGS, LOCAL_HEADINGS_END));
-           
-    public RSSIData(final String[] parts) throws ParseException
-    {
-        super(parts[1], Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));  
-        this.timestamp =  TimeStamp.convertDateTime(parts[0]);               
+
+    /**
+     * Constructor
+     *
+     * @param parts String array of elements to build class. See HEADINGS for
+     * order.
+     * @throws ParseException
+     */
+    public RSSIData(final String[] parts) throws ParseException {
+        super(parts[1], Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
+        this.timestamp = TimeStamp.convertDateTime(parts[0]);
         this.BSSID = parts[5];
         this.SSID = parts[6];
         this.RSSI = Integer.parseInt(parts[7]);
-        this.channel = Integer.parseInt(parts[8]);        
-    } 
-    
-    public RSSIData(long timestamp, Location location, String BSSID, String SSID, int RSSI, int frequency){
-        super(location);        
-        this.timestamp =  timestamp;
+        this.channel = Integer.parseInt(parts[8]);
+    }
+
+    /**
+     * Constructor Frequency is converted to channel number between 1-13 (14 is
+     * not generally available).
+     *
+     * @param timestamp Timestamp of when the reading took place.
+     * @param location Location information of where the reading was taken.
+     * @param BSSID The MAC address of access point - hex pairs.
+     * @param SSID The name of the network.
+     * @param RSSI Received Signal Strength Indication - dBm
+     * @param frequency The channel frequency over which the client is
+     * communicating with the access point - MHz.
+     */
+    public RSSIData(long timestamp, Location location, String BSSID, String SSID, int RSSI, int frequency) {
+        super(location);
+        this.timestamp = timestamp;
         this.BSSID = BSSID;
         this.SSID = SSID;
         this.RSSI = RSSI;
-        this.channel = ((frequency-2412)/5)+1;  //calculates accurately for channels 1-13. Channel 14 is not generally available.
-        
-    }            
+        this.channel = ((frequency - 2412) / 5) + 1;  //calculates accurately for channels 1-13. Channel 14 is not generally available.        
+    }
 
+    /**
+     * Get BSSID MAC address hex pairs.
+     *
+     * @return
+     */
     public String getBSSID() {
         return BSSID;
     }
 
+    /**
+     * Get RSSI value.
+     *
+     * @return
+     */
     public int getRSSI() {
         return RSSI;
-    }        
+    }
 
+    /**
+     * Get timestamp.
+     *
+     * @return
+     */
     public long getTimestamp() {
         return timestamp;
     }
 
+    /**
+     * Get SSID network name.
+     *
+     * @return
+     */
     public String getSSID() {
         return SSID;
     }
 
+    /**
+     * Get channel of communication.
+     *
+     * @return
+     */
     public int getChannel() {
         return channel;
     }
-     
+
+    /**
+     * String representation of location information using provided separator.
+     *
+     * @param fieldSeparator Character to use as separator.
+     * @return
+     */
     @Override
-    public String toString(final String fieldSeparator){                
-        return TimeStamp.formatDateTime(timestamp) + fieldSeparator + super.toString(fieldSeparator) + fieldSeparator + BSSID + fieldSeparator + SSID + fieldSeparator + RSSI + fieldSeparator + channel;        
+    public String toString(final String fieldSeparator) {
+        return TimeStamp.formatDateTime(timestamp) + fieldSeparator + super.toString(fieldSeparator) + fieldSeparator + BSSID + fieldSeparator + SSID + fieldSeparator + RSSI + fieldSeparator + channel;
     }
-    
+
+    /**
+     * Scales the references by the specified accuracy i.e. converts the values
+     * to a 1m grid spacing. e.g. 1,1 on 5m grid will become 5,5 on 1m grid
+     *
+     * @param fieldSeparator Character to use as separator.
+     * @param accuracy Accuracy to scale the references.
+     * @return
+     */
     @Override
-    public String toString(final String fieldSeparator, final int accuracy){                
-        return TimeStamp.formatDateTime(timestamp) + fieldSeparator + super.toString(fieldSeparator, accuracy) + fieldSeparator + BSSID + fieldSeparator + SSID + fieldSeparator + RSSI + fieldSeparator + channel;        
+    public String toString(final String fieldSeparator, final int accuracy) {
+        return TimeStamp.formatDateTime(timestamp) + fieldSeparator + super.toString(fieldSeparator, accuracy) + fieldSeparator + BSSID + fieldSeparator + SSID + fieldSeparator + RSSI + fieldSeparator + channel;
     }
-    
-    public static String toStringHeadings(final String fieldSeparator){
-        
-        String result =HEADINGS[0];
-        for(int counter = 1; counter < HEADINGS.length; counter++){
+
+    /**
+     * Formatted heading to show the information relating to a location.
+     *
+     * @param fieldSeparator Separator used between each heading.
+     * @return
+     */
+    public static String toStringHeadings(final String fieldSeparator) {
+
+        String result = HEADINGS[0];
+        for (int counter = 1; counter < HEADINGS.length; counter++) {
             result += fieldSeparator + HEADINGS[counter];
-        }        
+        }
         return result;
     }
-    
-    public static boolean headerCheck(final String[] parts){
+
+    /**
+     * Checks whether the supplied array contains the expected headings for
+     * geomagnetic data.
+     *
+     * @param parts String array to be checked.
+     * @return
+     */
+    public static boolean headerCheck(final String[] parts) {
         boolean isCorrect = true;
-        
+
         if (parts.length == HEADINGS.length) {
             for (int counter = 0; counter < parts.length; counter++) {
                 if (!parts[counter].equals(HEADINGS[counter])) {
@@ -101,9 +169,14 @@ public class RSSIData extends Location {
 
         return isCorrect;
     }
-    
-    public static int headerSize(){
+
+    /**
+     * Length of standard header for geomagnetic data.
+     *
+     * @return
+     */
+    public static int headerSize() {
         return HEADINGS.length;
     }
-    
+
 }

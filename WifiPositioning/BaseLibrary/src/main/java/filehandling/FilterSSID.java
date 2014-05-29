@@ -16,13 +16,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Load a white list of SSIDs to filter when processing a radio map.
+ * 
  * @author Greg Albiston
  */
 public class FilterSSID {            
     
     private static final Logger logger = LoggerFactory.getLogger(FilterSSID.class);
     
+    /**
+     * Load SSIDs to retain in radio map. Single SSID in each line of file.
+     * 
+     * @param filterFile File to load SSIDs.
+     * @return 
+     */
     public static List<String> load(File filterFile){
         
         List<String> filterSSIDs = new ArrayList<>();

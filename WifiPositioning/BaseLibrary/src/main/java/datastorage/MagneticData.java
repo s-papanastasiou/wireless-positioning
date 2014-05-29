@@ -125,7 +125,7 @@ public class MagneticData extends Location {
      * Scales the references by the specified accuracy i.e. converts the values
      * to a 1m grid spacing. e.g. 1,1 on 5m grid will become 5,5 on 1m grid
      *
-     * @param fieldSeparator Character to use as separator.
+     * @param fieldSeparator Field separator between columns.
      * @param accuracy Accuracy to scale the references.
      * @return
      */

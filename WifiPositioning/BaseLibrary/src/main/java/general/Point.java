@@ -5,6 +5,8 @@
 package general;
 
 /**
+ * A point on a floor, usually used for drawing.
+ * 
  * Implementation of Point with double data members. Intended to be common to
  * both Java and Android use of the library. Native awt.PointF is not available
  * in Android SDK.

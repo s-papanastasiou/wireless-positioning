@@ -16,14 +16,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Load geomagnetic data from file.
+ * 
  * @author Greg Albiston
  */
 public class MagneticLoader {
 
     private static final Logger logger = LoggerFactory.getLogger(MagneticLoader.class);
     
-    public static List<MagneticData> load(final File dataFile, final List<String> filterSSIDs, final String seperator) {
+    /**
+     * Load list of magnetic data from file.
+     * 
+     * @param dataFile File of geomagnetic data with header row.     
+     * @param seperator Field separator between columns.
+     * @return 
+     */
+    public static List<MagneticData> load(final File dataFile, final String seperator) {
 
         List<MagneticData> rawData = new ArrayList<>();
         
@@ -40,8 +48,8 @@ public class MagneticLoader {
                         lineCounter++;
                         parts = line.split(seperator);
                         if (parts.length == headerSize) {
-                            try {
-                                rawData.add(new MagneticData(parts));
+                            try {                                
+                                rawData.add(new MagneticData(parts));                                
                             } catch (ParseException ex) {
                                 logger.error("Error parsing line: {} {}", lineCounter, ex.getMessage());
                             }
@@ -62,15 +70,15 @@ public class MagneticLoader {
         return rawData;
     }
 
-    //extracts data based either data type - assumes comma separated
+    /**
+     * Load list of magnetic data from file.
+     * Assumes comma separation between columns.
+     * 
+     * @param dataFile File of geomagnetic data with header row.          
+     * @return 
+     */
     public static List<MagneticData> load(final File dataFile) {
 
-        return load(dataFile, new ArrayList<String>(), ",");
-    }
-
-    //extracts data based either data type - assumes comma separated
-    public static List<MagneticData> load(final File dataFile, final String fieldSeparator) {
-
-        return load(dataFile, new ArrayList<String>(), fieldSeparator);
-    }
+        return load(dataFile, ",");
+    }   
 }

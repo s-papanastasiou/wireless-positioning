@@ -16,13 +16,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Load RSSI data from file.
+ * 
  * @author Greg Albiston
  */
 public class RSSILoader {
 
     private static final Logger logger = LoggerFactory.getLogger(RSSILoader.class);
     
+    /**
+     * Load list of RSSI data from file.
+     * 
+     * @param dataFile File of geomagnetic data with header row.     
+     * @param filterSSIDs List of SSIDs to only include from loaded file - empty to permit all SSIDs.
+     * @param seperator Field separator between columns.
+     * @return 
+     */
     public static List<RSSIData> load(final File dataFile, final List<String> filterSSIDs, final String seperator) {
 
         List<RSSIData> rawData = new ArrayList<>();
@@ -74,19 +83,39 @@ public class RSSILoader {
         return rawData;
     }
 
-    //extracts data but can only apply to RSSI data - assumes comma separated
+    /**
+     * Load list of RSSI data from file.
+     * Assumes comma separation between columns.
+     * 
+     * @param dataFile File of geomagnetic data with header row.          
+     * @param filterSSIDs List of SSIDs to only include from loaded file - empty to permit all SSIDs.
+     * @return 
+     */
     public static List<RSSIData> load(final File dataFile, final List<String> filterSSIDs) {
 
         return load(dataFile, filterSSIDs, ",");
     }
 
-    //extracts data based either data type - assumes comma separated
+    /**
+     * Load list of RSSI data from file.
+     * Assumes comma separation between columns and assumes all SSIDs permitted.
+     * 
+     * @param dataFile File of geomagnetic data with header row.          
+     * @return 
+     */
     public static List<RSSIData> load(final File dataFile) {
 
         return load(dataFile, new ArrayList<String>(), ",");
     }
 
-    //extracts data based either data type - assumes comma separated
+    /**
+     * Load list of magnetic data from file.
+     * Assumes all SSIDs permitted.
+     * 
+     * @param dataFile File of geomagnetic data with header row.          
+     * @param fieldSeparator Separator between columns.
+     * @return 
+     */
     public static List<RSSIData> load(final File dataFile, final String fieldSeparator) {
 
         return load(dataFile, new ArrayList<String>(), fieldSeparator);

@@ -15,17 +15,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Store RSSI data to file.
+ * 
  * @author Greg Albiston
  */
 public class RSSIStorer {
     
     private static final Logger logger = LoggerFactory.getLogger(RSSIStorer.class);
     
+    /**
+     * Store list of magnetic data to file.
+     * Assumes comma separation between columns.
+     * 
+     * @param dataFile File to store the data.
+     * @param rssiDataList List of RSSI data.
+     * @param accuracy Scales the references by the specified accuracy i.e. converts the values to a 1m grid spacing. e.g. 1,1 on 5m grid will become 5,5 on 1m grid
+     * @param isNew Whether writing a new file or appending the data to the end.
+     * @return 
+     */
      public static boolean store(File dataFile, List<RSSIData> rssiDataList, int accuracy, boolean isNew){
          return store(dataFile, rssiDataList, ",", accuracy, isNew);
      }
        
+     /**
+     * Store list of RSSI data to file.     
+     * 
+     * @param dataFile File to store the data.
+     * @param rssiDataList List of RSSI data.
+     * @param fieldSeperator Separator between columns.
+     * @param accuracy Scales the references by the specified accuracy i.e. converts the values to a 1m grid spacing. e.g. 1,1 on 5m grid will become 5,5 on 1m grid
+     * @param isNew Whether writing a new file or appending the data to the end.
+     * @return 
+     */
      public static boolean store(File dataFile, List<RSSIData> rssiDataList, String fieldSeperator, int accuracy, boolean isNew){
                 
         boolean isSucces = false;

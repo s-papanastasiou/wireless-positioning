@@ -36,3 +36,4 @@ proguard/
 /WifiPositioning/ProbabilisticLibrary/target/
 /WifiPositioning/AndroidKNN/target/
 /WifiPositioning/AndroidDetector/target/
+/WifiPositioning/ParticleFilterLibrary/target/

@@ -51,8 +51,7 @@
             <groupId>me.gregalbiston</groupId>
             <artifactId>ProbabilisticLibrary</artifactId>
             <version>1.0</version>
-        </dependency>
-        
+        </dependency>        
         <dependency>
             <groupId>me.gregalbiston</groupId>
             <artifactId>ParticleFilterLibrary</artifactId>

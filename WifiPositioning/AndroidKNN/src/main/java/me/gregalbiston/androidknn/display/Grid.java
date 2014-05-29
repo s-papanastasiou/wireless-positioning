@@ -8,7 +8,6 @@ import datastorage.LabelPoint;
 import datastorage.Location;
 import filehandling.RoomInfo;
 import general.Point;
-import visualinfo.DisplayGrid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +59,7 @@ public class Grid {
             for (LabelPoint point : labelPoints) {
                 RectF rect = new RectF(point.getXfl() - HALF_SIZE, point.getYfl() - HALF_SIZE, point.getXfl() + HALF_SIZE, point.getYfl() + HALF_SIZE);
                 canvas.drawOval(rect, paint);
-                canvas.drawText(point.label, point.getXfl() - SIZE, point.getYfl() - SIZE, paint);
+                canvas.drawText(point.getLabel(), point.getXfl() - SIZE, point.getYfl() - SIZE, paint);
             }
         }
     }

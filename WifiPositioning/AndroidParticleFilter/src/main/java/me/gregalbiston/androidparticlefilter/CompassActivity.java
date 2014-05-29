@@ -1,6 +1,5 @@
 package me.gregalbiston.androidparticlefilter;
 
-import particlefilterlibrary.NavigationResults;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,8 +7,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import datastorage.KNNFloorPoint;
-
 import java.util.HashMap;
+import particlefilterlibrary.NavigationResults;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,8 +31,11 @@ public class CompassActivity extends Activity {
     private static final String FILE_DIRECTORY = "SensorPlanA";
     public static final String LOG_FILENAME = "CompassALog.csv";
 
-    private final AppSettings appSettings = new AppSettings(false, true, 5, 10, 25, true, -0.523598776);
+   
+    private final AppSettings appSettings = new AppSettings(false, true, 5, 10, 25, true, -0.523598776, 0.3, 0.1, 0.3, new Float[]{0.005f, 0.03f, -0.17f}, 40, Thresholds.boundaries(), Thresholds.particleCreation());
 
+    
+    
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
@@ -73,7 +75,7 @@ public class CompassActivity extends Activity {
 
         ToggleButton buttonOnOff = (ToggleButton) v;
         if (buttonOnOff.isChecked()) {
-            sensorReadings = new SensorReadings(this, appSettings, offlineMap);
+            sensorReadings = new SensorReadings(this, appSettings, offlineMap);            
             sensorReadings.execute();
             TextView datasView = (TextView) findViewById(R.id.datasView);
             datasView.setText("Initialising");

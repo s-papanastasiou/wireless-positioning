@@ -1,5 +1,8 @@
 package me.gregalbiston.androidparticlefilter;
 
+import java.util.EnumMap;
+import particlefilterlibrary.Threshold;
+
 /**
  * Created with IntelliJ IDEA.
  * User: pierre
@@ -16,8 +19,17 @@ public class AppSettings {
     private final int particleCount;
     private final boolean isForceToOfflineMap;
     private final double buildingOrientation;
-
-    public AppSettings(boolean BSSIDMerged, boolean orientationMerged, int k, int initRSSIReadings, int particleCount, boolean isForceToOfflineMap, double buildingOrientation) {
+    
+    private final Double jitterOffset;
+    private final Float[] accelerationOffset;
+    private final int speedBreak;
+    
+    private final double cloudDisplacement;
+    private final double cloudRange;    
+    private final EnumMap<Threshold, Float> boundaries;
+    private final EnumMap<Threshold, Integer> particleCreation;
+        
+    public AppSettings(boolean BSSIDMerged, boolean orientationMerged, int k, int initRSSIReadings, int particleCount, boolean isForceToOfflineMap, double buildingOrientation, double cloudDisplacement, double cloudRange, Double jitterOffset, Float[] accelerationOffset, int speedBreak, EnumMap<Threshold, Float> boundaries, EnumMap<Threshold, Integer> particleCreation) {
         this.isBSSIDMerged = BSSIDMerged;
         this.isOrientationMerged = orientationMerged;
         this.K = k;
@@ -25,6 +37,13 @@ public class AppSettings {
         this.particleCount = particleCount;
         this.isForceToOfflineMap = isForceToOfflineMap;
         this.buildingOrientation = buildingOrientation;
+        this.jitterOffset = jitterOffset;
+        this.accelerationOffset = accelerationOffset;
+        this.speedBreak = speedBreak;
+        this.cloudDisplacement = cloudDisplacement;
+        this.cloudRange = cloudRange;        
+        this.boundaries = boundaries;
+        this.particleCreation = particleCreation;
     }
 
     public boolean isForceToOfflineMap() {
@@ -54,4 +73,34 @@ public class AppSettings {
     public int getInitRSSIReadings() {
         return initRSSIReadings;
     }
+
+    public Double getJitterOffset() {
+        return jitterOffset;
+    }
+
+    public Float[] getAccelerationOffset() {
+        return accelerationOffset;
+    }
+
+    public int getSpeedBreak() {
+        return speedBreak;
+    }
+
+    public double getCloudRange() {
+        return cloudRange;
+    }
+
+    public double getCloudDisplacement() {
+        return cloudDisplacement;
+    }
+
+    public EnumMap<Threshold, Float> getBoundaries() {
+        return boundaries;
+    }
+
+    public EnumMap<Threshold, Integer> getParticleCreation() {
+        return particleCreation;
+    }
+    
+    
 }

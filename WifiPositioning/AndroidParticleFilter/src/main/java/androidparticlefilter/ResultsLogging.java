@@ -1,4 +1,4 @@
-package me.gregalbiston.androidparticlefilter;
+package androidparticlefilter;
 
 import android.content.Context;
 import android.media.MediaScannerConnection;
@@ -12,23 +12,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created with IntelliJ IDEA.
- * User: pierre
- * Date: 09/10/13
- * Time: 14:58
- * To change this template use File | Settings | File Templates.
+ * Records results of trials to file.
+ *
+ * @author Pierre Rousseau
  */
-
-public class Logging {
+public class ResultsLogging {
 
     private static final String MIME_TYPE = "text/csv";
     private static File logFile = null;
     private static BufferedWriter writer = null;
     
-    private static final Logger log = LoggerFactory.getLogger(Logging.class);
+    private static final Logger log = LoggerFactory.getLogger(ResultsLogging.class);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+  
+    /**
+     * Ensures the device has write capability.
+     * @return 
+     */
     private static boolean checkWriteAvailability() {
 
         boolean isWritable = false;
@@ -42,10 +43,19 @@ public class Logging {
         return isWritable;
     }
 
+    /**
+     * Write message as a new line.
+     * @param message 
+     */
     public static void printLine(String message) {
         print(message + System.getProperty("line.separator"));
     }
 
+    /**
+     * Write the message.
+     * Opens the file for writing if not already open.
+     * @param message 
+     */
     public static void print(String message) {
         if (writer == null)
             openWriter();
@@ -60,6 +70,10 @@ public class Logging {
 
     }
 
+    /**
+     * Stop the results logging for the file.
+     * @param context 
+     */
     public static void stopLog(Context context) {
         try {
             if (writer != null) {
@@ -80,6 +94,9 @@ public class Logging {
 
     }
 
+    /**
+     * Opens the file for writing.
+     */
     private static void openWriter() {
 
         if (checkWriteAvailability()) {

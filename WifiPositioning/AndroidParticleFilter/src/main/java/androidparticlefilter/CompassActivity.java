@@ -1,4 +1,4 @@
-package me.gregalbiston.androidparticlefilter;
+package androidparticlefilter;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
@@ -11,33 +11,32 @@ import java.util.HashMap;
 import particlefilterlibrary.NavigationResults;
 
 /**
- * Created with IntelliJ IDEA.
- * User: pierre
- * Date: 29/09/13
- * Time: 13:31
- * To change this template use File | Settings | File Templates.
+ * Main android activity for the application.
+ *
+ * @author Pierre Rousseau
  */
-
 public class CompassActivity extends Activity {
 
     private SensorReadings sensorReadings;
 
-    protected HashMap<String, KNNFloorPoint> offlineMap;
-    protected Drawable floorPlan;
-    protected Visualisation visualisation;
+    private HashMap<String, KNNFloorPoint> offlineMap;
+    private Drawable floorPlan;
+    private Visualisation visualisation;
 
     private static final String OFFLINE_MAP_FILE = "RSSIResults.csv";
     private static final String FLOOR_PLAN_FILE = "floor2final.png";
     private static final String FILE_DIRECTORY = "SensorPlanA";
     public static final String LOG_FILENAME = "CompassALog.csv";
+    public final static String OFFLINE_COMPRESSED = "OfflineCompressed.knn";
 
-   
     private final AppSettings appSettings = new AppSettings(false, true, 5, 10, 25, true, -0.523598776, 0.3, 0.1, 0.3, new Float[]{0.005f, 0.03f, -0.17f}, 40, Thresholds.boundaries(), Thresholds.particleCreation());
 
-    
-    
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    /**
+     * Android onCreate.
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -47,12 +46,19 @@ public class CompassActivity extends Activity {
         loadFiles();
     }
 
+    /**
+     * Android onStop.
+     */
     @Override
     public void onStop() {
         super.onStop();
-        Logging.stopLog(this);
+        ResultsLogging.stopLog(this);
     }
 
+    /**
+     * Load files from storage.
+     * @return 
+     */
     private boolean loadFiles() {
 
         boolean isSuccess = false;
@@ -66,16 +72,20 @@ public class CompassActivity extends Activity {
             isSuccess = true;
         }
 
-        Logging.printLine("Log started");
+        ResultsLogging.printLine("Log started");
 
         return isSuccess;
     }
-
+/**
+ * Sensor button handler.
+ * @param v
+ * @throws InterruptedException 
+ */
     public void onSensorButtonClick(View v) throws InterruptedException {
 
         ToggleButton buttonOnOff = (ToggleButton) v;
         if (buttonOnOff.isChecked()) {
-            sensorReadings = new SensorReadings(this, appSettings, offlineMap);            
+            sensorReadings = new SensorReadings(this, appSettings, offlineMap);
             sensorReadings.execute();
             TextView datasView = (TextView) findViewById(R.id.datasView);
             datasView.setText("Initialising");
@@ -86,32 +96,45 @@ public class CompassActivity extends Activity {
         }
     }
 
+    /**
+     * Moving button handler.
+     * @param v 
+     */
     public void onMovingButtonClick(View v) {
         ToggleButton buttonMoving = (ToggleButton) v;
         if (buttonMoving.isChecked()) {
-            Logging.printLine("Started moving");
+            ResultsLogging.printLine("Started moving");
         } else {
-            Logging.printLine("Stopped moving");
+            ResultsLogging.printLine("Stopped moving");
         }
 
     }
 
+    /**
+     * Android onResume.
+     */
     @Override
     protected void onResume() {
         super.onResume();
     }
-
+/**
+ * Android onPause.
+ */
     @Override
     protected void onPause() {
         super.onPause();
     }
 
+    /**
+     * Display values on screen from each sample.
+     * @param navigationResults 
+     */
     public void showValues(NavigationResults navigationResults) {
 
         visualisation.setPoint(navigationResults.probabilisticPoint, navigationResults.particlePoint, navigationResults.inertialPoint, navigationResults.bestPoint);
 
         TextView datasView = (TextView) findViewById(R.id.datasView);
         datasView.setText(navigationResults.toString());
-        Logging.printLine(navigationResults.toString());
+        ResultsLogging.printLine(navigationResults.toString());
     }
 }

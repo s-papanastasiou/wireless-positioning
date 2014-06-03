@@ -1,4 +1,4 @@
-package me.gregalbiston.androidparticlefilter;
+package androidparticlefilter;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,11 +12,11 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import datastorage.KNNFloorPoint;
+import general.Locate;
 import general.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import particlefilterlibrary.Cloud;
 import particlefilterlibrary.InertialData;
 import particlefilterlibrary.InertialPoint;
@@ -26,13 +26,11 @@ import particlefilterlibrary.ParticleFilter;
 import probabilisticlibrary.Probabilistic;
 
 /**
- * Created with IntelliJ IDEA.
- * User: pierre
- * Date: 01/10/13
- * Time: 15:48
- * To change this template use File | Settings | File Templates.
+ * Asynchronous task and Sensor Event Listener to process sensor readings as
+ * they become available.
+ *
+ * @author Pierre Rousseau
  */
-
 public class SensorReadings extends AsyncTask<String, NavigationResults, Void> implements SensorEventListener {
 
     private final CompassActivity compassActivity;
@@ -51,12 +49,18 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
     private float[] mGeomagnetic = null;
     private float[] mGravity = null;
     private List<ScanResult> scanResults;
-    private boolean isWifiResultsReady = false;        
+    private boolean isWifiResultsReady = false;
 
     private final AppSettings appSettings;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    /**
+     * Constructor
+     *
+     * @param compassActivity Main screen activity to publish result.
+     * @param appSettings
+     * @param offlineMap
+     */
     public SensorReadings(CompassActivity compassActivity, AppSettings appSettings, HashMap<String, KNNFloorPoint> offlineMap) {
 
         this.compassActivity = compassActivity;
@@ -70,11 +74,19 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
         gravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
     }
 
+    /**
+     * Android onPreExecute.
+     */
     @Override
     protected void onPreExecute() {
 
     }
 
+    /**
+     * Android doInBackground.
+     *
+     * @param params
+     */
     @Override
     protected Void doInBackground(String... params) {
 
@@ -95,7 +107,7 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
                 //find the initial point
                 if (initialPoints.size() == appSettings.getInitRSSIReadings()) {
 
-                    Point initialPoint = centerPoint(initialPoints);
+                    Point initialPoint = Locate.findUnweightedCentre(initialPoints);
 
                     inertialPoint = new InertialPoint(initialPoint);
                     probReceiver = setupProbReceiver();
@@ -118,9 +130,9 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
         }
 
         //unregister the broadcast receiver and sensor listeners
-        if (probReceiver != null)
+        if (probReceiver != null) {
             compassActivity.unregisterReceiver(probReceiver);
-
+        }
 
         mSensorManager.unregisterListener(this, linearAcceleration);
         mSensorManager.unregisterListener(this, magnetometer);
@@ -129,29 +141,49 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
         return null;
     }
 
+    /**
+     * Android onProgressUpdate.
+     *
+     * @param navigationResults
+     */
     @Override
     protected void onProgressUpdate(NavigationResults... navigationResults) {
         compassActivity.showValues(navigationResults[0]);
     }
 
+    /**
+     * Android onSensorChanged.
+     *
+     * @param event
+     */
     @Override
     public void onSensorChanged(SensorEvent event) {
 
-        if (event.sensor.getType() == Sensor.TYPE_GRAVITY)
+        if (event.sensor.getType() == Sensor.TYPE_GRAVITY) {
             mGravity = event.values;
-        else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             mGeomagnetic = event.values;
-        else if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION)
+        } else if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
             mLinearAcceleration = event.values;
+        }
 
     }
 
-
+    /**
+     * Android onAccuracyChanged.
+     *
+     * @param sensor
+     * @param accuracy
+     */
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
 
+    /**
+     * Initial position based on provided readings.
+     * @param initReadings 
+     */
     private void setInitialPos(final int initReadings) {
 
         //loop until the sensors have provided an orientation
@@ -164,7 +196,6 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
             @Override
             public void onReceive(Context context, Intent intent) {
 
-
                 KNNFloorPoint onlinePoint = processScanResults(wifiManager.getScanResults(), appSettings.isBSSIDMerged());
 
                 Point initialPoint = Probabilistic.run(onlinePoint, offlineMap, appSettings.getK(), deviceOrientation);
@@ -172,10 +203,11 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
                 //Logging.printLine(String.format("Location :;%s;%s", initialPoint.getX(), initialPoint.getY()));
                 initialPoints.add(initialPoint);
 
-                if (initialPoints.size() == initReadings)
+                if (initialPoints.size() == initReadings) {
                     context.unregisterReceiver(this);
-                else
+                } else {
                     wifiManager.startScan();
+                }
             }
         };
 
@@ -187,6 +219,11 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
 
     }
 
+    /**
+     * Setup Broadcast Receiver to receive results of wi-fi scan.
+     * Triggers refresh of position in do in background.
+     * @return 
+     */
     private BroadcastReceiver setupProbReceiver() {
 
         IntentFilter intentFilter = new IntentFilter();
@@ -208,6 +245,10 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
 
     }
 
+    /**
+     * Handler for results of sensors.
+     * Move inertial point after values for all three sets of data (gravity, geomagnetic and linear acceleration) have been received.
+     */
     private void processSensorValues() {
 
         if (mGravity != null && mGeomagnetic != null && mLinearAcceleration != null) {
@@ -237,9 +278,15 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
             mLinearAcceleration = null;
         }
 
-
     }
 
+    /**
+     * Activate particle filter to move the cloud of particles.
+     * @param probabilisticPoint
+     * @param inertialPoint
+     * @param isForceToOfflineMap
+     * @return 
+     */
     private NavigationResults doParticleFilter(Point probabilisticPoint, InertialPoint inertialPoint, boolean isForceToOfflineMap) {
 
         if (cloud != null) {
@@ -251,62 +298,27 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
             cloud = new Cloud(inertialPoint.getPoint(), particles);
         }
 
-
-        Point bestPoint = new Point(0, 0);
-        if (isForceToOfflineMap) {           //find the best point in the offline map and match to it
-            bestPoint = findBestPoint(offlineMap, cloud.getEstiPos());
-        }
+        Point bestPoint = Locate.forceToMap(offlineMap, cloud.getEstiPos(), isForceToOfflineMap);        
 
         return new NavigationResults(probabilisticPoint, cloud.getEstiPos(), inertialPoint.getPoint(), bestPoint, inertialPoint.getInertialData());
     }
 
+    /**
+     * Convert scan result into a single floor point to compare to offline map.
+     * @param scanResults
+     * @param isBSSIDMerged
+     * @return 
+     */
     private KNNFloorPoint processScanResults(List<ScanResult> scanResults, boolean isBSSIDMerged) {
 
         KNNFloorPoint knnFloorPoint = new KNNFloorPoint();
 
-
-        for (ScanResult scanResult : scanResults)
+        for (ScanResult scanResult : scanResults) {
             knnFloorPoint.add(scanResult.BSSID, scanResult.level, isBSSIDMerged);
+        }
 
         return knnFloorPoint;
 
-    }
-
-    private Point centerPoint(List<Point> initialPoints) {
-
-        double x = 0;
-        double y = 0;
-
-        for (Point point : initialPoints) {
-
-            x += point.getX();
-            y += point.getY();
-        }
-
-        return new Point(x / initialPoints.size(), y / initialPoints.size());
-    }
-
-    private Point findBestPoint(HashMap<String, KNNFloorPoint> offlineMap, Point estiPos) {
-
-        Point bestPoint = new Point();
-        double lowestDistance = Double.MAX_VALUE;
-
-        Set<String> keys = offlineMap.keySet();
-        for (String key : keys) {
-
-            KNNFloorPoint knnFloorPoint = offlineMap.get(key);
-            Point point = new Point(knnFloorPoint.getxRef(), knnFloorPoint.getyRef());
-
-            double distance = Math.hypot(point.getX() - estiPos.getX(), point.getY() - estiPos.getY());
-
-            if (distance < lowestDistance) {
-                bestPoint = point;
-                lowestDistance = distance;
-            }
-        }
-
-        return bestPoint;
-    }
+    }   
+   
 }
-
-

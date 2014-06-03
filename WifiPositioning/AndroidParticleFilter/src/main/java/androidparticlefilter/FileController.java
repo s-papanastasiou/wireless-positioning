@@ -1,4 +1,4 @@
-package me.gregalbiston.androidparticlefilter;
+package androidparticlefilter;
 
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
@@ -12,18 +12,24 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: pierre
- * Date: 07/10/13
- * Time: 15:52
- * To change this template use File | Settings | File Templates.
+ * File controller for obtaining offline map and floor plan image.
+ *
+ * @author Pierre Rousseau
  */
+public class FileController {   
 
-public class FileController {
-
-    public final static String OFFLINE_COMPRESSED = "OfflineCompressed.knn";
-
-    //Loads the offline data. Checks whether a compressed version already exists. Loads from raw data and creates a new compressed file.
+    /**
+     * Loads the offline data file. 
+     * Checks whether a compressed version already exists. 
+     * Loads from raw data and creates a new compressed file.
+     * 
+     * @param directory
+     * @param fileName
+     * @param separator
+     * @param isBSSIDMerged
+     * @param isOrientationMerged
+     * @return 
+     */    
     public static HashMap<String, KNNFloorPoint> loadOfflineMap(String directory, String fileName, String separator, boolean isBSSIDMerged, boolean isOrientationMerged) {
 
         HashMap<String, KNNFloorPoint> offlineMap = null;
@@ -31,7 +37,7 @@ public class FileController {
         if (checkReadAvailability()) {
             File storageDirectory = Environment.getExternalStoragePublicDirectory(directory);
 
-            File compressFile = new File(storageDirectory, OFFLINE_COMPRESSED);
+            File compressFile = new File(storageDirectory, CompassActivity.OFFLINE_COMPRESSED);
 
             if (!compressFile.exists()) {
 
@@ -52,6 +58,13 @@ public class FileController {
         return offlineMap;
     }
 
+    /**
+     * Loads the floor plan image file.
+     * 
+     * @param directory
+     * @param floorPlanFilename
+     * @return 
+     */
     public static Drawable loadFloor(String directory, String floorPlanFilename) {
 
         Drawable floorImage = null;
@@ -68,6 +81,10 @@ public class FileController {
         return floorImage;
     }
 
+    /**
+     * Checks within device storage is available to read.
+     * @return 
+     */
     private static boolean checkReadAvailability() {
         
         String state = Environment.getExternalStorageState();

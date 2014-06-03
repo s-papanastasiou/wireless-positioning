@@ -33,7 +33,7 @@ import visualinfo.DisplayRoute;
 
 /**
  *
- * @author SST3ALBISG
+ * @author Greg Albiston
  */
 public class ParticleSimulation {
     public static void run(SettingsProperties sp, FileController fc, FilterProperties fp, ParticleTrial parTrial, Logging particleResultsLog) {

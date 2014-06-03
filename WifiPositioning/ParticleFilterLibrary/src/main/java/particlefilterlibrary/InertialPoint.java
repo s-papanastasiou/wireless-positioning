@@ -57,8 +57,7 @@ public class InertialPoint {
             currentInertialPoint.count++;
         } else {
             resultsX = inerNav(currentInertialPoint.t, timestamp, currentInertialPoint.inertialData.getAccelerationX(), inertialData.getAccelerationX(), currentInertialPoint.x, 0.0);
-            resultsY = inerNav(currentInertialPoint.t, timestamp, currentInertialPoint.inertialData.getAccelerationY(), inertialData.getAccelerationY(), currentInertialPoint.y, 0.0);
-            currentInertialPoint.count = 0;
+            resultsY = inerNav(currentInertialPoint.t, timestamp, currentInertialPoint.inertialData.getAccelerationY(), inertialData.getAccelerationY(), currentInertialPoint.y, 0.0);            
         }
 
         currentInertialPoint.x = resultsX[0];

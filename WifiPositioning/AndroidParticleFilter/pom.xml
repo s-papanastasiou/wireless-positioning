@@ -26,14 +26,27 @@
             <version>${platform.version}</version>
             <scope>provided</scope>
         </dependency>
+             
+        <!-- Logback Android --> 
+        <dependency>
+            <groupId>com.github.tony19</groupId>
+            <artifactId>logback-android-core</artifactId>
+            <version>1.1.1-2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.tony19</groupId>
+            <artifactId>logback-android-classic</artifactId>
+            <version>1.1.1-2</version>
+        </dependency>
               
         <!-- SLF4J Android -->  
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-android</artifactId>
-            <version>1.7.7</version>
-        </dependency>
-
+        <!--
+                <dependency>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-android</artifactId>
+                    <version>1.7.7</version>
+                </dependency>
+        -->
         <!-- Libraries -->     
         <dependency>
             <groupId>me.gregalbiston</groupId>

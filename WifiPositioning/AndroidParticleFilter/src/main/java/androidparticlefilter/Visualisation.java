@@ -1,4 +1,4 @@
-package me.gregalbiston.androidparticlefilter;
+package androidparticlefilter;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -12,13 +12,10 @@ import android.view.View;
 import android.view.WindowManager;
 
 /**
- * Created with IntelliJ IDEA.
- * User: pierre
- * Date: 08/10/13
- * Time: 17:27
- * To change this template use File | Settings | File Templates.
+ * Main android activity for the application.
+ *
+ * @author Pierre Rousseau
  */
-
 public class Visualisation extends View {
 
     protected Drawable floorPlanImage;
@@ -38,6 +35,11 @@ public class Visualisation extends View {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Constructor
+     * @param context
+     * @param attrs 
+     */
     public Visualisation(Context context, AttributeSet attrs) {
 
         super(context, attrs);
@@ -54,11 +56,22 @@ public class Visualisation extends View {
 
     }
 
+    /**
+     * Assigns the floor plan image.
+     * @param floorPlanImage 
+     */
     public void setFloorPlan(Drawable floorPlanImage) {
         this.floorPlanImage = floorPlanImage;
         floorPlanImage.setBounds(0, 0, screenSize.x, screenSize.y - STATUS_BAR);
     }
 
+    /**
+     * Draws the latest points on the floor plan and refreshes the view.
+     * @param probabilisticPoint
+     * @param particlePoint
+     * @param inertialPoint
+     * @param corridorPoint 
+     */
     public void setPoint(general.Point probabilisticPoint, general.Point particlePoint, general.Point inertialPoint, general.Point corridorPoint) {
 
         this.probabilisticPoint = new general.Point(probabilisticPoint.getX() * X_PIXELS, probabilisticPoint.getY() * Y_PIXELS);
@@ -68,6 +81,9 @@ public class Visualisation extends View {
         this.invalidate();
     }
 
+    /**
+     * Resets the points on the floor plan image and refreshes the view.
+     */
     public void clear() {
         this.probabilisticPoint = new general.Point();
         this.particlePoint = new general.Point();
@@ -76,6 +92,10 @@ public class Visualisation extends View {
         this.invalidate();
     }
 
+    /**
+     * Android onDraw.
+     * @param canvas 
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

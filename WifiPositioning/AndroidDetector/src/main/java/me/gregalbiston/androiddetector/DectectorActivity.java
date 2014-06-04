@@ -95,12 +95,14 @@ public class DectectorActivity extends Activity {
             NumberPicker frequencyPicker = (NumberPicker) findViewById(R.id.numberPickerFrequency);
             int frequency = frequencyPicker.getValue();
 
+            Spinner accuracySpinner = (Spinner) findViewById(R.id.spinnerAccuracy);
+            int accuracy = Integer.parseInt((String)accuracySpinner.getSelectedItem());
 
             //Disable buttons
             disableInteractions();
 
             //Setup and run the RSSI and Geo-Magnetic Scanner
-            Scanner scanner = new Scanner(duration, frequency, this, new ScanSettings(fileOutput, isRSSISelected, isMagneticSelected));
+            Scanner scanner = new Scanner(duration, frequency, accuracy, this, new ScanSettings(fileOutput, isRSSISelected, isMagneticSelected));
             scanner.start();
             showToast("Scan started");
             isScannedOnce = true;
@@ -346,16 +348,26 @@ public class DectectorActivity extends Activity {
         assert newLimits[3] == 1 | newLimits[3] == 0 : "MyActivity.setGrid newLimits[3] is not 0 or 1";
 
         NumberPicker xPicker = (NumberPicker) findViewById(R.id.numberPickerXXX);
-        xPicker.setMaxValue(newLimits[0]);
         xPicker.setMinValue(newLimits[3]);
+        xPicker.setMaxValue(newLimits[0]);        
+        xPicker.setDisplayedValues(getDisplayedValues(newLimits[3], newLimits[0], accuracyIndex));
 
-        NumberPicker yPicker = (NumberPicker) findViewById(R.id.numberPickerYYY);
-        yPicker.setMaxValue(newLimits[1]);
+        NumberPicker yPicker = (NumberPicker) findViewById(R.id.numberPickerYYY);        
         yPicker.setMinValue(newLimits[3]);
+        yPicker.setMaxValue(newLimits[1]);
+        yPicker.setDisplayedValues(getDisplayedValues(newLimits[3], newLimits[1], accuracyIndex));
 
         NumberPicker wPicker = (NumberPicker) findViewById(R.id.numberPickerWWW);
         wPicker.setMinValue(1);
         wPicker.setMaxValue(newLimits[2]);
+        wPicker.setDisplayedValues(getDisplayedValues(1, newLimits[2], accuracyIndex));
+    }
+    
+    private String[] getDisplayedValues(int min, int max, int multiple){
+        List<String> displayedValues = new ArrayList<>(max-min+1);
+        for(int i = min; i<max+1; i++)
+            displayedValues.add(String.valueOf(i*multiple));
+        return (String[])displayedValues.toArray();
     }
 
     public void updateSettings(View view) {

@@ -25,12 +25,12 @@ public class Scanner extends CountDownTimer {
     private final ScanSettings scanSettings;
 
 
-    public Scanner(int duration, int frequency, DectectorActivity dectectorActivity, ScanSettings scanSettings) {
+    public Scanner(int duration, int frequency, int accuracy, DectectorActivity dectectorActivity, ScanSettings scanSettings) {
         super((duration * 1000) + 500, 1000 / frequency);       //add an extra half second to the duration to allow results to come back
 
         this.scanSettings = scanSettings;
 
-        setupScanDetails(dectectorActivity);
+        setupScanDetails(dectectorActivity, accuracy);
         setupProgressBar(dectectorActivity, duration * frequency);
 
         if (scanSettings.isMagneticSelected())
@@ -81,14 +81,15 @@ public class Scanner extends CountDownTimer {
         progressBar.setMax(limit);
     }
 
-    private void setupScanDetails(DectectorActivity dectectorActivity) {
+    private void setupScanDetails(DectectorActivity dectectorActivity, int accuracy) {
+    
         Spinner room = (Spinner) dectectorActivity.findViewById(R.id.spinnerRooms);
         NumberPicker xValue = (NumberPicker) dectectorActivity.findViewById(R.id.numberPickerXXX);
         NumberPicker yValue = (NumberPicker) dectectorActivity.findViewById(R.id.numberPickerYYY);
         NumberPicker wValue = (NumberPicker) dectectorActivity.findViewById(R.id.numberPickerWWW);
 
 
-        scanLocation = new Location(room.getSelectedItem().toString(), xValue.getValue(), yValue.getValue(), wValue.getValue());
+        scanLocation = new Location(room.getSelectedItem().toString(), xValue.getValue()* accuracy, yValue.getValue()* accuracy, wValue.getValue()* accuracy);
     }
 
 

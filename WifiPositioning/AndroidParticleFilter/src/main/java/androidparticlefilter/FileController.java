@@ -11,7 +11,6 @@ import filehandling.RSSILoader;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import org.omg.CORBA.Environment;
 
 /**
  * File controller for obtaining offline map and floor plan image.
@@ -28,6 +27,7 @@ public class FileController {
      * @param directory
      * @param fileName
      * @param separator
+     * @param roomInfo
      * @param isBSSIDMerged
      * @param isOrientationMerged
      * @return 

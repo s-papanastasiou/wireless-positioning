@@ -9,6 +9,7 @@ import android.widget.ToggleButton;
 import datastorage.KNNFloorPoint;
 import datastorage.RoomInfo;
 import java.util.HashMap;
+import me.gregalbiston.androidparticlefilter.R;
 import particlefilterlibrary.NavigationResults;
 
 /**

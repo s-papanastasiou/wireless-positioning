@@ -44,7 +44,7 @@ public class RoomInfo {
      * @param parts String array of elements to build class. See HEADINGS for
      * order.
      */
-    public RoomInfo(final String[] parts) {
+    public RoomInfo(final String[] parts) throws NumberFormatException {
 
         name = parts[0];
         physicalWidth = Double.parseDouble(parts[1]);
@@ -334,63 +334,5 @@ public class RoomInfo {
         }
 
         return location;
-    }
-
-    /**
-     * Finds the point that corresponds to the location.
-     * 
-     * @param location Location to find.
-     * @param roomInfo Information about the rooms on the floor.
-     * @return 
-     */
-    /*
-    public static Point searchPoint(Location location, HashMap<String, RoomInfo> roomInfo) {
-        RoomInfo room = roomInfo.get(location.getRoom());
-        return room.getPoint(location.getxRef(), location.getyRef());
-    }
-*/
-    //
-    /**
-     * Calculates distance in metres between two locations using the global
-     * offsets. 
-     * Assumes that working on a 1m grid
-     *
-     * @param start Start point
-     * @param end End point
-     * @param roomInfo Information about rooms on the floor.
-     * @return
-     */
-    /*
-    public static double distanceMetres(Location start, Location end, HashMap<String, RoomInfo> roomInfo) {
-
-        RoomInfo startRoom = roomInfo.get(start.getRoom());
-        Point startPoint = startRoom.convertGlobalPoint(start);
-
-        RoomInfo endRoom = roomInfo.get(end.getRoom());
-        Point endPoint = endRoom.convertGlobalPoint(end);
-
-        double xDist = startPoint.getX() - endPoint.getX();
-        double yDist = startPoint.getY() - endPoint.getY();
-        double distance = Math.hypot(xDist, yDist);
-
-        return distance;
-    }
-
-    /**
-     * Calculates pixel distance between two points.
-     *
-     * @param start Start point
-     * @param end End point
-     * @return
-     */
-    /*
-    public static double distancePixel(Point start, Point end) {
-
-        double xDist = start.getX() - end.getX();
-        double yDist = start.getY() - end.getY();
-        double distance = Math.hypot(xDist, yDist);
-
-        return distance;
-    }
-*/
+    } 
 }

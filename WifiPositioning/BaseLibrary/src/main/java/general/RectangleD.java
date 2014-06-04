@@ -4,6 +4,8 @@
  */
 package general;
 
+import java.util.Objects;
+
 /**
  * Implementation of Rectangle. Intended to be common to both Java and Android
  * use of the library. Native awt.Rectangle is not available in Android SDK.
@@ -61,5 +63,34 @@ public class RectangleD {
      */
     public boolean contains(Point point) {
         return contains(point.getX(), point.getY());
+    }
+    
+    @Override
+    public boolean equals(Object o){
+        boolean result = false;
+        
+        
+        if(o instanceof RectangleD){
+            RectangleD rect = (RectangleD) o;
+            result = this.x == rect.x && this.y == rect.y && this.width == rect.width && this.height == rect.height;            
+        }else{
+            throw new AssertionError("Only comparison with RectangleD supported.");
+        }
+        return result;
+    }  
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 17 * hash + Objects.hashCode(this.x);
+        hash = 17 * hash + Objects.hashCode(this.y);
+        hash = 17 * hash + Objects.hashCode(this.width);
+        hash = 17 * hash + Objects.hashCode(this.height);
+        return hash;
+    }
+    
+    @Override
+    public String toString(){
+        return String.format("x: %s, y: %s, w: %s, h: %s", x, y, width, height);
     }
 }

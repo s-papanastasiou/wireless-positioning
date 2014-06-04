@@ -62,4 +62,33 @@ public class Rectangle {
     public boolean contains(Point point) {
         return contains(point.getX(), point.getY());
     }
+    
+    @Override
+    public boolean equals(Object o){
+        boolean result = false;
+        
+        
+        if(o instanceof Rectangle){
+            Rectangle rect = (Rectangle) o;
+            result = this.x == rect.x && this.y == rect.y && this.width == rect.width && this.height == rect.height;            
+        }else{
+            throw new AssertionError("Only comparison with RectangleD supported.");
+        }
+        return result;
+    }        
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + this.x;
+        hash = 23 * hash + this.y;
+        hash = 23 * hash + this.width;
+        hash = 23 * hash + this.height;
+        return hash;
+    }
+    
+    @Override
+    public String toString(){
+        return String.format("x: %s, y: %s, w: %s, h: %s", x, y, width, height);
+    }
 }

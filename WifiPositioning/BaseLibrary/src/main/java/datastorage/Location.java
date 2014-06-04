@@ -67,6 +67,10 @@ public class Location implements Serializable {
      * @param xRef x reference
      * @param yRef y reference
      * @param wRef w reference
+     * @param globalX
+     * @param globalY
+     * @param drawX
+     * @param drawY
      */
     public Location(final String room, final int xRef, final int yRef, final int wRef, double globalX, double globalY, double drawX, double drawY) {
         this.room = room;
@@ -83,6 +87,10 @@ public class Location implements Serializable {
      * Copy Constructor
      *
      * @param location
+     * @param globalX
+     * @param globalY
+     * @param drawY
+     * @param drawX
      */
     public Location(final Location location, double globalX, double globalY, double drawX, double drawY) {
         this.room = location.room;
@@ -194,28 +202,28 @@ public class Location implements Serializable {
 
         if (o instanceof Location) {
             Location locationPoint = (Location) o;
-            if (locationPoint.room.equals(this.room) && locationPoint.xRef == this.xRef && locationPoint.yRef == this.yRef && locationPoint.wRef == this.wRef && locationPoint.globalX == this.globalX && locationPoint.globalY == this.globalY) {
-                isEqual = true;
-            }
+            isEqual = locationPoint.room.equals(this.room) && locationPoint.xRef == this.xRef && locationPoint.yRef == this.yRef && locationPoint.wRef == this.wRef && locationPoint.globalX == this.globalX && locationPoint.globalY == this.globalY && locationPoint.drawX == this.drawX && locationPoint.drawY == this.drawY;
         }
 
         return isEqual;
     }
 
-    /**
+     /**
      * Auto-generated hashcode
      *
      * @return
-     */
+     */    
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.room);
-        hash = 67 * hash + this.xRef;
-        hash = 67 * hash + this.yRef;
-        hash = 67 * hash + this.wRef;
-        hash = 67 * hash + (int) (Double.doubleToLongBits(this.globalX) ^ (Double.doubleToLongBits(this.globalX) >>> 32));
-        hash = 67 * hash + (int) (Double.doubleToLongBits(this.globalY) ^ (Double.doubleToLongBits(this.globalY) >>> 32));
+        int hash = 7;
+        hash = 47 * hash + Objects.hashCode(this.room);
+        hash = 47 * hash + this.xRef;
+        hash = 47 * hash + this.yRef;
+        hash = 47 * hash + this.wRef;
+        hash = 47 * hash + (int) (Double.doubleToLongBits(this.globalX) ^ (Double.doubleToLongBits(this.globalX) >>> 32));
+        hash = 47 * hash + (int) (Double.doubleToLongBits(this.globalY) ^ (Double.doubleToLongBits(this.globalY) >>> 32));
+        hash = 47 * hash + (int) (Double.doubleToLongBits(this.drawX) ^ (Double.doubleToLongBits(this.drawX) >>> 32));
+        hash = 47 * hash + (int) (Double.doubleToLongBits(this.drawY) ^ (Double.doubleToLongBits(this.drawY) >>> 32));
         return hash;
     }
 

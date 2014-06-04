@@ -6,6 +6,7 @@ package accesspointvariant;
 
 import static accesspointvariant.APData.toStringHeadings;
 import datastorage.RSSIData;
+import datastorage.RoomInfo;
 import filehandling.RSSILoader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -141,12 +142,13 @@ public class APFormat {
      * @param dataFile File of RSSI data.
      * @param fieldSeparator Field separator used in file.
      * @param isBSSIDMerged True, if last hex pair of BSSID is to be ignored.
+     * @param roomInfo Information about the rooms on the floor.
      * @return
      */
-    public static HashMap<String, APData> load(final File dataFile, final String fieldSeparator, final boolean isBSSIDMerged) {
+    public static HashMap<String, APData> load(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final boolean isBSSIDMerged) {
 
         //load raw data
-        List<RSSIData> rssiDataList = RSSILoader.load(dataFile, fieldSeparator);
+        List<RSSIData> rssiDataList = RSSILoader.load(dataFile, fieldSeparator, roomInfo);
 
         return compile(rssiDataList, isBSSIDMerged, false);
     }
@@ -156,14 +158,15 @@ public class APFormat {
      *
      * @param dataFile File of RSSI data.
      * @param fieldSeparator Field separator used in file.
+     * @param roomInfo Information about the rooms on the floor.
      * @param isBSSIDMerged True, if last hex pair of BSSID is to be ignored.
      * @param isOrientationMerged True, if W-Ref of location is to be ignored.     
      * @return
      */
-    public static HashMap<String, APData> load(final File dataFile, final String fieldSeparator, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+    public static HashMap<String, APData> load(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
 
         //load raw data
-        List<RSSIData> rssiDataList = RSSILoader.load(dataFile, fieldSeparator);
+        List<RSSIData> rssiDataList = RSSILoader.load(dataFile, fieldSeparator, roomInfo);
 
         return compile(rssiDataList, isBSSIDMerged, isOrientationMerged);
     }
@@ -173,13 +176,14 @@ public class APFormat {
      *
      * @param dataFile File of RSSI data.
      * @param fieldSeparator Field separator used in file.
+     * @param roomInfo Information about the rooms on the floor.
      * @param isBSSIDMerged True, if last hex pair of BSSID is to be ignored.
      * @return
      */
-    public static List<APData> loadList(final File dataFile, final String fieldSeparator, final boolean isBSSIDMerged) {
+    public static List<APData> loadList(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final boolean isBSSIDMerged) {
 
         //load raw data
-        List<RSSIData> rssiDataList = RSSILoader.load(dataFile, fieldSeparator);
+        List<RSSIData> rssiDataList = RSSILoader.load(dataFile, fieldSeparator, roomInfo);
 
         return compileList(rssiDataList, isBSSIDMerged, false);
     }
@@ -189,14 +193,15 @@ public class APFormat {
      *
      * @param dataFile File of RSSI data.
      * @param fieldSeparator Field separator used in file.
+     * @param roomInfo Information about the rooms on the floor.
      * @param isBSSIDMerged True, if last hex pair of BSSID is to be ignored.
      * @param isOrientationMerged True, if W-Ref of location is to be ignored.
      * @return
      */
-    public static List<APData> loadList(final File dataFile, final String fieldSeparator, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+    public static List<APData> loadList(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
 
         //load raw data
-        List<RSSIData> rssiDataList = RSSILoader.load(dataFile, fieldSeparator);
+        List<RSSIData> rssiDataList = RSSILoader.load(dataFile, fieldSeparator, roomInfo);
 
         return compileList(rssiDataList, isBSSIDMerged, isOrientationMerged);
     }

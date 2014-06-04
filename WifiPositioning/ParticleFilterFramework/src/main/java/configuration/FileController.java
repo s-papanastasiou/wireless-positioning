@@ -6,8 +6,10 @@
 package configuration;
 
 import datastorage.RSSIData;
+import datastorage.RoomInfo;
 import filehandling.RSSILoader;
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +80,7 @@ public class FileController {
         setupInputFiles(sp);
 
         if (checkFiles()) {
-            setupLists(sp.IN_SEP());
+            setupLists(sp.IN_SEP(), sp.ROOM_INFO());
             isSetupOk = true;
         } else {
             isSetupOk = false;
@@ -166,16 +168,16 @@ public class FileController {
         return isFileCheck;
     }
 
-    private void setupLists(String IN_SEP) {
+    private void setupLists(String IN_SEP, HashMap<String, RoomInfo> roomInfo) {
 
         logger.info("Loading offline file");
-        offlineDataList = RSSILoader.load(offlineMapFile, IN_SEP);
+        offlineDataList = RSSILoader.load(offlineMapFile, IN_SEP, roomInfo);
 
         logger.info("Loading online file");
-        onlineDataList = RSSILoader.load(onlinePointsFile, IN_SEP);
+        onlineDataList = RSSILoader.load(onlinePointsFile, IN_SEP, roomInfo);
 
         logger.info("Loading initial file");
-        initialDataList = RSSILoader.load(initialPointsFile, IN_SEP);
+        initialDataList = RSSILoader.load(initialPointsFile, IN_SEP, roomInfo);
 
         logger.info("Loading inertial file");
         inertialDataList = DataLoad.loadInertialData(inertialDataFile, IN_SEP);

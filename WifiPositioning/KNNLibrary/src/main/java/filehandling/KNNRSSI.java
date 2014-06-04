@@ -8,6 +8,7 @@ import datastorage.Location;
 import datastorage.KNNFloorPoint;
 import datastorage.RSSIData;
 import datastorage.KNNTrialPoint;
+import datastorage.RoomInfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,22 +25,22 @@ public class KNNRSSI {
     private static final Logger logger = LoggerFactory.getLogger(KNNRSSI.class);
 
     //loader that only loads data and does not store the compiled
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final HashMap<String, RoomInfo> roomInfo) {
 
-        return load(dataFile, ",", false, false);
+        return load(dataFile, ",", roomInfo, false, false);
     }
 
     //loader that only loads data and does not store the compiled
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final String fieldSeparator, final boolean isBSSIDMerged) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final boolean isBSSIDMerged) {
 
-        return load(dataFile, ",", isBSSIDMerged, false);
+        return load(dataFile, ",", roomInfo, isBSSIDMerged, false);
     }
 
     //loader that only loads data and does not store the compiled
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final String fieldSeparator, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
 
         //load raw data
-        List<RSSIData> rssiList = RSSILoader.load(dataFile, fieldSeparator);
+        List<RSSIData> rssiList = RSSILoader.load(dataFile, fieldSeparator, roomInfo);
 
         //convert raw
         HashMap<String, KNNFloorPoint> knnRadioMap = compile(rssiList, isBSSIDMerged, isOrientationMerged);
@@ -48,21 +49,21 @@ public class KNNRSSI {
     }
 
     //loader that only loads data and does not store the compiled - returns a list
-    public static List<KNNFloorPoint> loadList(final File dataFile) {
+    public static List<KNNFloorPoint> loadList(final File dataFile, final HashMap<String, RoomInfo> roomInfo) {
 
-        return loadList(dataFile, ",", false, false);
+        return loadList(dataFile, ",", roomInfo, false, false);
     }
 
-    public static List<KNNFloorPoint> loadList(final File dataFile, final String fieldSeparator, final boolean isBSSIDMerged) {
+    public static List<KNNFloorPoint> loadList(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final boolean isBSSIDMerged) {
 
-        return loadList(dataFile, ",", isBSSIDMerged, false);
+        return loadList(dataFile, ",", roomInfo, isBSSIDMerged, false);
     }
 
     //loader that only loads data, using field separator, and does not store the compiled - returns a list
-    public static List<KNNFloorPoint> loadList(final File dataFile, final String fieldSeparator, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+    public static List<KNNFloorPoint> loadList(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
 
         //load raw data
-        List<RSSIData> rssiList = RSSILoader.load(dataFile, fieldSeparator);
+        List<RSSIData> rssiList = RSSILoader.load(dataFile, fieldSeparator, roomInfo);
 
         //convert raw
         List<KNNFloorPoint> knnRadioList = compileList(rssiList, isBSSIDMerged, isOrientationMerged);
@@ -71,25 +72,25 @@ public class KNNRSSI {
     }
 
     //loader that tries to load from precompiled data unless missing or told that it is new data (in which case the compiled data is stored)
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, File knnFile, boolean isNewData) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final boolean isNewData) {
 
-        return load(dataFile, knnFile, isNewData, new ArrayList<String>());
+        return load(dataFile, knnFile, roomInfo, isNewData, new ArrayList<String>());
     }
 
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, File knnFile, boolean isNewData, List<String> filterSSIDs) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final boolean isNewData, final List<String> filterSSIDs) {
 
-        return load(dataFile, knnFile, isNewData, filterSSIDs, false, false);
+        return load(dataFile, knnFile, roomInfo, isNewData, filterSSIDs, false, false);
     }
 
     //loader that tries to load from precompiled data unless missing or told that it is new data (in which case the compiled data is stored)
     //can only be used on RSSI data which is filtered through list of SSIDs
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, File knnFile, final boolean isNewData, final List<String> filterSSIDs, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final boolean isNewData, final List<String> filterSSIDs, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
 
         HashMap<String, KNNFloorPoint> knnRadioMap;
 
         if (isNewData || !knnFile.exists()) {
             //load raw data
-            List<RSSIData> dataList = RSSILoader.load(dataFile, filterSSIDs);
+            List<RSSIData> dataList = RSSILoader.load(dataFile, filterSSIDs, roomInfo);
 
             //convert raw
             knnRadioMap = compile(dataList, isBSSIDMerged, isOrientationMerged);

@@ -58,7 +58,7 @@ public class LogResults {
         writer.newLine();
     } 
      
-    public static String logRSSI(KNNFloorPoint scanPoint, general.Point screenPoint, List<ResultLocation> estimates, List<general.Point> estimatePoints, general.Point finalPoint, KNNFloorPoint scanPointUnfiltered, List<String> filterSSIDs, PositioningSettings positioningSettings){
+    public static String logRSSI(KNNFloorPoint scanPoint, general.Point screenPoint, List<ResultLocation> estimates, general.Point finalPoint, KNNFloorPoint scanPointUnfiltered, List<String> filterSSIDs, PositioningSettings positioningSettings){
         String message = "";
         String endl = System.getProperty("line.separator");
         
@@ -119,7 +119,7 @@ public class LogResults {
         message +="<nearest_estimates>" + endl;
         if (!estimates.isEmpty()) {
             for (int counter = 0; counter < estimates.size(); counter++) {                
-                message +=String.format("<estimate room=\"%s\" xRef=\"%d\" yRef=\"%d\" wRef=\"%d\" x=\"%s\" y=\"%s\" >", estimates.get(counter).getRoom(), estimates.get(counter).getxRef(), estimates.get(counter).getyRef(), estimates.get(counter).getwRef(), estimatePoints.get(counter).getX(), estimatePoints.get(counter).getY()) + endl;
+                message +=String.format("<estimate room=\"%s\" xRef=\"%d\" yRef=\"%d\" wRef=\"%d\" x=\"%s\" y=\"%s\" >", estimates.get(counter).getRoom(), estimates.get(counter).getxRef(), estimates.get(counter).getyRef(), estimates.get(counter).getwRef(), estimates.get(counter).getDrawPoint().getX(), estimates.get(counter).getDrawPoint().getY()) + endl;
                 /*
                 HashMap<String, AvgValue> attributes  = estimates.get(counter).getAttributes();
                 Set<String> keys = attributes.keySet();
@@ -144,7 +144,7 @@ public class LogResults {
         return message;
     } 
     
-    public static String logMagnetic(KNNFloorPoint scanPoint, general.Point screenPoint, List<ResultLocation> estimates, List<general.Point> estimatePoints, general.Point finalPoint, PositioningSettings positioningSettings){
+    public static String logMagnetic(KNNFloorPoint scanPoint, general.Point screenPoint, List<ResultLocation> estimates, general.Point finalPoint, PositioningSettings positioningSettings){
         String message = "";
         String endl = System.getProperty("line.separator");
         
@@ -176,7 +176,7 @@ public class LogResults {
         message +="<nearest_estimates>" + endl;
         if (!estimates.isEmpty()) {
             for (int counter = 0; counter < estimates.size(); counter++) {                
-                message +=String.format("<estimate room=\"%s\" xRef=\"%d\" yRef=\"%d\" wRef=\"%d\" x=\"%s\" y=\"%s\" >", estimates.get(counter).getRoom(), estimates.get(counter).getxRef(), estimates.get(counter).getyRef(), estimates.get(counter).getwRef(), estimatePoints.get(counter).getX(), estimatePoints.get(counter).getY()) + endl;
+                message +=String.format("<estimate room=\"%s\" xRef=\"%d\" yRef=\"%d\" wRef=\"%d\" x=\"%s\" y=\"%s\" >", estimates.get(counter).getRoom(), estimates.get(counter).getxRef(), estimates.get(counter).getyRef(), estimates.get(counter).getwRef(), estimates.get(counter).getDrawPoint().getX(), estimates.get(counter).getDrawPoint().getY()) + endl;
                 /*
                 HashMap<String, AvgValue> estAttributes  = estimates.get(counter).getAttributes();
                 Set<String> keys = estAttributes.keySet();

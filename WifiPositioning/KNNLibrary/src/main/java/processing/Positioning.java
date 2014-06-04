@@ -18,7 +18,6 @@ import distancealgorithms.Chebyshev;
 import distancealgorithms.Euclidian;
 import distancealgorithms.EuclidianSquared;
 import distancealgorithms.Manhatten;
-import filehandling.RoomInfo;
 import general.Locate;
 
 /**
@@ -27,18 +26,18 @@ import general.Locate;
  */
 public class Positioning {      
 
-    public static Point locate(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> knnRadioMap, final HashMap<String, RoomInfo> roomInfo, final DistanceMeasure measure, int kLimit, boolean isBiggerBetter) {
+    public static Point locate(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> knnRadioMap, final DistanceMeasure measure, int kLimit, boolean isBiggerBetter) {
         List<ResultLocation> results = estimate(trialPoint, knnRadioMap, measure);
         results = nearestEstimates(results, kLimit);
 
-        return Locate.findWeightedCentre(results, roomInfo, isBiggerBetter);
+        return Locate.findWeightedCentre(results, isBiggerBetter);
     }
 
-    public static Point locateVariance(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> knnRadioMap, final HashMap<String, RoomInfo> roomInfo, final DistanceMeasure measure, int kLimit, double varLimit, int varCount, boolean isBiggerBetter) {
+    public static Point locateVariance(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> knnRadioMap, final DistanceMeasure measure, int kLimit, double varLimit, int varCount, boolean isBiggerBetter) {
         List<ResultLocation> results = estimate(trialPoint, knnRadioMap, measure);
         results = nearestVarianceEstimates(trialPoint, results, kLimit, varLimit, varCount, knnRadioMap);
 
-        return Locate.findWeightedCentre(results, roomInfo, isBiggerBetter);
+        return Locate.findWeightedCentre(results, isBiggerBetter);
     }
 
     public static List<ResultLocation> estimate(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> knnRadioMap, final DistanceMeasure measure) {

@@ -9,13 +9,11 @@ import datastorage.KNNFloorPoint;
 import datastorage.Location;
 import datastorage.MagneticData;
 import datastorage.ResultLocation;
-import filehandling.RoomInfo;
 import general.Locate;
 import general.Point;
 import processing.LogResults;
 import processing.Positioning;
 import processing.PositioningSettings;
-import java.util.ArrayList;
 import java.util.List;
 import me.gregalbiston.androidknn.VisActivity;
 import me.gregalbiston.androidknn.dataload.DataManager;
@@ -71,13 +69,7 @@ public class MagneticScanner {
             estimates = Positioning.nearestEstimates(estimates, settingsController.getkLimit());
 
         //determine the onscreen point based on nearest estimates
-        finalPoint = Locate.findUnweightedCentre(estimates, dataManager.getRoomInfo());
-
-        //Store the screen points for the estimates used in the final positioning
-        List<Point> estimatePoints = new ArrayList<>();
-        for (ResultLocation estimate : estimates) {
-            estimatePoints.add(RoomInfo.searchPoint(estimate, dataManager.getRoomInfo()));
-        }
+        finalPoint = Locate.findUnweightedCentre(estimates);       
 
         //transfer the current settings
         PositioningSettings positioningSettings;
@@ -87,10 +79,10 @@ public class MagneticScanner {
             positioningSettings = new PositioningSettings(System.currentTimeMillis(), settingsController.getDistMeasure(), settingsController.getkLimit());
 
         //only supply SSID filter list when the setting is on
-        String message = LogResults.logMagnetic(scanPoint, screenPoint, estimates, estimatePoints, finalPoint, positioningSettings);
+        String message = LogResults.logMagnetic(scanPoint, screenPoint, estimates, finalPoint, positioningSettings);
 
         //process the results for the log
-        return new ResultsInfo(screenPoint, finalPoint, estimatePoints, message);
+        return new ResultsInfo(screenPoint, finalPoint, estimates, message);
     }
 
     private static KNNFloorPoint convertToFloorPoint(SensorEvent event, Location location) {

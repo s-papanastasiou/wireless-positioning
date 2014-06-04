@@ -18,6 +18,8 @@ import configuration.Logging;
 import configuration.SettingsProperties;
 import datastorage.KNNFloorPoint;
 import datastorage.KNNTrialPoint;
+import datastorage.Location;
+import datastorage.RoomInfo;
 import filehandling.KNNRSSI;
 import general.AvgValue;
 import general.Locate;
@@ -28,7 +30,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import particlefilterlibrary.Threshold;
-import probabilisticlibrary.Probabilistic;
+import distancealgorithms.Probabilistic;
 import visualinfo.DisplayRoute;
 
 /**
@@ -65,7 +67,7 @@ public class ParticleSimulation {
 
             //logger.info("Running particle trial: {}", particleTrialName);
         //Calculate initial points to calculate where the particle filter starts.
-        Point initialPoint = initialPoint(initialPoints, parTrial.getInitRSSIReadings(), offlineMap, parTrial.getK(), KNNFloorPoint.NO_ORIENTATION);
+        Point initialPoint = initialPoint(initialPoints, parTrial.getInitRSSIReadings(), offlineMap, sp.ROOM_INFO(), parTrial.getK(), KNNFloorPoint.NO_ORIENTATION);
 
         //Find the time of the last intialisation point. Intertial readings until this time are ignored. 
         long lastTimestamp = initialPoints.get(initialPoints.size() - 1).getTimestamp();
@@ -103,28 +105,29 @@ public class ParticleSimulation {
                 }
             }
 
-            Point probabilisticPoint = Probabilistic.run(knnTrialPoint, offlineMap, parTrial.getK(), orientation);
+            Location probabilisticLocation = Probabilistic.run(knnTrialPoint, offlineMap, sp.ROOM_INFO(), parTrial.getK(), orientation);
 
             if (cloud != null) {
-                cloud = ParticleFilter.filter(cloud, probabilisticPoint, inertialPoint, parTrial.getParticleCount(), parTrial.getCloudRange(), parTrial.getCloudDisplacementCoefficient(), CLOUD_BOUNDARY, CLOUD_PARTICLE_CREATION);
+                cloud = ParticleFilter.filter(cloud, probabilisticLocation.getGlobalPoint(), inertialPoint, parTrial.getParticleCount(), parTrial.getCloudRange(), parTrial.getCloudDisplacementCoefficient(), CLOUD_BOUNDARY, CLOUD_PARTICLE_CREATION);
             } else {
                 List<Particle> particles = ParticleFilter.createParticles(initialPoint, parTrial.getParticleCount());
                 cloud = new Cloud(initialPoint, particles);
             }
 
-            Point bestPoint = Locate.forceToMap(offlineMap, cloud.getEstiPos(), parTrial.isForceToOfflineMap());
+            Location estimatedLocation = RoomInfo.searchGlobalLocation(cloud.getEstiPos(), sp.ROOM_INFO());
+            Location bestLocation = Locate.forceToMap(offlineMap, estimatedLocation, parTrial.isForceToOfflineMap());
 
-            double trialDistance = knnTrialPoint.distance(bestPoint);
+            double trialDistance = knnTrialPoint.distance(bestLocation);
             totalDistance.add(trialDistance);
 
             //Store the points for drawing
             if (sp.isOutputImage()) {
-                trialPoints.add(knnTrialPoint.drawPoint(sp.X_PIXELS(), sp.Y_PIXELS()));
-                particleFinalPoints.add(bestPoint.drawPoint(sp.X_PIXELS(), sp.Y_PIXELS()));
+                trialPoints.add(knnTrialPoint.getDrawPoint());
+                particleFinalPoints.add(bestLocation.getDrawPoint());
             }
             //Log the trial results
             if (particleTrialLog.isLogging()) {
-                String particleTrialResult = Simulation.getTrialResult(lineNumber, knnTrialPoint, trialDistance, bestPoint, OUT_SEP);
+                String particleTrialResult = Simulation.getTrialResult(lineNumber, knnTrialPoint, trialDistance, bestLocation, OUT_SEP);
                 particleTrialLog.printLine(particleTrialResult);
             }
             //Increment the line number
@@ -143,7 +146,7 @@ public class ParticleSimulation {
         }
     }
     
-    public static Point initialPoint(List<KNNTrialPoint> initialPoints, int initReadings, HashMap<String, KNNFloorPoint> offlineMap, int k, int orientation) {
+    public static Point initialPoint(List<KNNTrialPoint> initialPoints, int initReadings, HashMap<String, KNNFloorPoint> offlineMap, HashMap<String, RoomInfo> roomInfo, int k, int orientation) {
         double x = 0;
         double y = 0;
         if (initReadings == 0) {
@@ -154,10 +157,11 @@ public class ParticleSimulation {
             throw new AssertionError("Initial points is less than inital readings parameter");
         }
         for (int i = 0; i < initReadings; i++) {
-            Point probabilisticPoint = Probabilistic.run(initialPoints.get(i), offlineMap, k, orientation);
-            x += probabilisticPoint.getX();
-            y += probabilisticPoint.getY();
+            Location probLocation = Probabilistic.run(initialPoints.get(i), offlineMap, roomInfo, k, orientation);
+            x += probLocation.getGlobalX();
+            y += probLocation.getGlobalY();
         }
+        
         return new Point(x / initReadings, y / initReadings);
     }
     

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import datastorage.KNNFloorPoint;
+import datastorage.RoomInfo;
 import java.util.HashMap;
 import particlefilterlibrary.NavigationResults;
 
@@ -28,6 +29,7 @@ public class CompassActivity extends Activity {
     private static final String FILE_DIRECTORY = "SensorPlanA";
     public static final String LOG_FILENAME = "CompassALog.csv";
     public final static String OFFLINE_COMPRESSED = "OfflineCompressed.knn";
+    private final HashMap<String, RoomInfo> roomInfo = new HashMap<>();
 
     private final AppSettings appSettings = new AppSettings(false, true, 5, 10, 25, true, -0.523598776, 0.3, 0.1, 0.3, new Float[]{0.005f, 0.03f, -0.17f}, 40, Thresholds.boundaries(), Thresholds.particleCreation());
 
@@ -42,7 +44,7 @@ public class CompassActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
+        
         loadFiles();
     }
 
@@ -65,7 +67,8 @@ public class CompassActivity extends Activity {
 
         visualisation = (Visualisation) findViewById(R.id.view);
 
-        offlineMap = FileController.loadOfflineMap(FILE_DIRECTORY, OFFLINE_MAP_FILE, ";", appSettings.isBSSIDMerged(), appSettings.isOrientationMerged());
+        roomInfo.put("2nd-Floor", new RoomInfo("2nd-Floor", 55.0, 23.75, 1192.0, 538.0));
+        offlineMap = FileController.loadOfflineMap(FILE_DIRECTORY, OFFLINE_MAP_FILE, ";", roomInfo, appSettings.isBSSIDMerged(), appSettings.isOrientationMerged());
         floorPlan = FileController.loadFloor(FILE_DIRECTORY, FLOOR_PLAN_FILE);
         if (floorPlan != null) {
             visualisation.setFloorPlan(floorPlan);
@@ -85,7 +88,7 @@ public class CompassActivity extends Activity {
 
         ToggleButton buttonOnOff = (ToggleButton) v;
         if (buttonOnOff.isChecked()) {
-            sensorReadings = new SensorReadings(this, appSettings, offlineMap);
+            sensorReadings = new SensorReadings(this, appSettings, offlineMap, roomInfo);
             sensorReadings.execute();
             TextView datasView = (TextView) findViewById(R.id.datasView);
             datasView.setText("Initialising");
@@ -131,7 +134,7 @@ public class CompassActivity extends Activity {
      */
     public void showValues(NavigationResults navigationResults) {
 
-        visualisation.setPoint(navigationResults.probabilisticPoint, navigationResults.particlePoint, navigationResults.inertialPoint, navigationResults.bestPoint);
+        visualisation.setPoint(navigationResults.probabilisticPoint.getDrawPoint(), navigationResults.particlePoint.getDrawPoint(), navigationResults.inertialPoint.getPoint(), navigationResults.bestPoint.getDrawPoint());
 
         TextView datasView = (TextView) findViewById(R.id.datasView);
         datasView.setText(navigationResults.toString());

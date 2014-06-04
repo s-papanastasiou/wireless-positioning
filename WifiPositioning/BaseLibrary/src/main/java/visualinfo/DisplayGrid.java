@@ -6,7 +6,7 @@ package visualinfo;
 
 import datastorage.Location;
 import datastorage.RSSIData;
-import filehandling.RoomInfo;
+import datastorage.RoomInfo;
 import general.Point;
 import general.Rectangle;
 import java.awt.Color;
@@ -135,11 +135,11 @@ public class DisplayGrid {
             floorPlan.setColor(pointColour);
             //Draw each location point  
 
-            for (Location point : locationList) {
-                if (roomInfo.containsKey(point.getRoom())) {
-                    String text = point.getXYStr();
+            for (Location location : locationList) {
+                if (roomInfo.containsKey(location.getRoom())) {
+                    String text = location.getXYStr();
 
-                    Point pos = RoomInfo.searchPoint(point, roomInfo);
+                    Point pos = location.getDrawPoint();
                     floorPlan.fillOval(pos.getXint() - halfPointWidth, pos.getYint() - halfPointHeight, pointWidth, pointHeight);
                     floorPlan.drawString(text, pos.getXint() - xOffset, pos.getYint() - yOffset);
                 }

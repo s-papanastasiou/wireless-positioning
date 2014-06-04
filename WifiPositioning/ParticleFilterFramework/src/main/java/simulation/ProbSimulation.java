@@ -13,6 +13,7 @@ import configuration.Logging;
 import configuration.SettingsProperties;
 import datastorage.KNNFloorPoint;
 import datastorage.KNNTrialPoint;
+import datastorage.Location;
 import filehandling.KNNRSSI;
 import general.AvgValue;
 import general.Locate;
@@ -21,7 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import probabilisticlibrary.Probabilistic;
+import distancealgorithms.Probabilistic;
 import visualinfo.DisplayRoute;
 
 /**
@@ -78,21 +79,20 @@ public class ProbSimulation {
                 }
             }
 
-            Point probabilisticPoint = Probabilistic.run(knnTrialPoint, offlineMap, proTrial.getK(), orientation);
-
-            Point bestPoint = Locate.forceToMap(offlineMap, probabilisticPoint, proTrial.isForceToOfflineMap());
-
-            double trialDistance = knnTrialPoint.distance(bestPoint);
+            Location probabilisticLocation = Probabilistic.run(knnTrialPoint, offlineMap, sp.ROOM_INFO(),  proTrial.getK(), orientation);            
+            Location bestLocation = Locate.forceToMap(offlineMap, probabilisticLocation, proTrial.isForceToOfflineMap());
+            
+            double trialDistance = knnTrialPoint.distance(bestLocation);
             totalDistance.add(trialDistance);
 
             //Store the points for drawing
             if (sp.isOutputImage()) {
-                trialPoints.add(knnTrialPoint.drawPoint(sp.X_PIXELS(), sp.Y_PIXELS()));
-                probabilisticFinalPoints.add(bestPoint.drawPoint(sp.X_PIXELS(), sp.Y_PIXELS()));
+                trialPoints.add(knnTrialPoint.getDrawPoint());
+                probabilisticFinalPoints.add(bestLocation.getDrawPoint());
             }
             //Log the trial results
             if (probabilisticTrialLog.isLogging()) {
-                String probabilisticTrialResult = Simulation.getTrialResult(lineNumber, knnTrialPoint, trialDistance, bestPoint, OUT_SEP);
+                String probabilisticTrialResult = Simulation.getTrialResult(lineNumber, knnTrialPoint, trialDistance, bestLocation, OUT_SEP);
                 probabilisticTrialLog.printLine(probabilisticTrialResult);
             }
             //Increment the line number

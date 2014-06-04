@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import datastorage.Location;
 import general.Point;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class PointResults {
     private List<Point> scanPoints = new ArrayList<>();
     private List<Point> finalPoints = new ArrayList<>();
 
-    private List<Point> estimatePoints = new ArrayList<>();
+    private List<? extends Location> estimates = new ArrayList<>();
 
     private final Paint scanPaint = new Paint();
     private final Paint finalPaint = new Paint();
@@ -67,12 +68,12 @@ public class PointResults {
         finalPoints.add(results.finalPoint);
         isNew = false;
 
-        this.estimatePoints = results.estimatePoints;
+        this.estimates = results.estimatePoints;
     }
 
     public void newRoute() {
         isNew = true;
-        estimatePoints = new ArrayList<>();
+        estimates = new ArrayList<>();
 
         scanPoints = new ArrayList<>();
         finalPoints = new ArrayList<>();
@@ -130,7 +131,8 @@ public class PointResults {
     }
 
     private void drawEstimates(Canvas canvas) {
-        for (Point point : estimatePoints) {
+        for (Location estimate : estimates) {
+            Point point = estimate.getDrawPoint();
             RectF rect = new RectF(point.getXfl() - SIZE, point.getYfl() - SIZE, point.getXfl() + SIZE, point.getYfl() + SIZE);
             canvas.drawOval(rect, estimatePaint);
         }

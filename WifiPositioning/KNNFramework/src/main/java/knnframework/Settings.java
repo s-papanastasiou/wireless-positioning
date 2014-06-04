@@ -5,7 +5,8 @@
 package knnframework;
 
 import datastorage.RSSIData;
-import filehandling.RoomInfo;
+import datastorage.RoomInfo;
+import filehandling.RoomInfoLoader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class Settings {
     private boolean isSSIDFilterLoaded = false;
     private File floorPlan = null;
     private boolean isFloorPlanLoaded = false;
-    private HashMap<String, RoomInfo> roomInfo = new HashMap<>();
+    private HashMap<String, RoomInfo> roomInfo = RoomInfoLoader.defaultHashMap();
     private boolean isRoomInfoLoaded = false;
     
     private final static String FILE_ERROR = "File Error";

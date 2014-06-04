@@ -100,20 +100,7 @@ public class APLocation extends Location {
     
     public String toStringLocation(){
         return super.toString();
-    }
-
-    /**
-     * String representation of the object using provided separator.
-     * Adjusted by the specified accuracy i.e. converts the values to a 1m grid spacing
-     * 
-     * @param fieldSeparator Separator used in string.
-     * @param accuracy Multiple accuracy for grid spacing. e.g. 10 will give 10m grid spacing.
-     * @return 
-     */
-    @Override
-    public String toString(String fieldSeparator, int accuracy) {
-        return super.toString(fieldSeparator, accuracy) + fieldSeparator + avgRSSI.getMean() + fieldSeparator + avgRSSI.getFrequency() + fieldSeparator + avgRSSI.getTotal() + fieldSeparator + avgRSSI.getStdDev();
-    }
+    }   
     
     /**
      * Formatted heading to show the locations.

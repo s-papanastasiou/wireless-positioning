@@ -4,12 +4,14 @@ import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import datastorage.KNNFloorPoint;
 import datastorage.RSSIData;
+import datastorage.RoomInfo;
 import filehandling.KNNFormatStorage;
 import filehandling.KNNRSSI;
 import filehandling.RSSILoader;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
+import org.omg.CORBA.Environment;
 
 /**
  * File controller for obtaining offline map and floor plan image.
@@ -30,7 +32,7 @@ public class FileController {
      * @param isOrientationMerged
      * @return 
      */    
-    public static HashMap<String, KNNFloorPoint> loadOfflineMap(String directory, String fileName, String separator, boolean isBSSIDMerged, boolean isOrientationMerged) {
+    public static HashMap<String, KNNFloorPoint> loadOfflineMap(String directory, String fileName, String separator, HashMap<String, RoomInfo> roomInfo, boolean isBSSIDMerged, boolean isOrientationMerged) {
 
         HashMap<String, KNNFloorPoint> offlineMap = null;
 
@@ -44,7 +46,7 @@ public class FileController {
                 File offlineFile = new File(storageDirectory, fileName);
 
                 if (offlineFile.exists()) {
-                    List<RSSIData> rssiDataList = RSSILoader.load(offlineFile, separator);
+                    List<RSSIData> rssiDataList = RSSILoader.load(offlineFile, separator, roomInfo);
                     offlineMap = KNNRSSI.compile(rssiDataList, isBSSIDMerged, isOrientationMerged);
 
                     KNNFormatStorage.store(compressFile, offlineMap);

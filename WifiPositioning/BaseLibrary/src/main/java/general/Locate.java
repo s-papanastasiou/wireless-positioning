@@ -6,7 +6,6 @@ package general;
 
 import datastorage.Location;
 import datastorage.ResultLocation;
-import filehandling.RoomInfo;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -22,16 +21,15 @@ public class Locate {
     public final static int ERROR_VALUE = -1;
 
     /**
-     * Finds the weighted centre of mass based on each point and it's own
+     * Finds the weighted centre of mass based on each pixel point and it's own
      * weight.
      *
-     * @param positions List of positions to find centre.
-     * @param roomInfo Information about the positions.
+     * @param positions List of positions to find centre.     
      * @param isBiggerBetter True, if weight values further from zero are more
      * desirable.
      * @return
      */
-    public static Point findWeightedCentre(final List<ResultLocation> positions, final HashMap<String, RoomInfo> roomInfo, boolean isBiggerBetter) {
+    public static Point findWeightedCentre(final List<ResultLocation> positions, boolean isBiggerBetter) {
 
         Point result = new Point();
 
@@ -62,7 +60,7 @@ public class Locate {
 
             for (ResultLocation position : positions) {
 
-                Point pos = RoomInfo.searchPoint(position, roomInfo);
+                Point pos = position.getDrawPoint();
 
                 double weight;
 
@@ -97,16 +95,15 @@ public class Locate {
 
         return result;
     }
-
+    
     /**
      * Finds the unweighted centre of mass based on each point. Points in the
      * same place will apply weighting.
      *
-     * @param positions List of positions to find centre.
-     * @param roomInfo Information about the positions.
+     * @param positions List of positions to find centre.     
      * @return
      */
-    public static Point findUnweightedCentre(final List<? extends Location> positions, final HashMap<String, RoomInfo> roomInfo) {
+    public static Point findUnweightedCentre(final List<? extends Location> positions) {
 
         Point result = new Point();
 
@@ -117,7 +114,7 @@ public class Locate {
 
             for (Location position : positions) {
 
-                Point pos = RoomInfo.searchPoint(position, roomInfo);
+                Point pos = position.getDrawPoint();
 
                 x += pos.getX();
                 y += pos.getY();
@@ -136,29 +133,28 @@ public class Locate {
      * in the provided offline map.
      *
      * @param offlineMap Map of known points.
-     * @param estimatedPos Estimated position to be adjusted.
+     * @param estimatedLocation Estimated location to be adjusted.
      * @param forceToOfflineMap True, if forcing to offline map. False, will
      * return estimated position.
      * @return
      */
-    public static Point forceToMap(HashMap<String, ? extends Location> offlineMap, Point estimatedPos, boolean forceToOfflineMap) {
-        Point bestPoint = new Point();
+    public static Location forceToMap(HashMap<String, ? extends Location> offlineMap, Location estimatedLocation, boolean forceToOfflineMap) {
+        Location bestLocation = new Location();
         if (forceToOfflineMap) {
             double lowestDistance = Double.MAX_VALUE;
             Set<String> keys = offlineMap.keySet();
             for (String key : keys) {
                 Location location = offlineMap.get(key);
-
-                double distance = location.distance(estimatedPos);
+                double distance = location.distance(estimatedLocation);
                 if (distance < lowestDistance) {
-                    bestPoint = location.getPoint();
+                    bestLocation = location;
                     lowestDistance = distance;
                 }
             }
         } else {
-            bestPoint = estimatedPos;
+            bestLocation = estimatedLocation;
         }
-        return bestPoint;
-    }
+        return bestLocation;
+    }        
 
 }

@@ -5,6 +5,7 @@
 package filehandling;
 
 import datastorage.RSSIData;
+import datastorage.RoomInfo;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.ParseException;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
 import java.io.FileReader;
+import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +32,10 @@ public class RSSILoader {
      * @param dataFile File of geomagnetic data with header row.     
      * @param filterSSIDs List of SSIDs to only include from loaded file - empty to permit all SSIDs.
      * @param seperator Field separator between columns.
+     * @param roomInfo Information about the rooms on the floor.
      * @return 
      */
-    public static List<RSSIData> load(final File dataFile, final List<String> filterSSIDs, final String seperator) {
+    public static List<RSSIData> load(final File dataFile, final List<String> filterSSIDs, final String seperator, final HashMap<String, RoomInfo> roomInfo) {
 
         List<RSSIData> rawData = new ArrayList<>();
 
@@ -53,10 +56,10 @@ public class RSSILoader {
                                 if (!filterSSIDs.isEmpty()) {
                                     if (filterSSIDs.contains(parts[6])) //sixth element is SSID - only add if it is in the filter list
                                     {
-                                        rawData.add(new RSSIData(parts));
+                                        rawData.add(new RSSIData(parts, roomInfo));
                                     }
                                 } else {
-                                    rawData.add(new RSSIData(parts));
+                                    rawData.add(new RSSIData(parts, roomInfo));
                                 }
 
                             } catch (ParseException ex) {
@@ -89,11 +92,12 @@ public class RSSILoader {
      * 
      * @param dataFile File of geomagnetic data with header row.          
      * @param filterSSIDs List of SSIDs to only include from loaded file - empty to permit all SSIDs.
+     * @param roomInfo Information about the rooms on the floor.
      * @return 
      */
-    public static List<RSSIData> load(final File dataFile, final List<String> filterSSIDs) {
+    public static List<RSSIData> load(final File dataFile, final List<String> filterSSIDs, final HashMap<String, RoomInfo> roomInfo) {
 
-        return load(dataFile, filterSSIDs, ",");
+        return load(dataFile, filterSSIDs, ",", roomInfo);
     }
 
     /**
@@ -101,23 +105,25 @@ public class RSSILoader {
      * Assumes comma separation between columns and assumes all SSIDs permitted.
      * 
      * @param dataFile File of geomagnetic data with header row.          
+     * @param roomInfo Information about the rooms on the floor.
      * @return 
      */
-    public static List<RSSIData> load(final File dataFile) {
+    public static List<RSSIData> load(final File dataFile, final HashMap<String, RoomInfo> roomInfo) {
 
-        return load(dataFile, new ArrayList<String>(), ",");
+        return load(dataFile, new ArrayList<String>(), ",", roomInfo);
     }
 
     /**
-     * Load list of magnetic data from file.
+     * Load list of RSSI data from file.
      * Assumes all SSIDs permitted.
      * 
-     * @param dataFile File of geomagnetic data with header row.          
+     * @param dataFile File of RSSI data with header row.          
      * @param fieldSeparator Separator between columns.
+     * @param roomInfo Information about the rooms on the floor.
      * @return 
      */
-    public static List<RSSIData> load(final File dataFile, final String fieldSeparator) {
+    public static List<RSSIData> load(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo) {
 
-        return load(dataFile, new ArrayList<String>(), fieldSeparator);
+        return load(dataFile, new ArrayList<String>(), fieldSeparator, roomInfo);
     }
 }

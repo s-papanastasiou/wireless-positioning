@@ -9,7 +9,6 @@ import android.net.wifi.WifiManager;
 import datastorage.KNNFloorPoint;
 import datastorage.Location;
 import datastorage.ResultLocation;
-import filehandling.RoomInfo;
 import general.Locate;
 import general.Point;
 import java.util.ArrayList;
@@ -83,17 +82,11 @@ public class RSSIScanner {
 
             //TODO Check whether this should be weighted or unweighted.
             //determine the onscreen point based on nearest estimates
-            finalPoint = Locate.findUnweightedCentre(estimates, dataManager.getRoomInfo());
+            finalPoint = Locate.findUnweightedCentre(estimates);
         } else {
             estimates = new ArrayList<>();
             finalPoint = new Point(-1, -1);
-        }
-
-        //Store the screen points for the estimates used in the final positioning
-        List<Point> estimatePoints = new ArrayList<>();
-        for (ResultLocation estimate : estimates) {
-            estimatePoints.add(RoomInfo.searchPoint(estimate, dataManager.getRoomInfo()));
-        }
+        }       
 
         //transfer the current settings
         PositioningSettings positioningSettings;
@@ -105,12 +98,12 @@ public class RSSIScanner {
         //only supply SSID filter list when the setting is on
         String message;
         if (settingsController.getFilterSSID())
-            message = LogResults.logRSSI(scanPoint, screenPoint, estimates, estimatePoints, finalPoint, scanPointUnfiltered, dataManager.getFilterSSIDs(), positioningSettings);
+            message = LogResults.logRSSI(scanPoint, screenPoint, estimates, finalPoint, scanPointUnfiltered, dataManager.getFilterSSIDs(), positioningSettings);
         else
-            message = LogResults.logRSSI(scanPoint, screenPoint, estimates, estimatePoints, finalPoint, scanPointUnfiltered, new ArrayList<String>(), positioningSettings);
+            message = LogResults.logRSSI(scanPoint, screenPoint, estimates, finalPoint, scanPointUnfiltered, new ArrayList<String>(), positioningSettings);
 
         //process the results for the log
-        return new ResultsInfo(screenPoint, finalPoint, estimatePoints, message);
+        return new ResultsInfo(screenPoint, finalPoint, estimates, message);
     }
 
 

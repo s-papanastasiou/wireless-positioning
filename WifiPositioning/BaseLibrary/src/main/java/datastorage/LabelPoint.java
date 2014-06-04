@@ -4,12 +4,11 @@
  */
 package datastorage;
 
-import filehandling.RoomInfo;
 import general.Point;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Point with an attached label.
@@ -38,24 +37,19 @@ public class LabelPoint extends Point {
     /**
      * Converts radio map into a list of labelled points.
      * 
-     * @param radioMap Radio map of points to be converted.
-     * @param roomInfo Information about the rooms to convert radio map point to coordinates.
+     * @param radioMap Radio map of points to be converted.     
      * @return 
      */
-    public static List<LabelPoint> list(final HashMap<String, ? extends Location> radioMap, final HashMap<String, RoomInfo> roomInfo) {
+    public static List<LabelPoint> list(final HashMap<String, ? extends Location> radioMap) {
 
-        List<LabelPoint> labelPoints = new ArrayList<>();
+        List<LabelPoint> labelPoints = new ArrayList<>(radioMap.size());
 
-        Set<String> keys = radioMap.keySet();
-
-        for (String key : keys) {
-            Location point = radioMap.get(key);
-            if (roomInfo.containsKey(point.getRoom())) {
-
-                Point pos = RoomInfo.searchPoint(point, roomInfo);
-                labelPoints.add(new LabelPoint(pos.getXint(), pos.getYint(), point.getXYStr()));
-            }
-        }
+        Collection<? extends Location> locations = radioMap.values();
+        
+        for(Location location: locations){
+            Point pos = location.getDrawPoint();
+            labelPoints.add(new LabelPoint(pos.getXint(), pos.getYint(), location.getXYStr()));
+        }        
 
         return labelPoints;
     }

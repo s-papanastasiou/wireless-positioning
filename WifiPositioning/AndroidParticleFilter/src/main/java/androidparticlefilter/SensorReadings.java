@@ -12,6 +12,8 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import datastorage.KNNFloorPoint;
+import datastorage.Location;
+import datastorage.RoomInfo;
 import general.Locate;
 import general.Point;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import particlefilterlibrary.InertialPoint;
 import particlefilterlibrary.NavigationResults;
 import particlefilterlibrary.Particle;
 import particlefilterlibrary.ParticleFilter;
-import probabilisticlibrary.Probabilistic;
+import distancealgorithms.Probabilistic;
 
 /**
  * Asynchronous task and Sensor Event Listener to process sensor readings as
@@ -34,11 +36,12 @@ import probabilisticlibrary.Probabilistic;
 public class SensorReadings extends AsyncTask<String, NavigationResults, Void> implements SensorEventListener {
 
     private final CompassActivity compassActivity;
-    private final List<Point> initialPoints = new ArrayList<>();
+    private final List<Location> initialPoints = new ArrayList<>();
     private InertialPoint inertialPoint = null;
     boolean isInitialising = true;
     private Integer deviceOrientation = null;      //Orientation direction for filtering offline map
     private final HashMap<String, KNNFloorPoint> offlineMap;
+    private final HashMap<String, RoomInfo> roomInfo;    
     private final WifiManager wifiManager;
     private final SensorManager mSensorManager;
     private final Sensor linearAcceleration;
@@ -61,11 +64,12 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
      * @param appSettings
      * @param offlineMap
      */
-    public SensorReadings(CompassActivity compassActivity, AppSettings appSettings, HashMap<String, KNNFloorPoint> offlineMap) {
+    public SensorReadings(CompassActivity compassActivity, AppSettings appSettings, HashMap<String, KNNFloorPoint> offlineMap, HashMap<String, RoomInfo> roomInfo) {
 
         this.compassActivity = compassActivity;
         this.appSettings = appSettings;
         this.offlineMap = offlineMap;
+        this.roomInfo = roomInfo;
 
         wifiManager = (WifiManager) compassActivity.getSystemService(Context.WIFI_SERVICE);
         mSensorManager = (SensorManager) compassActivity.getSystemService(Context.SENSOR_SERVICE);
@@ -119,7 +123,7 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
 
                 KNNFloorPoint onlinePoint = processScanResults(scanResults, appSettings.isBSSIDMerged());
 
-                Point latestPoint = Probabilistic.run(onlinePoint, offlineMap, appSettings.getK(), deviceOrientation);
+                Location latestPoint = Probabilistic.run(onlinePoint, offlineMap, roomInfo, appSettings.getK(), deviceOrientation);
 
                 NavigationResults navigationResults = doParticleFilter(latestPoint, inertialPoint, appSettings.isForceToOfflineMap());
                 publishProgress(navigationResults);
@@ -198,7 +202,7 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
 
                 KNNFloorPoint onlinePoint = processScanResults(wifiManager.getScanResults(), appSettings.isBSSIDMerged());
 
-                Point initialPoint = Probabilistic.run(onlinePoint, offlineMap, appSettings.getK(), deviceOrientation);
+                Location initialPoint = Probabilistic.run(onlinePoint, offlineMap, roomInfo, appSettings.getK(), deviceOrientation);
 
                 //Logging.printLine(String.format("Location :;%s;%s", initialPoint.getX(), initialPoint.getY()));
                 initialPoints.add(initialPoint);
@@ -282,25 +286,26 @@ public class SensorReadings extends AsyncTask<String, NavigationResults, Void> i
 
     /**
      * Activate particle filter to move the cloud of particles.
-     * @param probabilisticPoint
+     * @param probabilisticLocation
      * @param inertialPoint
      * @param isForceToOfflineMap
      * @return 
      */
-    private NavigationResults doParticleFilter(Point probabilisticPoint, InertialPoint inertialPoint, boolean isForceToOfflineMap) {
+    private NavigationResults doParticleFilter(Location probabilisticLocation, InertialPoint inertialPoint, boolean isForceToOfflineMap) {
 
         if (cloud != null) {
             //Logging.printLine("Before: " + cloud.getParticleCount());
-            cloud = ParticleFilter.filter(cloud, probabilisticPoint, inertialPoint, appSettings.getParticleCount(), appSettings.getCloudRange(), appSettings.getCloudDisplacement(), appSettings.getBoundaries(), appSettings.getParticleCreation());
+            cloud = ParticleFilter.filter(cloud, probabilisticLocation.getGlobalPoint(), inertialPoint, appSettings.getParticleCount(), appSettings.getCloudRange(), appSettings.getCloudDisplacement(), appSettings.getBoundaries(), appSettings.getParticleCreation());
             //Logging.printLine("After: " + cloud.getParticleCount());
         } else {
             List<Particle> particles = ParticleFilter.createParticles(inertialPoint.getPoint(), appSettings.getParticleCount());
             cloud = new Cloud(inertialPoint.getPoint(), particles);
         }
 
-        Point bestPoint = Locate.forceToMap(offlineMap, cloud.getEstiPos(), isForceToOfflineMap);        
+        Location estimatedLocation = RoomInfo.searchGlobalLocation(cloud.getEstiPos(), roomInfo);
+        Location bestLocation = Locate.forceToMap(offlineMap, estimatedLocation, isForceToOfflineMap);        
 
-        return new NavigationResults(probabilisticPoint, cloud.getEstiPos(), inertialPoint.getPoint(), bestPoint, inertialPoint.getInertialData());
+        return new NavigationResults(probabilisticLocation, estimatedLocation, inertialPoint, bestLocation, inertialPoint.getInertialData());
     }
 
     /**

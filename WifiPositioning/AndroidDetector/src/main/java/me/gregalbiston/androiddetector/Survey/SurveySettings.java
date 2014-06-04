@@ -1,7 +1,7 @@
 package me.gregalbiston.androiddetector.survey;
 
 import android.os.Environment;
-import filehandling.RoomInfo;
+import datastorage.RoomInfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;

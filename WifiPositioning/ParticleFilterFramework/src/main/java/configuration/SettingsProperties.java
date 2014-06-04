@@ -5,8 +5,10 @@
  */
 package configuration;
 
+import datastorage.RoomInfo;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,15 +37,7 @@ public class SettingsProperties extends BaseProperties {
 
     private Boolean isVerbose;
     private Boolean isOutputImage;
-    private Boolean isTrialDetail;
-
-    private Double X_PIXELS;
-    private Double Y_PIXELS;
-
-    private Double IMAGE_WIDTH;
-    private Double IMAGE_HEIGHT;
-    private Double FLOOR_WIDTH;
-    private Double FLOOR_HEIGHT;
+    private Boolean isTrialDetail;   
 
     private String OUTPUT_DIRECTORY;
     private String INPUT_DIRECTORY;
@@ -64,6 +58,8 @@ public class SettingsProperties extends BaseProperties {
     private Boolean GENERATE_PROB_TRIALS;
     private Boolean RUN_PARTICLE_TRIALS;
     private Boolean RUN_PROB_TRIALS;
+    
+    private HashMap<String, RoomInfo> ROOM_INFO;
 
     private final String[] PARTICLE_HEADER = {"BSSIDMerged", "OrientationMerged", "ForceToMap", "KValue", "InitialReadings", "SpeedBreak", "ParticleCount", "CloudRange", "CloudDisplacement"};
 
@@ -77,6 +73,7 @@ public class SettingsProperties extends BaseProperties {
         IN_SEP,
         OUT_SEP,
         DATE_FORMAT,
+        ROOM_NAME,
         IMAGE_WIDTH,
         IMAGE_HEIGHT,
         FLOOR_WIDTH,
@@ -124,18 +121,18 @@ public class SettingsProperties extends BaseProperties {
         IN_SEP = props.getProperty(SettingKeys.IN_SEP.name());
         OUT_SEP = props.getProperty(SettingKeys.OUT_SEP.name());
 
-        TRIAL_HEADER = "Point_No" + OUT_SEP + "Trial_X" + OUT_SEP + "Trial_Y" + OUT_SEP + "Distance" + OUT_SEP + "Pos_X" + OUT_SEP + "Pos_Y";
+        TRIAL_HEADER = "Point_No" + OUT_SEP + "Trial_Room"+ OUT_SEP + "Trial_X" + OUT_SEP + "Trial_Y" + OUT_SEP + "Distance" + OUT_SEP + "Pos_Room" + OUT_SEP + "Pos_X" + OUT_SEP + "Pos_Y";
         PAR_RESULTS_HEADER = PARTICLE_HEADER[0] + OUT_SEP + PARTICLE_HEADER[1] + OUT_SEP + PARTICLE_HEADER[2] + OUT_SEP + PARTICLE_HEADER[3] + OUT_SEP + PARTICLE_HEADER[4] + OUT_SEP + PARTICLE_HEADER[5] + OUT_SEP + PARTICLE_HEADER[6] + OUT_SEP + PARTICLE_HEADER[7] + OUT_SEP + PARTICLE_HEADER[8] + OUT_SEP + "MeanDistance" + OUT_SEP + "StdDev";
         PRO_RESULTS_HEADER = PROB_HEADER[0] + OUT_SEP + PROB_HEADER[1] + OUT_SEP + PROB_HEADER[2] + OUT_SEP + PROB_HEADER[3] + OUT_SEP + "MeanDistance" + OUT_SEP + "StdDev";
         DATE_FORMAT = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
-        IMAGE_WIDTH = Double.parseDouble(props.getProperty(SettingKeys.IMAGE_WIDTH.name()));
-        IMAGE_HEIGHT = Double.parseDouble(props.getProperty(SettingKeys.IMAGE_HEIGHT.name()));
-        FLOOR_WIDTH = Double.parseDouble(props.getProperty(SettingKeys.FLOOR_WIDTH.name()));
-        FLOOR_HEIGHT = Double.parseDouble(props.getProperty(SettingKeys.FLOOR_HEIGHT.name()));
-
-        X_PIXELS = IMAGE_WIDTH / FLOOR_WIDTH;
-        Y_PIXELS = IMAGE_HEIGHT / FLOOR_HEIGHT;
+        String roomName = props.getProperty(SettingKeys.IMAGE_WIDTH.name());
+        double imageWidth = Double.parseDouble(props.getProperty(SettingKeys.IMAGE_WIDTH.name()));
+        double imageHeight = Double.parseDouble(props.getProperty(SettingKeys.IMAGE_HEIGHT.name()));
+        double floorWidth = Double.parseDouble(props.getProperty(SettingKeys.FLOOR_WIDTH.name()));
+        double floorHeight = Double.parseDouble(props.getProperty(SettingKeys.FLOOR_HEIGHT.name()));      
+        ROOM_INFO = new HashMap<>();
+        ROOM_INFO.put(roomName, new RoomInfo(roomName, floorWidth, floorHeight, imageWidth, imageHeight));
 
         OUTPUT_DIRECTORY = props.getProperty(SettingKeys.OUTPUT_DIRECTORY.name());
         INPUT_DIRECTORY = props.getProperty(SettingKeys.INPUT_DIRECTORY.name());
@@ -167,8 +164,7 @@ public class SettingsProperties extends BaseProperties {
             logger.debug("INPUT DIRECTORY: {}", INPUT_DIRECTORY);
             logger.debug("OUTPUT DIRECTORY: {}", OUTPUT_DIRECTORY);
             logger.debug("BUILD ORIENT: {}", BUILD_ORIENT);
-            logger.debug("X PIXELS: {}", X_PIXELS);
-            logger.debug("Y PIXELS: {}", Y_PIXELS);
+            logger.debug("ROOM INFO: {}", ROOM_INFO);            
             logger.debug("GENERATE TRIAL PROPERTIES: {}", GENERATE_TRIAL_PROPERTIES);
             logger.debug("FILTER PROPERTIES: {}", FILTER_PROPERTIES);
             logger.debug("SPECIFIC PARTICLE FILENAME: {}", SPECIFIC_PARTICLE);
@@ -220,30 +216,6 @@ public class SettingsProperties extends BaseProperties {
 
     public Boolean isTrialDetail() {
         return isTrialDetail;
-    }
-
-    public Double X_PIXELS() {
-        return X_PIXELS;
-    }
-
-    public Double Y_PIXELS() {
-        return Y_PIXELS;
-    }
-
-    public Double IMAGE_WIDTH() {
-        return IMAGE_WIDTH;
-    }
-
-    public Double IMAGE_HEIGHT() {
-        return IMAGE_HEIGHT;
-    }
-
-    public Double FLOOR_WIDTH() {
-        return FLOOR_WIDTH;
-    }
-
-    public Double FLOOR_HEIGHT() {
-        return FLOOR_HEIGHT;
     }
 
     public String OUTPUT_DIRECTORY() {
@@ -316,6 +288,10 @@ public class SettingsProperties extends BaseProperties {
 
     public String[] PROB_HEADER() {
         return PROB_HEADER;
+    }
+    
+    public HashMap<String, RoomInfo> ROOM_INFO(){
+        return ROOM_INFO;
     }
 
     public static boolean headerCheck(String[] parts, String[] header) {

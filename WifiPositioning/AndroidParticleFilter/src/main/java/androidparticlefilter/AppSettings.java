@@ -178,5 +178,4 @@ public class AppSettings {
         return particleCreation;
     }
     
-    
 }

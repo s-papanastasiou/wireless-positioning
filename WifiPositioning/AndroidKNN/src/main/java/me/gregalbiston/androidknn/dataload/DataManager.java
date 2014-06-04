@@ -9,7 +9,7 @@ import datastorage.KNNFloorPoint;
 import datastorage.Location;
 import datastorage.MagneticData;
 import datastorage.RSSIData;
-import filehandling.RoomInfo;
+import datastorage.RoomInfo;
 import general.Point;
 
 import java.util.ArrayList;

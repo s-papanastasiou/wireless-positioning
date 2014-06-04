@@ -10,7 +10,7 @@ import datastorage.Location;
 import datastorage.ResultLocation;
 import filehandling.KNNFormatStorage;
 import filehandling.KNNRSSI;
-import filehandling.RoomInfo;
+import datastorage.RoomInfo;
 import general.Locate;
 import general.Point;
 import java.awt.image.BufferedImage;
@@ -181,31 +181,24 @@ public class KNearestNeighbour {
             positionEstimates = Positioning.nearestEstimates(positionEstimates, executeSettings.kValue);
         }
 
-        //trial location, trial co-ordinates
-        Point trialPoint = RoomInfo.searchPoint(trialLocation, roomInfo);
-        writer.write(trialLocation.toString(FIELD_SEPARATOR) + FIELD_SEPARATOR + trialPoint.toString(FIELD_SEPARATOR) + FIELD_SEPARATOR);
+        //trial location, trial co-ordinates       
+        writer.write(trialLocation.toString(FIELD_SEPARATOR) + FIELD_SEPARATOR + trialLocation.getDrawPoint().toString(FIELD_SEPARATOR) + FIELD_SEPARATOR);
 
         //k value, distance measure, var limit, var count
         writer.write(executeSettings.print(FIELD_SEPARATOR) + FIELD_SEPARATOR);
 
-        //calculate the co-ordinates of the final point and distance to the trial point
-        Point finalPoint;
-        double metreDistance;
-
-        //Find the position based on the centre of mass of the estimates.
-        finalPoint = Locate.findWeightedCentre(positionEstimates, roomInfo, false);
-
+        //calculate the co-ordinates of the final point and distance to the trial point       
+        //Find the position based on the centre of mass of the estimates.        
         //final location, final co-ordinates, distance between trial and final, actual K (number of estimates included in the positioning - could be less than k value for variance filtering)
-        Location finalLocation = RoomInfo.searchLocation(finalPoint, roomInfo);
-        metreDistance = RoomInfo.distanceMetres(finalLocation, trialLocation, roomInfo);
+        Location finalLocation = RoomInfo.searchPixelLocation(Locate.findWeightedCentre(positionEstimates, false), roomInfo);
+        double metreDistance = finalLocation.distance(trialLocation);
 
-        writer.write(finalLocation.toString(FIELD_SEPARATOR) + FIELD_SEPARATOR + finalPoint.toString(FIELD_SEPARATOR) + FIELD_SEPARATOR + metreDistance + FIELD_SEPARATOR + positionEstimates.size());
+        writer.write(finalLocation.toString(FIELD_SEPARATOR) + FIELD_SEPARATOR + finalLocation.getDrawPoint().toString(FIELD_SEPARATOR) + FIELD_SEPARATOR + metreDistance + FIELD_SEPARATOR + positionEstimates.size());
 
         //output all the estimates - no estimates then no output
-        for (ResultLocation positionEstimate : positionEstimates) {
-            Point estimatePoint = RoomInfo.searchPoint(positionEstimate, roomInfo);
+        for (ResultLocation positionEstimate : positionEstimates) {            
             // estimate position, estimate co-ordinates, estimate distance value
-            writer.write(FIELD_SEPARATOR + positionEstimate.toString(FIELD_SEPARATOR) + FIELD_SEPARATOR + estimatePoint.toString(FIELD_SEPARATOR) + FIELD_SEPARATOR + positionEstimate.getResult() + FIELD_SEPARATOR + RoomInfo.distanceMetres(positionEstimate, trialLocation, roomInfo));
+            writer.write(FIELD_SEPARATOR + positionEstimate.toString(FIELD_SEPARATOR) + FIELD_SEPARATOR + positionEstimate.getDrawPoint().toString(FIELD_SEPARATOR) + FIELD_SEPARATOR + positionEstimate.getResult() + FIELD_SEPARATOR + trialLocation.distance(positionEstimate));
         }
         //start next line
         writer.write(System.lineSeparator());
@@ -213,13 +206,13 @@ public class KNearestNeighbour {
         writer.flush();
 
         //Draw the estimates and final point to the floor plan.        
-        BufferedImage floorPlanImage = DisplayPosition.render(floorPlanFile, roomInfo, positionEstimates, finalPoint, trialLocation);
+        BufferedImage floorPlanImage = DisplayPosition.render(floorPlanFile, positionEstimates, finalLocation.getDrawPoint(), trialLocation);
 
         //Draw the image to file                     
         File outputFile = new File(estimatesPath, executeSettings.filename(trialLocation, "estimates", ".png"));
         ImageIO.write(floorPlanImage, "png", outputFile);
 
-        return new ResultPoints(trialPoint, finalPoint);
+        return new ResultPoints(trialLocation.getDrawPoint(), finalLocation.getDrawPoint());
     }
 
     private static class ResultPoints {

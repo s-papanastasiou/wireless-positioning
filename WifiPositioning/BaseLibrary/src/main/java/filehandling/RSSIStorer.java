@@ -28,13 +28,12 @@ public class RSSIStorer {
      * Assumes comma separation between columns.
      * 
      * @param dataFile File to store the data.
-     * @param rssiDataList List of RSSI data.
-     * @param accuracy Scales the references by the specified accuracy i.e. converts the values to a 1m grid spacing. e.g. 1,1 on 5m grid will become 5,5 on 1m grid
+     * @param rssiDataList List of RSSI data.     
      * @param isNew Whether writing a new file or appending the data to the end.
      * @return 
      */
-     public static boolean store(File dataFile, List<RSSIData> rssiDataList, int accuracy, boolean isNew){
-         return store(dataFile, rssiDataList, ",", accuracy, isNew);
+     public static boolean store(File dataFile, List<RSSIData> rssiDataList, boolean isNew){
+         return store(dataFile, rssiDataList, ",", isNew);
      }
        
      /**
@@ -42,12 +41,11 @@ public class RSSIStorer {
      * 
      * @param dataFile File to store the data.
      * @param rssiDataList List of RSSI data.
-     * @param fieldSeperator Separator between columns.
-     * @param accuracy Scales the references by the specified accuracy i.e. converts the values to a 1m grid spacing. e.g. 1,1 on 5m grid will become 5,5 on 1m grid
+     * @param fieldSeperator Separator between columns.     
      * @param isNew Whether writing a new file or appending the data to the end.
      * @return 
      */
-     public static boolean store(File dataFile, List<RSSIData> rssiDataList, String fieldSeperator, int accuracy, boolean isNew){
+     public static boolean store(File dataFile, List<RSSIData> rssiDataList, String fieldSeperator, boolean isNew){
                 
         boolean isSucces = false;
         
@@ -59,7 +57,7 @@ public class RSSIStorer {
                     dataWriter.append(RSSIData.toStringHeadings(fieldSeperator) + System.getProperty("line.separator"));
                 
                 for(RSSIData rssiData:rssiDataList){
-                    dataWriter.append(rssiData.toString(fieldSeperator, accuracy) + System.getProperty("line.separator"));
+                    dataWriter.append(rssiData.toString(fieldSeperator) + System.getProperty("line.separator"));
                 }
                 isSucces = true;
             }

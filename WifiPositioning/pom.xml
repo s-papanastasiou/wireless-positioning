@@ -58,7 +58,6 @@
         <module>KNNLibrary</module>
         <module>ParticleFilterFramework</module>
         <module>AndroidParticleFilter</module>
-        <module>ProbabilisticLibrary</module>
         <module>KNNFramework</module>
         <module>AndroidKNN</module>
         <module>AndroidDetector</module>

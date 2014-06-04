@@ -6,7 +6,7 @@ import android.graphics.RectF;
 import datastorage.KNNFloorPoint;
 import datastorage.LabelPoint;
 import datastorage.Location;
-import filehandling.RoomInfo;
+import datastorage.RoomInfo;
 import general.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ public class Grid {
 
         this.isShowGrid = isShowGrid;
 
-        labelPoints = LabelPoint.list(radioMap, roomInfo);
+        labelPoints = LabelPoint.list(radioMap);
 
         paint.setColor(colourGrid);
         paint.setStyle(Paint.Style.STROKE);
@@ -66,7 +66,7 @@ public class Grid {
 
     public Location find(Point screenPoint) {
 
-        return RoomInfo.searchLocation(screenPoint, roomInfo);
+        return RoomInfo.searchPixelLocation(screenPoint, roomInfo);
     }
 
 }

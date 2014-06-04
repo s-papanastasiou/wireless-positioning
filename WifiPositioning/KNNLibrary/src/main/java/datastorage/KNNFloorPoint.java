@@ -29,7 +29,7 @@ public class KNNFloorPoint extends Location implements Serializable {
      * KNNFloorPoint constructor
      */
     public KNNFloorPoint() {
-        super(new Location());
+        super();
         this.roomReference = super.getRoomRef();
     }
 
@@ -49,7 +49,7 @@ public class KNNFloorPoint extends Location implements Serializable {
      * @param Value
      */
     public KNNFloorPoint(final String Key, final double Value) {
-        super(new Location());
+        super();
         this.attributes.put(Key, new AvgValue(Value));
         this.roomReference = super.getRoomRef();
     }

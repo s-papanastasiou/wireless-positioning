@@ -1,5 +1,6 @@
 package me.gregalbiston.androidknn.datacollection;
 
+import datastorage.Location;
 import general.Point;
 
 import java.util.List;
@@ -16,10 +17,10 @@ import java.util.List;
 public class ResultsInfo {
     public Point screenPoint;
     public Point finalPoint;
-    public List<Point> estimatePoints;
+    public List<? extends Location> estimatePoints;
     public String message;
 
-    public ResultsInfo(Point screenPoint, Point finalPoint, List<Point> estimatePoints, String message) {
+    public ResultsInfo(Point screenPoint, Point finalPoint, List<? extends Location> estimatePoints, String message) {
         this.screenPoint = screenPoint;
         this.finalPoint = finalPoint;
         this.estimatePoints = estimatePoints;

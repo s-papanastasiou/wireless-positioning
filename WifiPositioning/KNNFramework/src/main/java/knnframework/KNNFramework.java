@@ -10,7 +10,8 @@ import datastorage.RSSIData;
 import filehandling.FilterSSID;
 import filehandling.KNNRSSI;
 import filehandling.RSSILoader;
-import filehandling.RoomInfo;
+import datastorage.RoomInfo;
+import filehandling.RoomInfoLoader;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -31,58 +32,57 @@ import visualinfo.MatchMap;
 public class KNNFramework {
 
     private static final Logger logger = LoggerFactory.getLogger(KNNFramework.class);
-    
+
     /**
      * @param args the command line arguments
      */
     private final static String[] options = {"Exit", "Instructions", "Change Working Directory", "Change Field Separator", "Load Default Filesnames", "Load SSID Filter", "Load Radio Map", "Load Trial", "Load Floor Plan", "Print Data Grid", "Print Heatmap", "Print Matchmap", "Test Algorithms"};
     private final static String defaultFilterSSID = "FilterSSID.txt";
-    private final static String defaultRadioMap = "RSSISurveyData.csv";    
+    private final static String defaultRadioMap = "RSSISurveyData.csv";
     private final static String defaultTrial = "RSSITrialData.csv";
     private final static String defaultFloorPlan = "floor2.png";
-    private final static String defaultRoomInfo = "RoomInfo.csv";    
+    private final static String defaultRoomInfo = "RoomInfo.csv";
     public final static String DEFAULT_FIELD_SEPARATOR = ",";
-    
+
     //Johan and Pierre files
     //private final static String defaultRadioMap = "RSSIResults.csv";
     //private final static String defaultRoomInfo = "RoomInfoJohan.csv";    
     //public final static String DEFAULT_FIELD_SEPARATOR = ";";
-    
-    
     //Test loading of merged and unmerged data and to compare between trial and floor points
-    private static void Test(){
-        
+    private static void Test() {
+
         File file = new File("TestData.csv");
-        List<KNNFloorPoint> listFloor = KNNRSSI.loadList(file, ",", true, true);
-        List<RSSIData> dataList = RSSILoader.load(file, ",");
+        HashMap<String, RoomInfo> roomInfo = RoomInfoLoader.defaultHashMap();
+        List<KNNFloorPoint> listFloor = KNNRSSI.loadList(file, ",", roomInfo, true, true);        
+        List<RSSIData> dataList = RSSILoader.load(file, ",", roomInfo);
         List<KNNTrialPoint> listTrial = KNNRSSI.compileTrialList(dataList, true, true);
-        
-        HashMap<String, KNNFloorPoint> mapMerged = KNNRSSI.load(file, ",", false, false);
-        HashMap<String, KNNFloorPoint> mapUnMerged = KNNRSSI.load(file, ",", false, false);
+
+        HashMap<String, KNNFloorPoint> mapMerged = KNNRSSI.load(file, ",", roomInfo, false, false);
+        HashMap<String, KNNFloorPoint> mapUnMerged = KNNRSSI.load(file, ",", roomInfo, false, false);
     }
 
     public static void main(String[] args) {
 
- //       Test();
-        
+        //       Test();
         System.out.println("Algorithm Framework Running");
 
-        boolean isRunning = true;        
-        
+        boolean isRunning = true;
+
         //assign path to the user's working directory
         File workingPath = new File(System.getProperty("user.dir"));
 
         String fieldSeparator = DEFAULT_FIELD_SEPARATOR;
-        
+
         //load default files that are in the working directory
         Settings settings = loadDefaults(workingPath, fieldSeparator);
 
         if (args.length != 0) {
-            if(settings.isReady())
+            if (settings.isReady()) {
                 AlgorithmList.commandLine(workingPath, settings, args);
-            else
+            } else {
                 System.err.println(settings.isReadyError());
-            
+            }
+
         } else {  //Command prompt
             while (isRunning) {
 
@@ -141,19 +141,19 @@ public class KNNFramework {
                         if (settings.isPrintReady()) {
                             double rangeValue = Menus.Value("Enter the range value for matches:", 0.0f);
                             boolean isOrientationMerged = Menus.Choice("Merge the orientations together (W ref)?");
-                            boolean isBSSIDMerged = Menus.Choice("Merge BSSIDs where first five hex pairs match?");                            
-                            MatchMap.print(workingPath, "MatchMap", settings.getFloorPlan(), settings.getRoomInfo(), settings.getRadioMapList(), rangeValue, isBSSIDMerged, isOrientationMerged, fieldSeparator);
+                            boolean isBSSIDMerged = Menus.Choice("Merge BSSIDs where first five hex pairs match?");
+                            MatchMap.print(workingPath, "MatchMap", settings.getFloorPlan(), settings.getRadioMapList(), rangeValue, isBSSIDMerged, isOrientationMerged, fieldSeparator);
                         } else {
                             System.err.println(settings.isPrintReadyError());
                         }
-                        break;                        
-                        
+                        break;
+
                     case 12:  //Algorithm list
                         if (settings.isReady()) {
                             AlgorithmList.list(workingPath, settings);
                         } else {
                             System.out.print(settings.isReadyError());
-                        }                   
+                        }
                         break;
                     default:
                         System.out.println("Problem with selection on main menu");
@@ -166,8 +166,8 @@ public class KNNFramework {
     private static Settings loadDefaults(File workingPath, String fieldSeparator) {
 
         System.out.println("Attempting to load default files.");
-        Settings settings = new Settings();      
-        
+        Settings settings = new Settings();
+
         //SSID Filter
         File filterFile = new File(workingPath, defaultFilterSSID);
         if (filterFile.exists()) {
@@ -176,11 +176,20 @@ public class KNNFramework {
             System.out.println(defaultFilterSSID + " not found.");
         }
 
+        //Room Info
+        File roomInfoFile = new File(workingPath, defaultRoomInfo);
+        if (roomInfoFile.exists()) {
+            settings.addRoomInfo(RoomInfoLoader.load(roomInfoFile, fieldSeparator));
+
+        } else {
+            System.out.println(defaultRoomInfo + " not found.");
+        }
+
         //Radio Map
         File radioMapFile = new File(workingPath, defaultRadioMap);
         if (radioMapFile.exists()) {
             System.out.print("Radio map ");
-            settings.addRadioMapList(RSSILoader.load(radioMapFile, settings.getFilterSSIDList(), fieldSeparator));
+            settings.addRadioMapList(RSSILoader.load(radioMapFile, settings.getFilterSSIDList(), fieldSeparator, settings.getRoomInfo()));
         } else {
             System.out.println(defaultRadioMap + " not found.");
         }
@@ -189,26 +198,19 @@ public class KNNFramework {
         File trialFile = new File(workingPath, defaultTrial);
         if (trialFile.exists()) {
             System.out.print("Trial ");
-            settings.addTrialList(RSSILoader.load(trialFile, settings.getFilterSSIDList(), fieldSeparator));
+            settings.addTrialList(RSSILoader.load(trialFile, settings.getFilterSSIDList(), fieldSeparator, settings.getRoomInfo()));
         } else {
             System.out.println(defaultTrial + " not found.");
-        }
-
-        //Room Info
-        File roomInfoFile = new File(workingPath, defaultRoomInfo);
-        if (roomInfoFile.exists()) {
-            settings.addRoomInfo(RoomInfo.load(roomInfoFile, fieldSeparator));
-        } else {
-            System.out.println(defaultRoomInfo + " not found.");
         }
 
         //Floor Plan
         File floorPlanFile = new File(workingPath, defaultFloorPlan);
         boolean isSuccess;
         try {
-            BufferedImage floorPlanImage = ImageIO.read(floorPlanFile);  //Test that an image file has been provided.
+            ImageIO.read(floorPlanFile);  //Test that an image file has been provided.
             isSuccess = true;
         } catch (IOException ex) {
+            logger.error("Floor Plan image failed to load. {}", ex);
             isSuccess = false;
         }
         if (isSuccess) {
@@ -241,7 +243,7 @@ public class KNNFramework {
             }
 
             System.out.print("Radio Map ");
-            radioMapList = RSSILoader.load(filePath, settings.getFilterSSIDList(), fieldSeparator);
+            radioMapList = RSSILoader.load(filePath, settings.getFilterSSIDList(), fieldSeparator, settings.getRoomInfo());
 
         }
 
@@ -258,7 +260,7 @@ public class KNNFramework {
             }
 
             System.out.print("Trial ");
-            trialList = RSSILoader.load(filePath, settings.getFilterSSIDList(), fieldSeparator);
+            trialList = RSSILoader.load(filePath, settings.getFilterSSIDList(), fieldSeparator, settings.getRoomInfo());
         }
 
         return trialList;
@@ -286,7 +288,7 @@ public class KNNFramework {
         File filePath = Menus.getFilename("Enter room info filename: ", workingPath);
 
         if (!filePath.isFile()) {
-            roomInfo = RoomInfo.load(filePath, fieldSeparator);
+            roomInfo = RoomInfoLoader.load(filePath, fieldSeparator);
         }
 
         return roomInfo;

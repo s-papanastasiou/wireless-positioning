@@ -6,6 +6,7 @@ package datastorage;
 
 import general.TimeStamp;
 import java.text.ParseException;
+import java.util.HashMap;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -34,10 +35,11 @@ public class MagneticData extends Location {
      *
      * @param parts String array of elements to build class. See HEADINGS for
      * order.
+     * @param roomInfo Information about the rooms on the floor.
      * @throws ParseException
      */
-    public MagneticData(final String[] parts) throws ParseException {
-        super(parts[1], Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]));
+    public MagneticData(final String[] parts, final HashMap<String, RoomInfo> roomInfo) throws ParseException {                            
+        super(RoomInfo.createLocation(parts[1], Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), roomInfo));
         this.timestamp = parts[0];
         this.xValue = Double.parseDouble(parts[5]);
         this.yValue = Double.parseDouble(parts[6]);
@@ -119,19 +121,6 @@ public class MagneticData extends Location {
     @Override
     public String toString(final String fieldSeparator) {
         return timestamp + fieldSeparator + super.toString(fieldSeparator) + fieldSeparator + xValue + fieldSeparator + yValue + fieldSeparator + zValue + fieldSeparator + sensorAccuracy;
-    }
-
-    /**
-     * Scales the references by the specified accuracy i.e. converts the values
-     * to a 1m grid spacing. e.g. 1,1 on 5m grid will become 5,5 on 1m grid
-     *
-     * @param fieldSeparator Field separator between columns.
-     * @param accuracy Accuracy to scale the references.
-     * @return
-     */
-    @Override
-    public String toString(final String fieldSeparator, final int accuracy) {
-        return timestamp + fieldSeparator + super.toString(fieldSeparator, accuracy) + fieldSeparator + xValue + fieldSeparator + yValue + fieldSeparator + zValue + fieldSeparator + sensorAccuracy;
     }
 
     /**

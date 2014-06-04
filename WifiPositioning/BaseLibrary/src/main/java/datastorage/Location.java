@@ -22,6 +22,10 @@ public class Location implements Serializable {
     protected int xRef;
     protected int yRef;
     protected int wRef;
+    protected double globalX;
+    protected double globalY;
+    protected double drawX;
+    protected double drawY;
 
     /**
      * Constructor - default values -1 and Unknown.
@@ -31,6 +35,10 @@ public class Location implements Serializable {
         this.xRef = -1;
         this.yRef = -1;
         this.wRef = -1;
+        this.globalX = -1;
+        this.globalY = -1;
+        this.drawX = -1;
+        this.drawY = -1;
     }
 
     /**
@@ -41,11 +49,50 @@ public class Location implements Serializable {
      * @param yRef y reference
      * @param wRef w reference
      */
-    public Location(final String room, final int xRef, final int yRef, final int wRef) {
+    private Location(final Location location, final int wRef) {
+        this.room = location.room;
+        this.xRef = location.xRef;
+        this.yRef = location.yRef;
+        this.wRef = wRef;
+        this.globalX = location.globalX;
+        this.globalY = location.globalY;
+        this.drawX = location.drawX;
+        this.drawY = location.drawY;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param room Label of the room
+     * @param xRef x reference
+     * @param yRef y reference
+     * @param wRef w reference
+     */
+    public Location(final String room, final int xRef, final int yRef, final int wRef, double globalX, double globalY, double drawX, double drawY) {
         this.room = room;
         this.xRef = xRef;
         this.yRef = yRef;
         this.wRef = wRef;
+        this.globalX = globalX;
+        this.globalY = globalY;
+        this.drawX = drawX;
+        this.drawY = drawY;
+    }
+    
+    /**
+     * Copy Constructor
+     *
+     * @param location
+     */
+    public Location(final Location location, double globalX, double globalY, double drawX, double drawY) {
+        this.room = location.room;
+        this.xRef = location.xRef;
+        this.yRef = location.yRef;
+        this.wRef = location.wRef;
+        this.globalX = globalX;
+        this.globalY = globalY;
+        this.drawX = drawX;
+        this.drawY = drawY;
     }
 
     /**
@@ -58,6 +105,10 @@ public class Location implements Serializable {
         this.xRef = location.xRef;
         this.yRef = location.yRef;
         this.wRef = location.wRef;
+        this.globalX = location.globalX;
+        this.globalY = location.globalY;
+        this.drawX = location.drawX;
+        this.drawY = location.drawY;
     }
 
     /**
@@ -96,6 +147,22 @@ public class Location implements Serializable {
         return wRef;
     }
 
+    public double getGlobalX() {
+        return globalX;
+    }
+
+    public double getGlobalY() {
+        return globalY;
+    }
+
+    public double getDrawX() {
+        return drawX;
+    }
+
+    public double getDrawY() {
+        return drawY;
+    }
+
     /**
      * Get x and y reference as string.
      *
@@ -127,33 +194,56 @@ public class Location implements Serializable {
 
         if (o instanceof Location) {
             Location locationPoint = (Location) o;
-            if (locationPoint.room.equals(this.room) && locationPoint.xRef == this.xRef && locationPoint.yRef == this.yRef && locationPoint.wRef == this.wRef) {
+            if (locationPoint.room.equals(this.room) && locationPoint.xRef == this.xRef && locationPoint.yRef == this.yRef && locationPoint.wRef == this.wRef && locationPoint.globalX == this.globalX && locationPoint.globalY == this.globalY) {
                 isEqual = true;
             }
         }
 
         return isEqual;
-    }   
-
-    /**
-     * Auto-generated hashCode.
-     * 
-     * @return 
-     */
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.room);
-        hash = 59 * hash + this.xRef;
-        hash = 59 * hash + this.yRef;
-        hash = 59 * hash + this.wRef;
-        return hash;
     }
 
     /**
+     * Auto-generated hashcode
+     *
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.room);
+        hash = 67 * hash + this.xRef;
+        hash = 67 * hash + this.yRef;
+        hash = 67 * hash + this.wRef;
+        hash = 67 * hash + (int) (Double.doubleToLongBits(this.globalX) ^ (Double.doubleToLongBits(this.globalX) >>> 32));
+        hash = 67 * hash + (int) (Double.doubleToLongBits(this.globalY) ^ (Double.doubleToLongBits(this.globalY) >>> 32));
+        return hash;
+    }
+
+    public Point getGlobalPoint() {
+        return new Point(globalX, globalY);
+    }
+
+    public Point getDrawPoint() {
+        return new Point(drawX, drawY);
+    }
+
+    /**
+     * Euclidean distance between two locations
+     *
+     * @param location
+     * @return
+     */
+    public double distance(Location location) {
+        
+        double x = this.globalX - location.globalX;
+        double y = this.globalY - location.globalY;
+        return Math.hypot(x, y);        
+    }
+    
+    /**
      * String representation of location information.
-     * 
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {
@@ -162,110 +252,36 @@ public class Location implements Serializable {
 
     /**
      * String representation of location information using provided separator.
-     * 
+     *
      * @param fieldSeparator Character to use as separator.
-     * @return 
+     * @return
      */
     public String toString(String fieldSeparator) {
         return room + fieldSeparator + xRef + fieldSeparator + yRef + fieldSeparator + wRef;
     }
 
     /**
-     * Scales the references by the specified accuracy i.e. converts the values to a 1m grid spacing. e.g. 1,1 on 5m grid will become 5,5 on 1m grid
-     * 
-     * @param fieldSeparator Character to use as separator.
-     * @param accuracy Accuracy to scale the references.
-     * @return 
-     */
-    public String toString(String fieldSeparator, int accuracy) {
-        return room + fieldSeparator + (xRef * accuracy) + fieldSeparator + (yRef * accuracy) + fieldSeparator + (wRef * accuracy);
-    }
-   
-    /**
-     * Convert a location to its 1m grid equivalent e.g. 1,1 on 5m grid will become 5,5 on 1m grid
-     * 
-     * @param location Original location to convert.
-     * @param accuracy Accuracy to scale the location.
-     * @return 
-     */
-    public static Location convert(Location location, int accuracy) {
-        return new Location(location.room, location.xRef * accuracy, location.yRef * accuracy, location.wRef);
-    }
-    
-    /**
      * Copies the location and overwrites the w reference with 0.
-     * 
+     *
      * @param location Location to adjust.
-     * @return 
+     * @return
      */
     public static Location NoOrientationLocation(Location location) {
 
-        return new Location(location.getRoom(), location.getxRef(), location.getyRef(), 0);
+        return new Location(location, 0);
     }
 
     /**
-     * String representation with the w reference suppressed to 0.
-     * Static function for distinct usage from subclasses.
-     * 
+     * String representation with the w reference suppressed to 0. Static
+     * function for distinct usage from subclasses.
+     *
      * @param location Location to extract information.
-     * @return 
+     * @return
      */
     public static String NoOrientationRoomRef(Location location) {
 
         return location.getRoom() + "-x" + location.getxRef() + "-y" + location.getyRef() + "-w0";
-    }
-
-    /**
-     * Converts the location x and y reference into a point.
-     * 
-     * @return 
-     */    
-    public Point getPoint() {
-        return new Point(this.xRef, this.yRef);
-    }
-
-    /**
-     * Calculates the distance between the location and this location.
-     * 
-     * @param location Location to compare.
-     * @return 
-     */
-    public double distance(Location location) {
-
-        double x, y;
-
-        x = location.xRef - this.xRef;
-        y = location.yRef - this.yRef;
-
-        return Math.hypot(x, y);
-    }
-    
-    /**
-     * Calculates the distance between the point and this location.
-     * 
-     * @param point Point to compare.
-     * @return 
-     */
-    public double distance(Point point) {
-
-        double x, y;
-
-        x = point.getX() - this.xRef;
-        y = point.getY() - this.yRef;
-
-        return Math.hypot(x, y);
-    }
-
-    /**
-     * Scale coordinate by supplied pixels.
-     *
-     * @param xPixels Scaling factor for x reference.
-     * @param yPixels Scaling factor for y reference.
-     * @return
-     */
-    public Point drawPoint(double xPixels, double yPixels) {
-        return new Point(this.xRef * xPixels, this.yRef * yPixels);
-    }
+    }   
 
     /**
      * Formatted heading to show the information relating to a location.

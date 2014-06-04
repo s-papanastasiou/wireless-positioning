@@ -6,6 +6,7 @@ package filehandling;
 
 import datastorage.MagneticData;
 import datastorage.KNNFloorPoint;
+import datastorage.RoomInfo;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,17 +23,17 @@ public class KNNMagnetic {
     
     private static final Logger logger = LoggerFactory.getLogger(KNNMagnetic.class);
     
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final HashMap<String, RoomInfo> roomInfo) {
 
-        return load(dataFile, ",");
+        return load(dataFile, ",", roomInfo);
     }
     
     
     //loader that only loads data, using field separator, and does not store the compiled
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final String fieldSeparator) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo) {
 
         //load raw data
-        List<MagneticData> magList = MagneticLoader.load(dataFile, fieldSeparator);
+        List<MagneticData> magList = MagneticLoader.load(dataFile, fieldSeparator, roomInfo);
 
         //convert raw
         HashMap<String, KNNFloorPoint> knnRadioMap = compile(magList);
@@ -42,17 +43,17 @@ public class KNNMagnetic {
     
     //TODO - add compileList for magnetic data
     
-    public static List<KNNFloorPoint> loadList(final File dataFile) {
+    public static List<KNNFloorPoint> loadList(final File dataFile, final HashMap<String, RoomInfo> roomInfo) {
 
-        return loadList(dataFile, ",");
+        return loadList(dataFile, ",", roomInfo);
     }
     
     
     //loader that only loads data, using field separator, and does not store the compiled
-    public static List<KNNFloorPoint> loadList(final File dataFile, final String fieldSeparator) {
+    public static List<KNNFloorPoint> loadList(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo) {
 
         //load raw data
-        List<MagneticData> magList = MagneticLoader.load(dataFile, fieldSeparator);
+        List<MagneticData> magList = MagneticLoader.load(dataFile, fieldSeparator, roomInfo);
 
         //convert raw
         List<KNNFloorPoint> knnList = compileList(magList);
@@ -62,13 +63,13 @@ public class KNNMagnetic {
 
     
     //loader that tries to load from precompiled data unless missing or told that it is new data (in which case the compiled data is stored)
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, File knnFile, boolean isNewData) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, boolean isNewData) {
 
         HashMap<String, KNNFloorPoint> knnRadioMap;
 
         if (isNewData || !knnFile.exists()) {
             //load raw data
-            List<MagneticData> dataList = MagneticLoader.load(dataFile);
+            List<MagneticData> dataList = MagneticLoader.load(dataFile, roomInfo);
 
             //convert raw
             knnRadioMap = compile(dataList);

@@ -27,13 +27,12 @@ public class MagneticStorer {
      * Assumes comma separation between columns.
      * 
      * @param dataFile File to store the data.
-     * @param magneticDataList List of magnetic data.
-     * @param accuracy Scales the references by the specified accuracy i.e. converts the values to a 1m grid spacing. e.g. 1,1 on 5m grid will become 5,5 on 1m grid
+     * @param magneticDataList List of magnetic data.     
      * @param isNew Whether writing a new file or appending the data to the end.
      * @return 
      */
-    public static boolean store(File dataFile, List<MagneticData> magneticDataList, int accuracy, boolean isNew){
-         return store(dataFile, magneticDataList, ",", accuracy, isNew);
+    public static boolean store(File dataFile, List<MagneticData> magneticDataList, boolean isNew){
+         return store(dataFile, magneticDataList, ",", isNew);
      }
     
     /**
@@ -41,12 +40,11 @@ public class MagneticStorer {
      * 
      * @param dataFile File to store the data.
      * @param magneticDataList List of magnetic data.
-     * @param fieldSeperator Separator to use between columns.
-     * @param accuracy Scales the references by the specified accuracy i.e. converts the values to a 1m grid spacing. e.g. 1,1 on 5m grid will become 5,5 on 1m grid
+     * @param fieldSeperator Separator to use between columns.     
      * @param isNew Whether writing a new file or appending the data to the end.
      * @return 
      */
-    public static boolean store(File dataFile, List<MagneticData> magneticDataList, String fieldSeperator, int accuracy, boolean isNew){
+    public static boolean store(File dataFile, List<MagneticData> magneticDataList, String fieldSeperator, boolean isNew){
                
         boolean isSuccess = false;
         
@@ -58,7 +56,7 @@ public class MagneticStorer {
                     dataWriter.append(MagneticData.toStringHeadings(fieldSeperator) + System.getProperty("line.separator"));
                 
                 for(MagneticData magneticData:magneticDataList){
-                    dataWriter.append(magneticData.toString(fieldSeperator, accuracy) + System.getProperty("line.separator"));
+                    dataWriter.append(magneticData.toString(fieldSeperator) + System.getProperty("line.separator"));
                 } 
                 isSuccess = true;
             }

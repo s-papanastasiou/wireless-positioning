@@ -8,7 +8,7 @@ import accesspointvariant.APData;
 import accesspointvariant.APFormat;
 import accesspointvariant.APLocation;
 import datastorage.RSSIData;
-import filehandling.RoomInfo;
+import datastorage.RoomInfo;
 import general.AvgValue;
 import general.Rectangle;
 import java.awt.Color;

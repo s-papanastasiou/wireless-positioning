@@ -1,6 +1,6 @@
 package particlefilterlibrary;
 
-import general.Point;
+import datastorage.Location;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,30 +12,28 @@ import general.Point;
 
 public class NavigationResults {
 
-    public Point probabilisticPoint;
-    public Point particlePoint;
-    public Point inertialPoint;
-    public Point bestPoint;
+    public Location probabilisticPoint;
+    public Location particlePoint;
+    public InertialPoint inertialPoint;
+    public Location bestPoint;
     public InertialData inertialData;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public NavigationResults(Point probabilisticPoint, Point particlePoint, Point inertialPoint, Point bestPoint, InertialData inertialData) {
-
+    public NavigationResults(Location probabilisticPoint, Location particlePoint, InertialPoint inertialPoint, Location bestPoint, InertialData inertialData) {
         this.probabilisticPoint = probabilisticPoint;
         this.particlePoint = particlePoint;
         this.inertialPoint = inertialPoint;
         this.bestPoint = bestPoint;
         this.inertialData = inertialData;
-    }
+    }  
 
     @Override
     public String toString() {
 
-        String idResults = String.format("Prob Point : %s %s %s", Math.round(1000 * probabilisticPoint.getX()) * 0.001, Math.round(1000 * probabilisticPoint.getY()) * 0.001, System.getProperty("line.separator"));
-        idResults += String.format("Part Point : %s %s %s", Math.round(1000 * particlePoint.getX()) * 0.001, Math.round(1000 * particlePoint.getY()) * 0.001, System.getProperty("line.separator"));
+        String idResults = String.format("Prob Point : %s %s %s", Math.round(1000 * probabilisticPoint.getGlobalX()) * 0.001, Math.round(1000 * probabilisticPoint.getGlobalY()) * 0.001, System.getProperty("line.separator"));
+        idResults += String.format("Part Point : %s %s %s", Math.round(1000 * particlePoint.getGlobalX()) * 0.001, Math.round(1000 * particlePoint.getGlobalY()) * 0.001, System.getProperty("line.separator"));
         idResults += String.format("Iner Point : %s %s %s", Math.round(1000 * inertialPoint.getX()) * 0.001, Math.round(1000 * inertialPoint.getY()) * 0.001, System.getProperty("line.separator"));
-        idResults += String.format("Corr Point : %s %s %s", bestPoint.getX(), bestPoint.getY(), System.getProperty("line.separator"));
+        idResults += String.format("Corr Point : %s %s %s", bestPoint.getGlobalX(), bestPoint.getGlobalY(), System.getProperty("line.separator"));
         idResults += String.format("Azimuth : %s %s", Math.round(inertialData.getAzimuth()), System.getProperty("line.separator"));
         idResults += String.format("Pitch : %s %s", Math.round(inertialData.getPitch()), System.getProperty("line.separator"));
         idResults += String.format("Roll : %s %s", Math.round(inertialData.getRoll()), System.getProperty("line.separator"));

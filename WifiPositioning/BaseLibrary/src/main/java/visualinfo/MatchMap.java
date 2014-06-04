@@ -8,7 +8,6 @@ import accesspointvariant.APData;
 import accesspointvariant.APFormat;
 import accesspointvariant.APLocation;
 import datastorage.RSSIData;
-import filehandling.RoomInfo;
 import general.Point;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -18,7 +17,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javax.imageio.ImageIO;
 import org.slf4j.Logger;
@@ -41,11 +39,10 @@ public class MatchMap {
      *
      * @param workingPath Path to store the image.     
      * @param floorPlanFile Floor plan image to draw upon.
-     * @param rssiDataList List of locations to draw.
-     * @param roomInfo Information about the location coordinates.     
+     * @param rssiDataList List of locations to draw.     
      */
-    public static void print(File workingPath, File floorPlanFile, final HashMap<String, RoomInfo> roomInfo, List<RSSIData> rssiDataList) {
-        print(workingPath, "MatchAnalysis", floorPlanFile, roomInfo, rssiDataList, 0.0f, false, false, ",");
+    public static void print(File workingPath, File floorPlanFile, List<RSSIData> rssiDataList) {
+        print(workingPath, "MatchAnalysis", floorPlanFile, rssiDataList, 0.0f, false, false, ",");
     }
 
     /**
@@ -57,14 +54,13 @@ public class MatchMap {
      * @param workingPath Path to store the image.
      * @param filename Name of file to print, without file extension.
      * @param floorPlanFile Floor plan image to draw upon.
-     * @param rssiDataList List of locations to draw.
-     * @param roomInfo Information about the location coordinates.     
+     * @param rssiDataList List of locations to draw.    
      * @param rangeValue Range of values considered to be matches.
      * @param isBSSIDMerged True, if last hex pair of BSSID is to be ignored.
      * @param isOrientationMerged True, if W-Ref of location is to be ignored.
      * @param fieldSeparator Separator used between each heading in output file.        
      */
-    public static void print(File workingPath, String filename, File floorPlanFile, final HashMap<String, RoomInfo> roomInfo, List<RSSIData> rssiDataList, final double rangeValue, final boolean isBSSIDMerged, final boolean isOrientationMerged, final String fieldSeparator) {
+    public static void print(File workingPath, String filename, File floorPlanFile, List<RSSIData> rssiDataList, final double rangeValue, final boolean isBSSIDMerged, final boolean isOrientationMerged, final String fieldSeparator) {
 
         //create sub-folder
         File matchPath = new File(workingPath, "matchmaps");
@@ -100,7 +96,7 @@ public class MatchMap {
 
                             List<APLocation> matchLocations = matches.get(counter);
                             if (!matchLocations.isEmpty()) {
-                                floorPlanImage = drawLocations(counter, matches.size(), matchLocations, floorPlanImage, roomInfo);
+                                floorPlanImage = drawLocations(counter, matches.size(), matchLocations, floorPlanImage);
                             }
                         }
 
@@ -176,7 +172,7 @@ public class MatchMap {
         return matches;
     }
 
-    private static BufferedImage drawLocations(final int index, final int total, final List<APLocation> matchLocations, BufferedImage floorPlanImage, final HashMap<String, RoomInfo> roomInfo) {
+    private static BufferedImage drawLocations(final int index, final int total, final List<APLocation> matchLocations, BufferedImage floorPlanImage) {
 
         final int SIZE = 10;
         final int HALF_SIZE = SIZE / 2;
@@ -187,11 +183,9 @@ public class MatchMap {
 
         for (int counter = 0; counter < matchLocations.size(); counter++) {
 
-            APLocation location = matchLocations.get(counter);
+            APLocation location = matchLocations.get(counter);           
 
-            RoomInfo room = roomInfo.get(location.getRoom());
-
-            Point pos = room.getPoint(location.getxRef(), location.getyRef());
+            Point pos = location.getDrawPoint();
 
             //Draw oval                
             floorPlan.fillOval(pos.getXint() - HALF_SIZE, pos.getYint() - HALF_SIZE, SIZE, SIZE);

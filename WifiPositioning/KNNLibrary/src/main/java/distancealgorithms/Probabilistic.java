@@ -1,6 +1,9 @@
-package probabilisticlibrary;
+package distancealgorithms;
 
 import datastorage.KNNFloorPoint;
+import datastorage.Location;
+import datastorage.ResultLocation;
+import datastorage.RoomInfo;
 import general.AvgValue;
 import general.Point;
 import java.util.ArrayList;
@@ -15,14 +18,14 @@ public class Probabilistic {
 
     private static final Logger logger = LoggerFactory.getLogger(Probabilistic.class);
              
-    public static Point run(KNNFloorPoint onlinepoint, HashMap<String, KNNFloorPoint> offlineMap, int kLimit, int orientation) {
+    public static Location run(KNNFloorPoint onlinepoint, HashMap<String, KNNFloorPoint> offlineMap, HashMap<String, RoomInfo> roomInfo, int kLimit, int orientation) {
 
-        Point point;
+        Location location;
 
         if (!onlinepoint.getAttributes().isEmpty()) {
                          
             HashMap<String, KNNFloorPoint> orientatedMap = KNNFloorPoint.filterMap(offlineMap, orientation);            
-            TreeSet<ProbResult> results = new TreeSet<>();
+            TreeSet<ResultLocation> results = new TreeSet<>();
             
             Set<String> keys = orientatedMap.keySet();
 
@@ -30,33 +33,33 @@ public class Probabilistic {
                 KNNFloorPoint offlinepoint = orientatedMap.get(key);
 
                 double prob = probabilite(onlinepoint, offlinepoint);
-                results.add(new ProbResult(key, prob));
+                results.add(new ResultLocation(offlinepoint, prob, offlinepoint.getRoomRef()));
             }
 
-            List<ProbResult> kList = new ArrayList<>();
+            List<ResultLocation> kList = new ArrayList<>();
 
             for (int i = 0; i < kLimit; i++) {
                 kList.add(results.pollLast());
             }
-            point = position(kList, orientatedMap);
+            Point point = position(kList);
+            location = RoomInfo.searchGlobalLocation(point, roomInfo);
         } else {
-            point = new Point(-1, -1);
+            location = new Location();
             logger.error("Online point is empty");
         }
 
-        return point;
+        return location;
     }   
 
-    private static Point position(List<ProbResult> kList, HashMap<String, KNNFloorPoint> orientatedMap) {
+    private static Point position(List<ResultLocation> kList) {
         double x = 0;
         double y = 0;
         double sum = 0;
 
-        for (ProbResult result : kList) {
-            KNNFloorPoint point = orientatedMap.get(result.key);
-            x += result.value * point.getxRef();
-            y += result.value * point.getyRef();
-            sum += result.value;
+        for (ResultLocation result : kList) {            
+            x += result.getResult() * result.getGlobalX();
+            y += result.getResult() * result.getGlobalY();
+            sum += result.getResult();
         }
 
 

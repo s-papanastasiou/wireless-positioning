@@ -5,7 +5,8 @@ import android.os.Environment;
 import datastorage.KNNFloorPoint;
 import filehandling.FilterSSID;
 import filehandling.KNNFormatStorage;
-import filehandling.RoomInfo;
+import datastorage.RoomInfo;
+import filehandling.RoomInfoLoader;
 
 import java.io.File;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class DataLoad {
             File dir = Environment.getExternalStoragePublicDirectory(directory);
             File roomInfoFile = new File(dir, roomInfoFilename);
             if (roomInfoFile.exists())
-                roomInfo = RoomInfo.load(roomInfoFile, fieldSeperator);
+                roomInfo = RoomInfoLoader.load(roomInfoFile, fieldSeperator);
         }
 
         return roomInfo;

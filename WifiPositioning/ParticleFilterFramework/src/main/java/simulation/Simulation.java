@@ -5,10 +5,7 @@
  */
 package simulation;
 
-import simulation.ParticleSimulation;
-import simulation.ProbSimulation;
 import datastorage.KNNTrialPoint;
-import general.Point;
 import java.util.Date;
 import java.util.List;
 import org.slf4j.Logger;
@@ -17,6 +14,7 @@ import configuration.FileController;
 import configuration.FilterProperties;
 import configuration.Logging;
 import configuration.SettingsProperties;
+import datastorage.Location;
 
 /**
  *
@@ -28,14 +26,16 @@ public class Simulation {
     
     public final static double HALF_PI = Math.PI / 2;   
 
-    public static String getTrialResult(int lineNumber, KNNTrialPoint knnTrialPoint, double trialDistance, Point bestPoint, String OUT_SEP) {
+    public static String getTrialResult(int lineNumber, KNNTrialPoint knnTrialPoint, double trialDistance, Location bestLocation, String OUT_SEP) {
 
+        String trialRoom = knnTrialPoint.getRoom();
         int trialX = knnTrialPoint.getxRef();
         int trialY = knnTrialPoint.getyRef();
-        double posX = bestPoint.getX();
-        double posY = bestPoint.getY();
+        String bestRoom = bestLocation.getRoom();
+        int bestX = bestLocation.getxRef();
+        int bestY = bestLocation.getyRef();
 
-        return lineNumber + OUT_SEP + trialX + OUT_SEP + trialY + OUT_SEP + trialDistance + OUT_SEP + posX + OUT_SEP + posY;
+        return lineNumber + OUT_SEP + trialRoom + OUT_SEP + trialX + OUT_SEP + trialY + OUT_SEP + trialDistance + OUT_SEP + bestRoom + OUT_SEP + bestX + OUT_SEP + bestY;
     }
 
     public static void runProbabList(SettingsProperties sp, FileController fc, List<ProbabilisticTrial> proTrialList, Logging probabilisticResultsLog) {

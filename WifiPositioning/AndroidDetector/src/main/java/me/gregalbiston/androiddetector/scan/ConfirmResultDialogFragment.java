@@ -9,11 +9,8 @@ import android.os.Bundle;
 import me.gregalbiston.androiddetector.R;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Gerg
- * Date: 04/09/13
- * Time: 09:24
  * Based on example at Android Developers: http://developer.android.com/guide/topics/ui/dialogs.html
+ * @author Greg Albiston
  */
 public class ConfirmResultDialogFragment extends DialogFragment {
 

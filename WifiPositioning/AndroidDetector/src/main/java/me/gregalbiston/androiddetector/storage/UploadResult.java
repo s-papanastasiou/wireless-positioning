@@ -3,11 +3,8 @@ package me.gregalbiston.androiddetector.storage;
 import android.content.Intent;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Gerg
- * Date: 20/06/13
- * Time: 07:20
  * Records the outcome of the Drive upload process in UploadFileToDrive.
+ * @author Greg Albiston
  */
 public class UploadResult {
 

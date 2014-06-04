@@ -3,11 +3,8 @@ package me.gregalbiston.androiddetector.scan;
 import android.hardware.SensorEvent;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Gerg
- * Date: 20/06/13
- * Time: 09:17
  * Stores the event information with the system time at which it occurred.
+ * @author Greg Albiston
  */
 public class MagneticResult {
 

@@ -14,12 +14,10 @@ import java.util.ArrayList;
 import me.gregalbiston.androiddetector.DectectorActivity;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Gerg
- * Date: 15/06/13
- * Time: 12:12
  * Static to write file to local storage. Stores information for the filename.
  * Statics used to allow convenient usage in events.
+ * 
+ * @author Greg Albiston
  */
 public class FileOutput {
 
@@ -40,7 +38,7 @@ public class FileOutput {
         //Create and store data as a file
         String filename = getFilename(label);
         File file = openFile(directory, filename);
-        boolean isSuccess = RSSIStorer.store(file, results, fieldSeparator, Integer.parseInt(accuracy), !file.exists());
+        boolean isSuccess = RSSIStorer.store(file, results, fieldSeparator, !file.exists());
 
         if (isSuccess)
             scanFile(context, file, mimeType);
@@ -53,7 +51,7 @@ public class FileOutput {
         //Create and store data as a file
         String filename = getFilename(label);
         File file = openFile(directory, filename);
-        boolean isSuccess = MagneticStorer.store(file, results, fieldSeparator, Integer.parseInt(accuracy), !file.exists());
+        boolean isSuccess = MagneticStorer.store(file, results, fieldSeparator, !file.exists());
 
         if (isSuccess)
             scanFile(context, file, mimeType);

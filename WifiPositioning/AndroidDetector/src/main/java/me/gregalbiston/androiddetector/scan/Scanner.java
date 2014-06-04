@@ -89,7 +89,7 @@ public class Scanner extends CountDownTimer {
         NumberPicker wValue = (NumberPicker) dectectorActivity.findViewById(R.id.numberPickerWWW);
 
 
-        scanLocation = new Location(room.getSelectedItem().toString(), xValue.getValue()* accuracy, yValue.getValue()* accuracy, wValue.getValue()* accuracy);
+        scanLocation = new Location(room.getSelectedItem().toString(), xValue.getValue()* accuracy, yValue.getValue()* accuracy, wValue.getValue()* accuracy, 0, 0, 0, 0);
     }
 
 

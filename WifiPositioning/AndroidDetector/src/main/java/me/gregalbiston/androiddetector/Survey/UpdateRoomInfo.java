@@ -18,11 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Gerg
- * Date: 19/06/13
- * Time: 22:07
  * Accesses file stored on Drive to get latest values for performing the survey and stores to local file.
+ * @author Greg Albiston
  */
 public class UpdateRoomInfo extends AsyncTask<Object, Void, String> {
 

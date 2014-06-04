@@ -18,15 +18,13 @@ import me.gregalbiston.androiddetector.R;
 import me.gregalbiston.androiddetector.storage.FileOutput;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Gerg
- * Date: 14/06/13
- * Time: 16:01
  * RSSI Scanner begins scanning at end of constructor.
  * BroadcastReceiver continues to scan as fast as possible.
  * BroadcastReceiver unregisters itself once sampling stops.
  * To enable as fast as possible scanning, ScanResult's are added to a list with system time and processed as part of finish operation.
  * Based on: https://groups.google.com/forum/#!topic/android-developers/D3ItX5DPrmk
+ * 
+ *@author Greg Albiston
  */
 public class RSSIScanner {
 

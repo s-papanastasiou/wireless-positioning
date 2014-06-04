@@ -5,11 +5,8 @@ import android.net.wifi.ScanResult;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Gerg
- * Date: 20/06/13
- * Time: 09:00
  * Stores a list of scan results along with the system time at which they were returned.
+ * @author Greg Albiston
  */
 public class RSSIResult {
 

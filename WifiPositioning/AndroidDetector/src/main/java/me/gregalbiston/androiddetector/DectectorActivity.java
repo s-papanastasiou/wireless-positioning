@@ -29,6 +29,7 @@ import me.gregalbiston.androiddetector.survey.UpdateRoomInfo;
 public class DectectorActivity extends Activity {
     /**
      * Called when the activity is first created.
+     * @author Greg Albiston
      */
 
     private WifiManager wifiManager;

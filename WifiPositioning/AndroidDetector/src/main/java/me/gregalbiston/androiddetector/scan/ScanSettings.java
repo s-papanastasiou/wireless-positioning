@@ -3,11 +3,8 @@ package me.gregalbiston.androiddetector.scan;
 import me.gregalbiston.androiddetector.storage.FileOutput;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Gerg
- * Date: 03/09/13
- * Time: 16:59
  * Holds settings for Scanner.
+ * @author Greg Albiston
  */
 public class ScanSettings {
 

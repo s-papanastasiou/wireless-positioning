@@ -17,13 +17,10 @@ import me.gregalbiston.androiddetector.R;
 import me.gregalbiston.androiddetector.storage.FileOutput;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Gerg
- * Date: 13/06/13
- * Time: 18:57
  * Events are filtered according to whether isSampling is true.
  * Events occur much quicker than 1 per second.
  * Events stored in an array for later processing.
+ * @author Greg Albiston
  */
 public class MagneticScanner implements SensorEventListener {
 

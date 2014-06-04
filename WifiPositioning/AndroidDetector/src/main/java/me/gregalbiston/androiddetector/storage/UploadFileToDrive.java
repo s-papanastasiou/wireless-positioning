@@ -15,11 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Gerg
- * Date: 20/06/13
- * Time: 06:51
- * Upload results to Drive. Updates existing file and inserts new if doesn't.
+ * Upload results to Drive. Updates existing file and inserts new if required.
+ * @author Greg Albiston
  */
 public class UploadFileToDrive extends AsyncTask<Object, UploadResult, Object> {
 

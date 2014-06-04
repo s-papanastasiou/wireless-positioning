@@ -21,12 +21,12 @@ public class Location implements Serializable {
     protected String room;
     protected int xRef;
     protected int yRef;
-    protected int wRef;
+    protected int wRef;    
     protected double globalX;
     protected double globalY;
     protected double drawX;
     protected double drawY;
-
+    
     /**
      * Constructor - default values -1 and Unknown.
      */
@@ -225,8 +225,8 @@ public class Location implements Serializable {
 
     public Point getDrawPoint() {
         return new Point(drawX, drawY);
-    }
-
+    } 
+    
     /**
      * Euclidean distance between two locations
      *

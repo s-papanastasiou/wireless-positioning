@@ -112,17 +112,17 @@ public class RoomInfo {
     }
     
     /**
-     * Rectangle drawn around a point.     
-     * 
-     * @param xRef x reference of the point
-     * @param yRef y reference of the point
+     * Rectangle drawn around a location.
+     *  
+     * @param location Location to draw.
      * @return 
      */
-    public Rectangle getPointRect(final int xRef, final int yRef) {
+    public Rectangle getDrawRect(Location location) {
 
         Rectangle rect = new Rectangle();
-        rect.x = (int) Math.round((drawRoom.x + (xRef * widthUnits) - (widthUnits / 2))); // drawRoom.x to get top left corner, offset by xRef and subtract half the size of one unit
-        rect.y = (int) Math.round((drawRoom.y + (yRef * heightUnits) - (heightUnits / 2)));
+        
+        rect.x = (int) Math.round((location.drawX - (widthUnits / 2))); // drawRoom.x to get top left corner, offset by xRef and subtract half the size of one unit
+        rect.y = (int) Math.round((location.drawY - (heightUnits / 2)));
         rect.width = (int) widthUnits;
         rect.height = (int) heightUnits;
 
@@ -187,6 +187,8 @@ public class RoomInfo {
     /**
      * Convert a global point into a location within the room.
      *
+     * @param point Global point
+     * @param wRef w reference
      * @return
      */
     public Location createGlobalLocation(final Point point, int wRef) {
@@ -221,6 +223,8 @@ public class RoomInfo {
      * Convert a pixel point into a location within the room.
      *
      * 
+     * @param point Pixel point
+     * @param wRef w reference
      * @return
      */
     public Location createPixelLocation(final Point point, int wRef) {
@@ -313,6 +317,10 @@ public class RoomInfo {
     /**
      * Finds the location that corresponds to the pixel point.
      *      
+     * @param room Label of the room
+     * @param xRef x reference
+     * @param yRef y reference
+     * @param wRef w reference
      * @param roomInfo Information about the rooms on the floor.
      * @return 
      */

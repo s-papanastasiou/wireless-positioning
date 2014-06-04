@@ -131,7 +131,7 @@ public class HeatMap {
             if (roomInfo.containsKey(apLocation.getRoom())) {
                 floorPlan.setColor(getRSSIColor(apLocation.getAvgRSSI(), maxFrequency));
                 RoomInfo room = roomInfo.get(apLocation.getRoom());
-                Rectangle rect = room.getPointRect(apLocation.getxRef(), apLocation.getyRef());
+                Rectangle rect = room.getDrawRect(apLocation);
                 floorPlan.fillRect(rect.x, rect.y, rect.width, rect.height);
             }
 

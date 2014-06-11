@@ -53,6 +53,7 @@ public class RoomInfoTest extends TestCase {
         RoomInfo instance = new RoomInfo(parts);
         Rectangle expResult = new Rectangle(20, 58, 10, 13);
         Rectangle result = instance.getDrawRect(location);        
+
         assertEquals(expResult, result);        
     }
 
@@ -168,7 +169,7 @@ public class RoomInfoTest extends TestCase {
         System.out.println("createGlobalLocation");
         Point point = new Point(40, 64);
         RoomInfo instance = new RoomInfo(parts);
-        Location expResult = new Location(parts[0], 1, 2, 0, 40, 64, 30, 70);
+        Location expResult = new Location(parts[0], 10, 24, 0, 40, 64, 30, 70);
         Location result = instance.createGlobalLocation(point);
         assertEquals(expResult, result);  
     }

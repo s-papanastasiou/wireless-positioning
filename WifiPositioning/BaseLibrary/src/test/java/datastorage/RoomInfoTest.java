@@ -49,9 +49,9 @@ public class RoomInfoTest extends TestCase {
      */
     public void testGetDrawRect() {
         System.out.println("getDrawRect");        
-        Location location = new Location(parts[0], 1, 2, 3, 40, 64, 30, 70);
+        Location location = new Location(parts[0], 1, 2, 3, 31, 42, 30, 70);
         RoomInfo instance = new RoomInfo(parts);
-        Rectangle expResult = new Rectangle(20, 58, 10, 13);
+        Rectangle expResult = new Rectangle(20, 58, 20, 25);
         Rectangle result = instance.getDrawRect(location);        
 
         assertEquals(expResult, result);        
@@ -167,9 +167,9 @@ public class RoomInfoTest extends TestCase {
      */
     public void testCreateGlobalLocation_Point() {
         System.out.println("createGlobalLocation");
-        Point point = new Point(40, 64);
+        Point point = new Point(31, 42);
         RoomInfo instance = new RoomInfo(parts);
-        Location expResult = new Location(parts[0], 10, 24, 0, 40, 64, 30, 70);
+        Location expResult = new Location(parts[0], 1, 2, 0, 31, 42, 30, 70);
         Location result = instance.createGlobalLocation(point);
         assertEquals(expResult, result);  
     }
@@ -179,10 +179,10 @@ public class RoomInfoTest extends TestCase {
      */
     public void testCreateGlobalLocation_Point_int() {
         System.out.println("createGlobalLocationPoint Int");                
-        Point point = new Point(40, 64);
+        Point point = new Point(31, 42);
         int wRef = 3;
         RoomInfo instance = new RoomInfo(parts);
-        Location expResult = new Location(parts[0], 1, 2, wRef, 40, 64, 30, 70);
+        Location expResult = new Location(parts[0], 1, 2, wRef, 31, 42, 30, 70);
         Location result = instance.createGlobalLocation(point, wRef);
         assertEquals(expResult, result);        
     }
@@ -192,9 +192,9 @@ public class RoomInfoTest extends TestCase {
      */
     public void testCreatePixelLocation_Point() {
         System.out.println("createPixelLocation");
-        Point point = new Point(40, 64);
+        Point point = new Point(30, 70);
         RoomInfo instance = new RoomInfo(parts);
-        Location expResult = new Location(parts[0], 1, 2, 0, 40, 64, 30, 70);
+        Location expResult = new Location(parts[0], 1, 2, 0, 31, 42, 30, 70);
         Location result = instance.createPixelLocation(point);
         assertEquals(expResult, result);        
     }
@@ -204,10 +204,10 @@ public class RoomInfoTest extends TestCase {
      */
     public void testCreatePixelLocation_Point_int() {
         System.out.println("createPixelLocationPoint Int");                
-        Point point = new Point(40, 64);
+        Point point = new Point(30, 70);
         int wRef = 3;
         RoomInfo instance = new RoomInfo(parts);
-        Location expResult = new Location(parts[0], 1, 2, wRef, 40, 64, 30, 70);
+        Location expResult = new Location(parts[0], 1, 2, wRef, 31, 42, 30, 70);
         Location result = instance.createPixelLocation(point, wRef);
         assertEquals(expResult, result); 
     }
@@ -221,7 +221,7 @@ public class RoomInfoTest extends TestCase {
         int yRef = 2;
         int wRef = 3;
         RoomInfo instance = new RoomInfo(parts);
-        Location expResult = new Location(parts[0], xRef, yRef, wRef, 40, 64, 30, 70);
+        Location expResult = new Location(parts[0], xRef, yRef, wRef, 31, 42, 30, 70);
         Location result = instance.createLocation(xRef, yRef, wRef);
         assertEquals(expResult, result);        
     }
@@ -253,10 +253,10 @@ public class RoomInfoTest extends TestCase {
      */
     public void testSearchGlobalLocation() {
         System.out.println("searchGlobalLocation");
-        Point point = new Point(35, 45);
+        Point point = new Point(31, 42);
         HashMap<String, RoomInfo> roomInfo = new HashMap<>();
         roomInfo.put(parts[0], new RoomInfo(parts));
-        Location expResult = new Location(parts[0], 1, 2, 0, 40, 64, 30, 70);
+        Location expResult = new Location(parts[0], 1, 2, 0, 31, 42, 30, 70);
         Location result = RoomInfo.searchGlobalLocation(point, roomInfo);
         assertEquals(expResult, result);        
     }
@@ -266,10 +266,10 @@ public class RoomInfoTest extends TestCase {
      */
     public void testSearchPixelLocation() {
         System.out.println("searchPixelLocation");
-        Point point = new Point(35, 45);
+        Point point = new Point(35, 65);
         HashMap<String, RoomInfo> roomInfo = new HashMap<>();
         roomInfo.put(parts[0], new RoomInfo(parts));
-        Location expResult = new Location(parts[0], 1, 2, 0, 40, 64, 30, 70);
+        Location expResult = new Location(parts[0], 1, 2, 0, 31, 42, 30, 70);
         Location result = RoomInfo.searchPixelLocation(point, roomInfo);
         assertEquals(expResult, result);        
     }
@@ -285,7 +285,7 @@ public class RoomInfoTest extends TestCase {
         int wRef = 3;
         HashMap<String, RoomInfo> roomInfo = new HashMap<>();
         roomInfo.put(parts[0], new RoomInfo(parts));
-        Location expResult = new Location(parts[0], 1, 2, 0, 40, 64, 30, 70);
+        Location expResult = new Location(parts[0], 1, 2, 3, 31, 42, 30, 70);
         Location result = RoomInfo.createLocation(room, xRef, yRef, wRef, roomInfo);
         assertEquals(expResult, result);        
     }

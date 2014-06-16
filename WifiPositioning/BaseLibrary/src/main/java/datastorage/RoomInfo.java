@@ -9,7 +9,8 @@ import general.Rectangle;
 import general.RectangleD;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -229,8 +230,8 @@ public class RoomInfo {
      */
     public Location createPixelLocation(final Point point, int wRef) {
 
-        int xRef = (int) ((((point.getX() - drawRoom.x) + 0.5) / widthUnits));
-        int yRef = (int) ((((point.getY() - drawRoom.y) + 0.5) / heightUnits));
+        int xRef = (int) (((point.getX() - drawRoom.x) / widthUnits) + 0.5);
+        int yRef = (int) (((point.getY() - drawRoom.y) / heightUnits) + 0.5);
 
         //adjust for rooms not being able to be zero based.
         if (isRoom) {
@@ -250,11 +251,10 @@ public class RoomInfo {
         double globalX = globalOffsetX + xRef;
         double globalY = globalOffsetY + yRef;
         double drawX = (xRef * widthUnits) + drawRoom.x;
-        double drawY = (yRef * widthUnits) + drawRoom.y;
+        double drawY = (yRef * heightUnits) + drawRoom.y;
 
         return new Location(name, xRef, yRef, wRef, globalX, globalY, drawX, drawY);        
     }
-    
 
     /**
      * Checks whether the supplied array contains the expected headings for
@@ -277,11 +277,9 @@ public class RoomInfo {
      */
     public static Location searchGlobalLocation(Point point, HashMap<String, RoomInfo> roomInfo) {
         Location location = new Location();
-
-        Set<String> keys = roomInfo.keySet();
-
-        for (String key : keys) {
-            RoomInfo room = roomInfo.get(key);            
+        
+        List<RoomInfo> rooms = new LinkedList<>(roomInfo.values());
+        for (RoomInfo room: rooms) {                 
             if (room.containsGlobal(point)) {
                 location = room.createGlobalLocation(point);
                 break;
@@ -301,10 +299,8 @@ public class RoomInfo {
     public static Location searchPixelLocation(Point point, HashMap<String, RoomInfo> roomInfo) {
         Location location = new Location();
 
-        Set<String> keys = roomInfo.keySet();
-
-        for (String key : keys) {
-            RoomInfo room = roomInfo.get(key);            
+        List<RoomInfo> rooms = new LinkedList<>(roomInfo.values());
+        for (RoomInfo room: rooms) {                      
             if (room.containsPixel(point)) {
                 location = room.createPixelLocation(point);
                 break;
@@ -325,12 +321,14 @@ public class RoomInfo {
      * @return 
      */
     public static Location createLocation(String room, int xRef, int yRef, int wRef, HashMap<String, RoomInfo> roomInfo) {
-        Location location = new Location();   
+        Location location;   
 
         if(roomInfo.containsKey(room)){
             
             RoomInfo roomInf = roomInfo.get(room);
-            roomInf.createLocation(xRef, yRef, wRef);            
+            location = roomInf.createLocation(xRef, yRef, wRef);            
+        }else{
+            location = new Location(); 
         }
 
         return location;

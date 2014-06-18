@@ -18,6 +18,9 @@ public class Location implements Serializable {
 
     protected static final String[] LOC_HEADINGS = {"Room", "X Ref", "Y Ref", "W Ref"};
 
+    private static final String unknownName = "Unknown";
+    private static final int unknownValue = -1;
+    
     protected String room;
     protected int xRef;
     protected int yRef;
@@ -31,14 +34,14 @@ public class Location implements Serializable {
      * Constructor - default values -1 and Unknown.
      */
     public Location() {
-        this.room = "Unknown";
-        this.xRef = -1;
-        this.yRef = -1;
-        this.wRef = -1;
-        this.globalX = -1;
-        this.globalY = -1;
-        this.drawX = -1;
-        this.drawY = -1;
+        this.room = unknownName;
+        this.xRef = unknownValue;
+        this.yRef = unknownValue;
+        this.wRef = unknownValue;
+        this.globalX = unknownValue;
+        this.globalY = unknownValue;
+        this.drawX = unknownValue;
+        this.drawY = unknownValue;
     }
 
     /**
@@ -188,7 +191,33 @@ public class Location implements Serializable {
     public String getRoomRef() {
         return room + "-x" + xRef + "-y" + yRef + "-w" + wRef;
     }
+    
+    /**
+     * Tests whether the room information corresponds to an unknown room.
+     * Global and draw values could be known.
+     * @return True if the room is unknown.
+     */
+    public boolean isUnknown(){
+        return room.equals(unknownName) &&  xRef==unknownValue && yRef==unknownValue && wRef ==unknownValue;        
+    }
+    
+    /**
+     * Tests whether the room information corresponds to an unknown room but has meaningful global information.     
+     * @return True if the room is unknown.
+     */
+    public boolean isUnknownGlobal(){
+        return room.equals(unknownName) &&  xRef==unknownValue && yRef==unknownValue && wRef ==unknownValue && globalX !=unknownValue && globalY !=unknownValue;
+    }
 
+    /**
+     * Tests whether the room information corresponds to an unknown room but has meaningful pixel information. 
+     * Global and draw values could be known.
+     * @return True if the room is unknown.
+     */
+    public boolean isUnknownPixel(){
+        return room.equals(unknownName) &&  xRef==unknownValue && yRef==unknownValue && wRef ==unknownValue && drawX !=unknownValue && drawY !=unknownValue;
+    }
+    
     /**
      * Equals operation
      *
@@ -291,6 +320,34 @@ public class Location implements Serializable {
         return location.getRoom() + "-x" + location.getxRef() + "-y" + location.getyRef() + "-w0";
     }   
 
+    /**
+     * Creates a location with unknown information but preserves the supplied global values.
+     * @param globalX
+     * @param globalY
+     * @return 
+     */
+    public static Location createUnknownGlobalLocation(double globalX, double globalY){
+        Location location = new Location();
+        location.globalX = globalX;
+        location.globalY = globalY;
+        
+        return location;
+    }
+    
+    /**
+     * Creates a location with unknown information but preserves the supplied pixel values.
+     * @param drawX
+     * @param drawY
+     * @return 
+     */
+    public static Location createUnknownPixelLocation(double drawX, double drawY){
+        Location location = new Location();
+        location.drawX = drawX;
+        location.drawY = drawY;
+        
+        return location;
+    }
+    
     /**
      * Formatted heading to show the information relating to a location.
      *

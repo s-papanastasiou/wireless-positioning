@@ -89,6 +89,20 @@ public class APFormat {
      * @return
      */
     public static List<APData> compileList(final List<RSSIData> rssiDataList, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+        HashMap<String, APData> bssidMap = compile(rssiDataList, isBSSIDMerged, isOrientationMerged);        
+        return new ArrayList<>(bssidMap.values());
+    }
+    
+    /**
+     * Convert list of RSSI data into list of APData.
+     *
+     * @param rssiDataList RSSI data to be converted.
+     * @param isBSSIDMerged True, if last hex pair of BSSID is to be ignored.
+     * @param isOrientationMerged True, if W-Ref of location is to be ignored.
+     * @return
+     */
+    /*
+    public static List<APData> compileList(final List<RSSIData> rssiDataList, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
         List<APData> bssidList = new ArrayList();
         logger.info("Compiling average access point data....");
 
@@ -112,8 +126,7 @@ public class APFormat {
 
             boolean isMatch = false;
 
-            for (int counter = 0; counter < bssidList.size(); counter++) {
-                APData entry = bssidList.get(counter);
+            for (APData entry : bssidList) {
                 if (entry.getBSSID().equals(bssid)) {
                     entry.add(rssiData);
                     isMatch = true;
@@ -127,6 +140,8 @@ public class APFormat {
             }
 
         }
+        
+        
         logger.info("Average access point compilation complete");
         if (!isOrientationMerged) {
             logger.info("BSSID/Orientation count: {}", bssidList.size());
@@ -135,7 +150,8 @@ public class APFormat {
         }
         return bssidList;
     }
-
+    */
+    
     /**
      * Load from file RSSI data and convert to map in APData format.
      *

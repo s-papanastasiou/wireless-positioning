@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.HashMap;
 import org.slf4j.Logger;
@@ -79,6 +80,8 @@ public class RSSILoader {
                         logger.error("Expecting: {} Found: {}", RSSIData.toStringHeadings(seperator), line );
                 }
             }
+        } catch (FileNotFoundException ex) {
+            logger.error(ex.getMessage());
         } catch (IOException x) {
             logger.error(x.getMessage());
         }

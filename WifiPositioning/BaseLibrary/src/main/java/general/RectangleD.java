@@ -72,7 +72,7 @@ public class RectangleD {
         
         if(o instanceof RectangleD){
             RectangleD rect = (RectangleD) o;
-            result = this.x == rect.x && this.y == rect.y && this.width == rect.width && this.height == rect.height;            
+            result = this.x.equals(rect.x) && this.y.equals(rect.y) && this.width.equals(rect.width) && this.height.equals(rect.height);            
         }else{
             throw new AssertionError("Only comparison with RectangleD supported.");
         }

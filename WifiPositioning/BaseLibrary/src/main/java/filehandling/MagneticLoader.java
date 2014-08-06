@@ -8,6 +8,7 @@ import datastorage.MagneticData;
 import datastorage.RoomInfo;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
@@ -66,6 +67,8 @@ public class MagneticLoader {
                     logger.error("Headings are not as expected.");
                 }
             }
+        } catch (FileNotFoundException ex) {
+            logger.error(ex.getMessage());
         } catch (IOException x) {
             logger.error(x.getMessage());
         }

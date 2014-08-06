@@ -17,7 +17,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +44,7 @@ public class MatchMap {
      * @param rssiDataList List of locations to draw.     
      */
     public static void print(File workingPath, File floorPlanFile, List<RSSIData> rssiDataList) {
-        print(workingPath, "MatchAnalysis", floorPlanFile, rssiDataList, 0.0f, false, false, ",");
+        print(workingPath, "MatchAnalysis", floorPlanFile, rssiDataList, 0.5f, false, false, ",");
     }
 
     /**
@@ -129,9 +131,9 @@ public class MatchMap {
 
         } else {
 
-            for (int counter = 0; counter < matches.size(); counter++) {
-                outputText += String.format("BSSID: %s%sRSSI: %s%sMatches: %d", bssid, fieldSeparator, matches.get(counter).get(0).mean(), fieldSeparator, matches.get(counter).size());
-                List<APLocation> locations = matches.get(counter);
+            for (List<APLocation> matche : matches) {
+                outputText += String.format("BSSID: %s%sRSSI: %s%sMatches: %d", bssid, fieldSeparator, matche.get(0).mean(), fieldSeparator, matche.size());
+                List<APLocation> locations = matche;
                 for (APLocation location : locations) {
                     outputText = outputText.concat(String.format("%sLocation:%s Mean:%s", fieldSeparator, location.toStringLocation(), location.mean()));
                 }
@@ -142,7 +144,90 @@ public class MatchMap {
         writer.write(outputText);
         logger.info(outputText);
     }
+    
+    /**
+     * Compare mean values for access point locations and find matches within the specified range.
+     * @param accessPoint
+     * @param rangeValue
+     * @return 
+     */
+    private static List<List<APLocation>> compareLocations(final APData accessPoint, final double rangeValue){
+        
+        HashMap<Double, List<APLocation>> buckets = sortLocations(accessPoint);
+        List<List<APLocation>> matches = new ArrayList<>();
+        TreeSet<Double> means = new TreeSet<>(buckets.keySet());
+        
+        for (Double targetMean: means) {
+                        
+            List<APLocation> matchPoints = new ArrayList<>();
+          
+            //Check lower values
+            Double element = targetMean;
+            double lowerValue = targetMean - rangeValue;
+            
+            while(element!=null){
+                
+                if (element >= lowerValue){
+                    List<APLocation> locations = buckets.get(element);
+                    matchPoints.addAll(locations);
+                    element = means.lower(element);
+                }else{
+                    break;
+                }                                                
+            }
+            
+            //Check upper values - move up immeadiately so don't target mean again.
+            element = means.higher(targetMean);
+            double upperValue = targetMean + rangeValue;            
+            while(element!=null){
+                
+                if (element <= upperValue){
+                    List<APLocation> locations = buckets.get(element);
+                    matchPoints.addAll(locations);
+                    element = means.higher(element);
+                }else{
+                    break;
+                }                                                
+            }
+            
+            //Check there is more than one point that matches
+            if (matchPoints.size()>1) 
+            {                
+                matches.add(matchPoints);
+            }                        
+        }
 
+        return matches;
+        
+    }
+
+    /**
+     * Split the access point locations into buckets based on mean values for each location.
+     * 
+     * @param accessPoint
+     * @return 
+     */
+    private static HashMap<Double, List<APLocation>> sortLocations(final APData accessPoint){
+        
+        HashMap<Double, List<APLocation>> buckets = new HashMap<>();
+        
+        for(APLocation location: accessPoint.getLocations()){
+            Double mean = location.getAvgRSSI().getMean();
+            if (buckets.containsKey(mean)){
+                List<APLocation> locations = buckets.get(mean);
+                locations.add(location);
+            }else{
+                List<APLocation> locations = new ArrayList<>();
+                locations.add(location);
+                buckets.put(mean, locations);
+            }            
+        }
+        
+        return buckets;
+    }
+    
+    /*
+    //Old and slow version
     private static List<List<APLocation>> compareLocations(final APData accessPoints, double rangeValue) {
 
         List<List<APLocation>> matches = new ArrayList<>();
@@ -171,7 +256,7 @@ public class MatchMap {
 
         return matches;
     }
-
+    */
     private static BufferedImage drawLocations(final int index, final int total, final List<APLocation> matchLocations, BufferedImage floorPlanImage) {
 
         final int SIZE = 10;
@@ -181,18 +266,14 @@ public class MatchMap {
 
         floorPlan.setColor(getColor(index, total));
 
-        for (int counter = 0; counter < matchLocations.size(); counter++) {
-
-            APLocation location = matchLocations.get(counter);           
-
+        for (APLocation location : matchLocations) {
             Point pos = location.getDrawPoint();
-
+            
             //Draw oval                
             floorPlan.fillOval(pos.getXint() - HALF_SIZE, pos.getYint() - HALF_SIZE, SIZE, SIZE);
-
+            
             //include text label for index              
             floorPlan.drawString(String.valueOf(index), pos.getXint() + HALF_SIZE, pos.getYint());
-
         }
 
         floorPlan.dispose();

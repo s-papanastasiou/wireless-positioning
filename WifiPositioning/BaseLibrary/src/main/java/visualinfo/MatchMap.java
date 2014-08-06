@@ -8,7 +8,10 @@ import accesspointvariant.APData;
 import accesspointvariant.APFormat;
 import accesspointvariant.APLocation;
 import datastorage.RSSIData;
+import datastorage.RoomInfo;
 import general.Point;
+import general.Rectangle;
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -25,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Identifies points with matching or similar values from a list and draws onto an image.
+ * Identifies points with matching or similar values to others for that access point and draws onto an image.
  * 
  * @author Greg Albiston
  */
@@ -34,17 +37,18 @@ public class MatchMap {
     private static final Logger logger = LoggerFactory.getLogger(MatchMap.class);
     
     /**
-     * Identifies points with matching or similar values from a list and draws onto an image, based on "MatchAnalysis-xx" filename, and stores the
+     * Identifies points with matching or similar values to others for that access point and draws onto an image, based on "MatchAnalysis-xx" filename, and stores the
      * new image on the specified file path.
      * 
      * Also, outputs a list of matching locations to text file.
      *
      * @param workingPath Path to store the image.     
      * @param floorPlanFile Floor plan image to draw upon.
-     * @param rssiDataList List of locations to draw.     
+     * @param rssiDataList List of locations to draw.
+     * @param roomInfo Information about the floor plan for drawing. 
      */
-    public static void print(File workingPath, File floorPlanFile, List<RSSIData> rssiDataList) {
-        print(workingPath, "MatchAnalysis", floorPlanFile, rssiDataList, 0.5f, false, false, ",");
+    public static void print(final File workingPath, final File floorPlanFile, final List<RSSIData> rssiDataList, final HashMap<String, RoomInfo> roomInfo) {
+        print(workingPath, "MatchAnalysis", floorPlanFile, rssiDataList, roomInfo, 0.5, false, false, ",");
     }
 
     /**
@@ -57,12 +61,13 @@ public class MatchMap {
      * @param filename Name of file to print, without file extension.
      * @param floorPlanFile Floor plan image to draw upon.
      * @param rssiDataList List of locations to draw.    
+     * @param roomInfo Information about the floor plan for drawing. 
      * @param rangeValue Range of values considered to be matches.
      * @param isBSSIDMerged True, if last hex pair of BSSID is to be ignored.
      * @param isOrientationMerged True, if W-Ref of location is to be ignored.
      * @param fieldSeparator Separator used between each heading in output file.        
      */
-    public static void print(File workingPath, String filename, File floorPlanFile, List<RSSIData> rssiDataList, final double rangeValue, final boolean isBSSIDMerged, final boolean isOrientationMerged, final String fieldSeparator) {
+    public static void print( final File workingPath, final String filename, final File floorPlanFile, final List<RSSIData> rssiDataList, final HashMap<String, RoomInfo> roomInfo, final Double rangeValue, final Boolean isBSSIDMerged, final Boolean isOrientationMerged, final String fieldSeparator) {
 
         //create sub-folder
         File matchPath = new File(workingPath, "matchmaps");
@@ -95,9 +100,9 @@ public class MatchMap {
                         BufferedImage floorPlanImage = ImageIO.read(floorPlanFile);
 
                         for (int counter = 0; counter < matches.size(); counter++) {
-
                             List<APLocation> matchLocations = matches.get(counter);
                             if (!matchLocations.isEmpty()) {
+                                //floorPlanImage = drawAPArea(ap, floorPlanImage, roomInfo);
                                 floorPlanImage = drawLocations(counter, matches.size(), matchLocations, floorPlanImage);
                             }
                         }
@@ -123,18 +128,35 @@ public class MatchMap {
         logger.info("Match analysis complete");
     }
 
+    private static BufferedImage drawAPArea(APData accessPoint, BufferedImage floorPlanImage, HashMap<String, RoomInfo> roomInfo) {
+        
+        Graphics2D floorPlan = floorPlanImage.createGraphics();
+        
+        floorPlan.setColor(new Color(0.3f,0.3f, 0.3f, 0.3f));
+        for (APLocation apLocation : accessPoint.getLocations()) {
+            if (roomInfo.containsKey(apLocation.getRoom())) {                
+                RoomInfo room = roomInfo.get(apLocation.getRoom());
+                Rectangle rect = room.getDrawRect(apLocation);
+                floorPlan.fillRect(rect.x, rect.y, rect.width, rect.height);
+            }
+        }
+
+        floorPlan.dispose();
+        return floorPlanImage;
+    }
+    
     private static void printLocations(String bssid, List<List<APLocation>> matches, BufferedWriter writer, String fieldSeparator) throws IOException {
 
         String outputText = "";
         if (matches.isEmpty()) {
-            outputText = String.format("BSSID: %s%s No Matches%s", bssid, fieldSeparator, System.lineSeparator());
+            outputText = String.format("BSSID: %s%sNo Matches%s", bssid, fieldSeparator, System.lineSeparator());
 
         } else {
 
-            for (List<APLocation> matche : matches) {
-                outputText += String.format("BSSID: %s%sRSSI: %s%sMatches: %d", bssid, fieldSeparator, matche.get(0).mean(), fieldSeparator, matche.size());
-                List<APLocation> locations = matche;
-                for (APLocation location : locations) {
+            for (List<APLocation> match : matches) {
+                outputText += String.format("BSSID: %s%sRSSI: %s%sMatches: %d", bssid, fieldSeparator, match.get(0).mean(), fieldSeparator, match.size());
+                
+                for (APLocation location : match) {
                     outputText = outputText.concat(String.format("%sLocation:%s Mean:%s", fieldSeparator, location.toStringLocation(), location.mean()));
                 }
                 outputText += System.lineSeparator();
@@ -178,7 +200,7 @@ public class MatchMap {
             
             //Check upper values - move up immeadiately so don't target mean again.
             element = means.higher(targetMean);
-            double upperValue = targetMean + rangeValue;            
+            double upperValue = targetMean + rangeValue;
             while(element!=null){
                 
                 if (element <= upperValue){
@@ -263,7 +285,7 @@ public class MatchMap {
         final int HALF_SIZE = SIZE / 2;
 
         Graphics2D floorPlan = floorPlanImage.createGraphics();
-
+        floorPlan.setComposite(AlphaComposite.SrcOver);
         floorPlan.setColor(getColor(index, total));
 
         for (APLocation location : matchLocations) {

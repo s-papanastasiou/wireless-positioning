@@ -19,7 +19,7 @@ import junit.framework.TestCase;
  *
  * @author Gerg
  */
-public class MatchMapTest extends TestCase {
+public class ValueMapTest extends TestCase {
     
     private static final String workingDirectory = "C:\\WirelessPositioningTestFiles";
     private static final File workingPath = new File(workingDirectory);
@@ -37,7 +37,7 @@ public class MatchMapTest extends TestCase {
     private static final List<RSSIData> rssiDataList = RSSILoader.load(rssiDataFile, dataSep, roomInfo);
     
     
-    public MatchMapTest(String testName) {               
+    public ValueMapTest(String testName) {               
         super(testName);
     }
     
@@ -52,26 +52,29 @@ public class MatchMapTest extends TestCase {
     }
 
     /**
-     * Test of print method, of class MatchMap.
+     * Test of print method, of class ValueMap.
      */
     public void testPrint_3args() {
         System.out.println("print");        
-        MatchMap.print(workingPath, floorPlanFile, rssiDataList, roomInfo);
+        ValueMap.print(workingPath, floorPlanFile, rssiDataList, roomInfo);
         assertEquals(true, true);
     }
 
     /**
-     * Test of print method, of class MatchMap.
+     * Test of print method, of class ValueMap.
      */
     public void testPrint_8args() {
         System.out.println("print");
         
-        String filename = "MatchAnalysis8Arg";        
+        String filename = "ValueAnalysis8Arg";        
         double rangeValue = 0.0;
         boolean isBSSIDMerged = false;
         boolean isOrientationMerged = false;
         String fieldSeparator = ",";
-        MatchMap.print(workingPath, filename, floorPlanFile, rssiDataList, roomInfo, rangeValue, isBSSIDMerged, isOrientationMerged, fieldSeparator);        
+        Double lowerBound = -30.0;
+        Double upperBound = -20.0;
+        Double step = 1.0;
+        ValueMap.print(workingPath, filename, floorPlanFile, rssiDataList, roomInfo, rangeValue, lowerBound, upperBound, step, isBSSIDMerged, isOrientationMerged, fieldSeparator);        
         assertEquals(true, true);
     }
     

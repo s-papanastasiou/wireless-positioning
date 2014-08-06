@@ -19,6 +19,7 @@ public class APData {
 
     private final String BSSID;
     private final List<APLocation> locations = new ArrayList<>();
+    private Integer maxRSSIFrequency;
     
     private static final String[] LOCAL_HEADINGS = {"BSSID"};
     public static final String[] HEADINGS = ArrayUtils.addAll(LOCAL_HEADINGS, APLocation.HEADINGS);
@@ -33,6 +34,7 @@ public class APData {
 
         this.BSSID = BSSID;
         this.locations.add(location);
+        this.maxRSSIFrequency = location.frequency();
     }
 
     /**
@@ -42,12 +44,18 @@ public class APData {
     public void add(final RSSIData item) {
         APLocation location = new APLocation(item, item.getRSSI());
 
+        int freq;
         if (locations.contains(location)) {
             int index = locations.indexOf(location);
             locations.get(index).add(item.getRSSI());
+            freq = locations.get(index).frequency();
         } else {
             this.locations.add(location);
+            freq = location.frequency();
         }
+        
+        if(freq>maxRSSIFrequency)
+            maxRSSIFrequency = freq;
     }
 
     /**
@@ -67,6 +75,15 @@ public class APData {
     public String getBSSID() {
         return BSSID;
     }   
+
+    /**
+     * Maximum RSSI frequency of the locations for this BSSID.
+     * 
+     * @return 
+     */
+    public Integer getMaxRSSIFrequency() {
+        return maxRSSIFrequency;
+    }
     
     /**
      * Formatted heading to show the BSSID along with information relating to a location.

@@ -269,7 +269,8 @@ public class RoomInfo {
     }   
 
     /**
-     * Finds the location that corresponds to the pixel point.
+     * Finds the location that corresponds to the global point.
+     * Always returns a location. If a known location cannot be found then global information is preserved but remainder is unknown.
      * 
      * @param point Pixel point to find.
      * @param roomInfo Information about the rooms on the floor.
@@ -277,20 +278,26 @@ public class RoomInfo {
      */
     public static Location searchGlobalLocation(Point point, HashMap<String, RoomInfo> roomInfo) {
         Location location = new Location();
+        boolean isNotMatched = true;
         
         List<RoomInfo> rooms = new LinkedList<>(roomInfo.values());
         for (RoomInfo room: rooms) {                 
             if (room.containsGlobal(point)) {
                 location = room.createGlobalLocation(point);
+                isNotMatched = false;
                 break;
             }
         }
 
+        if(isNotMatched)
+            location = Location.createUnknownGlobalLocation(point.getX(), point.getY());
+        
         return location;
     }
     
     /**
      * Finds the location that corresponds to the pixel point.
+     * Always returns a location. If a known location cannot be found then pixel information is preserved but remainder is unknown.
      * 
      * @param point Pixel point to find.
      * @param roomInfo Information about the rooms on the floor.
@@ -298,20 +305,26 @@ public class RoomInfo {
      */
     public static Location searchPixelLocation(Point point, HashMap<String, RoomInfo> roomInfo) {
         Location location = new Location();
-
+        boolean isNotMatched = true;
+        
         List<RoomInfo> rooms = new LinkedList<>(roomInfo.values());
         for (RoomInfo room: rooms) {                      
             if (room.containsPixel(point)) {
                 location = room.createPixelLocation(point);
+                isNotMatched = false;
                 break;
             }
         }
-
+        
+        if(isNotMatched)
+            location = Location.createUnknownPixelLocation(point.getX(), point.getY());
+        
         return location;
     }
     
     /**
-     * Finds the location that corresponds to the pixel point.
+     * Creates a location that corresponds to references.
+     * Always returns a location. If a known location cannot be found then values are set to unknown.
      *      
      * @param room Label of the room
      * @param xRef x reference

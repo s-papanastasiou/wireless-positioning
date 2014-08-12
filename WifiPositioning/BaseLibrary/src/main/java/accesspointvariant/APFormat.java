@@ -225,27 +225,27 @@ public class APFormat {
     /**
      * Prints the map of APDate to specified file using the supplied field separator.
      * 
-     * @param dataFile  File of RSSI data.
+     * @param outputFile  File to output AP data.
      * @param apDataMap Map of APData to be written to file.
      * @param fieldSeparator File separator to be used in file.
      * @return 
      */
-    public static boolean print(File dataFile, HashMap<String, APData> apDataMap, String fieldSeparator) {
+    public static boolean print(File outputFile, HashMap<String, APData> apDataMap, String fieldSeparator) {
 
         boolean isSuccess = false;
 
         try {
 
-            try (BufferedWriter dataWriter = new BufferedWriter(new FileWriter(dataFile, true))) {
+            try (BufferedWriter outputWriter = new BufferedWriter(new FileWriter(outputFile, true))) {
 
-                dataWriter.append(toStringHeadings(fieldSeparator) + System.getProperty("line.separator"));
+                outputWriter.append(toStringHeadings(fieldSeparator) + System.getProperty("line.separator"));
 
                 Set<String> keys = apDataMap.keySet();
                 for (String key : keys) {
                     APData item = apDataMap.get(key);
                     String bssid = item.getBSSID();
                     for (APLocation location : item.getLocations()) {
-                        dataWriter.append(bssid + fieldSeparator + location.toString(fieldSeparator) + System.getProperty("line.separator"));
+                        outputWriter.append(bssid + fieldSeparator + location.toString(fieldSeparator) + System.getProperty("line.separator"));
                     }
 
                 }

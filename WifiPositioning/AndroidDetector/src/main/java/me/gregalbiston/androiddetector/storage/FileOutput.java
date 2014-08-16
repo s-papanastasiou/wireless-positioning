@@ -11,7 +11,7 @@ import filehandling.RSSIStorer;
 import general.TimeStamp;
 import java.io.File;
 import java.util.ArrayList;
-import me.gregalbiston.androiddetector.DectectorActivity;
+import me.gregalbiston.androiddetector.DetectorActivity;
 
 /**
  * Static to write file to local storage. Stores information for the filename.
@@ -30,7 +30,7 @@ public class FileOutput {
         String detail = "#" + accuracy + "$" + orientation;
 
 
-        return label + formatDate + detail + DectectorActivity.OUTPUT_EXTENSION;
+        return label + formatDate + detail + DetectorActivity.OUTPUT_EXTENSION;
     }
 
     public boolean outputRSSIFile(ArrayList<RSSIData> results, String directory, String label, String fieldSeparator, String mimeType, Context context) {

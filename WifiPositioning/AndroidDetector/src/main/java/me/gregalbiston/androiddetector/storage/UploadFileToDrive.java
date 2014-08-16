@@ -10,7 +10,7 @@ import com.google.api.services.drive.model.FileList;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import me.gregalbiston.androiddetector.DectectorActivity;
+import me.gregalbiston.androiddetector.DetectorActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,13 +22,13 @@ public class UploadFileToDrive extends AsyncTask<Object, UploadResult, Object> {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadFileToDrive.class);
     
-    protected DectectorActivity dectectorActivity;
+    protected DetectorActivity dectectorActivity;
     protected Drive service;
     protected ArrayList<String> filenames;
     protected String directory;
 
 
-    public UploadFileToDrive(DectectorActivity dectectorActivity, Drive service, String directory, ArrayList<String> filenames) {
+    public UploadFileToDrive(DetectorActivity dectectorActivity, Drive service, String directory, ArrayList<String> filenames) {
         super();
         this.dectectorActivity = dectectorActivity;
         this.service = service;
@@ -102,12 +102,12 @@ public class UploadFileToDrive extends AsyncTask<Object, UploadResult, Object> {
         String result = "File not updated: " + filename;
         // File's binary content
         java.io.File localFile = new java.io.File(dir, filename);
-        FileContent fileContent = new FileContent(DectectorActivity.OUTPUT_MIME_TYPE, localFile);
+        FileContent fileContent = new FileContent(DetectorActivity.OUTPUT_MIME_TYPE, localFile);
 
         // File's metadata.
         File file = new File();
         file.setTitle(localFile.getName());
-        file.setMimeType(DectectorActivity.OUTPUT_MIME_TYPE);
+        file.setMimeType(DetectorActivity.OUTPUT_MIME_TYPE);
 
         File insertedFile = service.files().insert(file, fileContent).execute();
         if (insertedFile != null) {
@@ -122,7 +122,7 @@ public class UploadFileToDrive extends AsyncTask<Object, UploadResult, Object> {
 
         // File's new content.
         java.io.File localFile = new java.io.File(dir, filename);
-        FileContent fileContent = new FileContent(DectectorActivity.OUTPUT_MIME_TYPE, localFile);
+        FileContent fileContent = new FileContent(DetectorActivity.OUTPUT_MIME_TYPE, localFile);
 
         // Send the request to the API.
         File updatedFile = service.files().update(file.getId(), file, fileContent).execute();

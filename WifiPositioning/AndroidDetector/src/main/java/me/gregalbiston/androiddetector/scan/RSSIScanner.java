@@ -13,7 +13,7 @@ import datastorage.RSSIData;
 import general.TimeStamp;
 import java.util.ArrayList;
 import java.util.List;
-import me.gregalbiston.androiddetector.DectectorActivity;
+import me.gregalbiston.androiddetector.DetectorActivity;
 import me.gregalbiston.androiddetector.R;
 import me.gregalbiston.androiddetector.storage.FileOutput;
 
@@ -37,7 +37,7 @@ public class RSSIScanner {
 
     private boolean isSampling = true;
 
-    public RSSIScanner(DectectorActivity dectectorActivity, Location scanLocation) {
+    public RSSIScanner(DetectorActivity dectectorActivity, Location scanLocation) {
         this.scanLocation = scanLocation;
 
         rssiListView = (ListView) dectectorActivity.findViewById(R.id.listViewRSSI);
@@ -51,7 +51,7 @@ public class RSSIScanner {
 
     }
 
-    private void setupReceiver(DectectorActivity dectectorActivity) {
+    private void setupReceiver(DetectorActivity dectectorActivity) {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
 
@@ -85,7 +85,7 @@ public class RSSIScanner {
             for (ScanResult scan : scanResults) {
                 int channel = ((scan.frequency - 2412) / 5) + 1;  //calculates accurately for channels 1-13. Channel 14 is not generally available.
                 results.add(new RSSIData(timestamp, scanLocation, scan.BSSID, scan.SSID, scan.level, channel));
-                screenResults.add(TimeStamp.formatShortDateTime(timestamp) + " " + scanLocation.toString() + DectectorActivity.OUTPUT_SEPARATOR + scan.BSSID + DectectorActivity.OUTPUT_SEPARATOR + scan.SSID + DectectorActivity.OUTPUT_SEPARATOR + scan.level + DectectorActivity.OUTPUT_SEPARATOR + channel);
+                screenResults.add(TimeStamp.formatShortDateTime(timestamp) + " " + scanLocation.toString() + DetectorActivity.OUTPUT_SEPARATOR + scan.BSSID + DetectorActivity.OUTPUT_SEPARATOR + scan.SSID + DetectorActivity.OUTPUT_SEPARATOR + scan.level + DetectorActivity.OUTPUT_SEPARATOR + channel);
             }
         }
 
@@ -94,10 +94,10 @@ public class RSSIScanner {
         ArrayAdapter resultsAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, screenResults);
         rssiListView.setAdapter(resultsAdapter);
 
-        fileOutput.outputRSSIFile(results, DectectorActivity.FILE_DIRECTORY, DectectorActivity.OUTPUT_FILENAME_RSSI, DectectorActivity.OUTPUT_SEPARATOR, DectectorActivity.OUTPUT_MIME_TYPE, context);
+        fileOutput.outputRSSIFile(results, DetectorActivity.FILE_DIRECTORY, DetectorActivity.OUTPUT_FILENAME_RSSI, DetectorActivity.OUTPUT_SEPARATOR, DetectorActivity.OUTPUT_MIME_TYPE, context);
     }
 
-    private void displayHoldingMessage(DectectorActivity dectectorActivity) {
+    private void displayHoldingMessage(DetectorActivity dectectorActivity) {
         //On-screen message and clear previous content
         ArrayList<String> message = new ArrayList<>();
         String msg = dectectorActivity.getResources().getString(R.string.labelRSSIStart);

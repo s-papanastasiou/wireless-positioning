@@ -13,7 +13,7 @@ import com.google.api.services.drive.model.FileList;
 
 import java.io.*;
 import java.util.List;
-import me.gregalbiston.androiddetector.DectectorActivity;
+import me.gregalbiston.androiddetector.DetectorActivity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,13 +25,13 @@ public class UpdateRoomInfo extends AsyncTask<Object, Void, String> {
 
     private static final Logger logger = LoggerFactory.getLogger(UpdateRoomInfo.class);
 
-    protected DectectorActivity dectectorActivity;
+    protected DetectorActivity dectectorActivity;
     protected Drive service;
     protected String directory;
     protected String filename;
     protected String mimeType;
 
-    public UpdateRoomInfo(DectectorActivity dectectorActivity, Drive service, String directory, String filename, String mimeType) {
+    public UpdateRoomInfo(DetectorActivity dectectorActivity, Drive service, String directory, String filename, String mimeType) {
         super();
         this.dectectorActivity = dectectorActivity;
         this.service = service;
@@ -67,7 +67,7 @@ public class UpdateRoomInfo extends AsyncTask<Object, Void, String> {
                     do {
                         line = reader.readLine();
                         if (line != null) {
-                            line += DectectorActivity.OUTPUT_LINE_SEPARATOR;
+                            line += DetectorActivity.OUTPUT_LINE_SEPARATOR;
                             writer.write(line);
                         }
 

@@ -12,7 +12,7 @@ import datastorage.MagneticData;
 import general.TimeStamp;
 import java.util.ArrayList;
 import java.util.List;
-import me.gregalbiston.androiddetector.DectectorActivity;
+import me.gregalbiston.androiddetector.DetectorActivity;
 import me.gregalbiston.androiddetector.R;
 import me.gregalbiston.androiddetector.storage.FileOutput;
 
@@ -34,7 +34,7 @@ public class MagneticScanner implements SensorEventListener {
     private boolean isSampling = true;
 
 
-    public MagneticScanner(DectectorActivity dectectorActivity, Location scanLocation) {
+    public MagneticScanner(DetectorActivity dectectorActivity, Location scanLocation) {
 
         this.scanLocation = scanLocation;
 
@@ -60,7 +60,7 @@ public class MagneticScanner implements SensorEventListener {
             SensorEvent event = result.getEvent();
             results.add(new MagneticData(result.getTimestamp(), scanLocation, event.values[0], event.values[1], event.values[2], event.accuracy));
             long timestamp = result.getTimestamp();
-            screenResults.add(TimeStamp.formatShortDateTime(timestamp) + " " + scanLocation.toString() + DectectorActivity.OUTPUT_SEPARATOR + event.values[0] + DectectorActivity.OUTPUT_SEPARATOR + event.values[1] + DectectorActivity.OUTPUT_SEPARATOR + event.values[2] + DectectorActivity.OUTPUT_SEPARATOR + event.accuracy);
+            screenResults.add(TimeStamp.formatShortDateTime(timestamp) + " " + scanLocation.toString() + DetectorActivity.OUTPUT_SEPARATOR + event.values[0] + DetectorActivity.OUTPUT_SEPARATOR + event.values[1] + DetectorActivity.OUTPUT_SEPARATOR + event.values[2] + DetectorActivity.OUTPUT_SEPARATOR + event.accuracy);
         }
 
         //Display the results
@@ -68,7 +68,7 @@ public class MagneticScanner implements SensorEventListener {
         ArrayAdapter magneticAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, screenResults);
         magneticListView.setAdapter(magneticAdapter);
 
-        fileOutput.outputMagneticFile(results, DectectorActivity.FILE_DIRECTORY, DectectorActivity.OUTPUT_FILENAME_MAGNETIC, DectectorActivity.OUTPUT_SEPARATOR, DectectorActivity.OUTPUT_MIME_TYPE, context);
+        fileOutput.outputMagneticFile(results, DetectorActivity.FILE_DIRECTORY, DetectorActivity.OUTPUT_FILENAME_MAGNETIC, DetectorActivity.OUTPUT_SEPARATOR, DetectorActivity.OUTPUT_MIME_TYPE, context);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class MagneticScanner implements SensorEventListener {
         isSampling = true;
     }
 
-    private void displayHoldingMessage(DectectorActivity dectectorActivity) {
+    private void displayHoldingMessage(DetectorActivity dectectorActivity) {
         ArrayList<String> message = new ArrayList<>();
         String msg = dectectorActivity.getResources().getString(R.string.labelMagneticStart);
         message.add(msg);

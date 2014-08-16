@@ -12,11 +12,13 @@ import android.os.Environment;
 import android.view.View;
 import android.widget.*;
 import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import me.gregalbiston.androiddetector.scan.ScanSettings;
@@ -26,7 +28,7 @@ import me.gregalbiston.androiddetector.storage.UploadFileToDrive;
 import me.gregalbiston.androiddetector.survey.SurveySettings;
 import me.gregalbiston.androiddetector.survey.UpdateRoomInfo;
 
-public class DectectorActivity extends Activity {
+public class DetectorActivity extends Activity {
     /**
      * Called when the activity is first created.
      * @author Greg Albiston
@@ -127,7 +129,7 @@ public class DectectorActivity extends Activity {
                 if (credential != null) {
                     uploadFileToDrive();
                 } else {
-                    credential = GoogleAccountCredential.usingOAuth2(this, DriveScopes.DRIVE);                    
+                    credential = GoogleAccountCredential.usingOAuth2(this, Arrays.asList(DriveScopes.DRIVE));                    
                     startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_UPLOAD);
                 }
 
@@ -188,10 +190,10 @@ public class DectectorActivity extends Activity {
 
             ArrayList<String> filenames = new ArrayList<>();
             if (isRSSISelected)
-                filenames.add(fileOutput.getFilename(DectectorActivity.OUTPUT_FILENAME_RSSI));
+                filenames.add(fileOutput.getFilename(DetectorActivity.OUTPUT_FILENAME_RSSI));
 
             if (isMagneticSelected)
-                filenames.add(fileOutput.getFilename(DectectorActivity.OUTPUT_FILENAME_MAGNETIC));
+                filenames.add(fileOutput.getFilename(DetectorActivity.OUTPUT_FILENAME_MAGNETIC));
 
             //Commence upload
             showToast("Uploading");
@@ -212,13 +214,13 @@ public class DectectorActivity extends Activity {
     }
 
     private Drive getDriveService(GoogleAccountCredential credential) {
-        return new Drive.Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), credential).build();
+        return new Drive.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory(), credential).build();
     }
 
     public void changeAccount(View view) {
 
         if (isConnected) {
-            credential = GoogleAccountCredential.usingOAuth2(this, DriveScopes.DRIVE);
+            credential = GoogleAccountCredential.usingOAuth2(this, Arrays.asList(DriveScopes.DRIVE));
             startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_SELECT);
         }
     }

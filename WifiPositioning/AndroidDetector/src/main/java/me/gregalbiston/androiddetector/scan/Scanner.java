@@ -8,7 +8,7 @@ import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import datastorage.Location;
-import me.gregalbiston.androiddetector.DectectorActivity;
+import me.gregalbiston.androiddetector.DetectorActivity;
 import me.gregalbiston.androiddetector.R;
 
 public class Scanner extends CountDownTimer {
@@ -21,11 +21,11 @@ public class Scanner extends CountDownTimer {
     //private ScanDetails scanDetails;
     private Location scanLocation;
 
-    private final DectectorActivity dectectorActivity;
+    private final DetectorActivity dectectorActivity;
     private final ScanSettings scanSettings;
 
 
-    public Scanner(int duration, int frequency, int accuracy, DectectorActivity dectectorActivity, ScanSettings scanSettings) {
+    public Scanner(int duration, int frequency, int accuracy, DetectorActivity dectectorActivity, ScanSettings scanSettings) {
         super((duration * 1000) + 500, 1000 / frequency);       //add an extra half second to the duration to allow results to come back
 
         this.scanSettings = scanSettings;
@@ -74,14 +74,14 @@ public class Scanner extends CountDownTimer {
 
     }
 
-    private void setupProgressBar(DectectorActivity dectectorActivity, int limit) {
+    private void setupProgressBar(DetectorActivity dectectorActivity, int limit) {
         progressBar = (ProgressBar) dectectorActivity.findViewById(R.id.progressBarScan);
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setProgress(0);
         progressBar.setMax(limit);
     }
 
-    private void setupScanDetails(DectectorActivity dectectorActivity, int accuracy) {
+    private void setupScanDetails(DetectorActivity dectectorActivity, int accuracy) {
     
         Spinner room = (Spinner) dectectorActivity.findViewById(R.id.spinnerRooms);
         NumberPicker xValue = (NumberPicker) dectectorActivity.findViewById(R.id.numberPickerXXX);

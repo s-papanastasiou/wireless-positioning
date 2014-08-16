@@ -18,7 +18,7 @@ public class SurveySettings {
     protected List<String> orientation = new ArrayList<>(Arrays.asList("1", "4", "8"));
     protected List<RoomInfo> roomInfo = new ArrayList<>();
 
-    public SurveySettings(String directory, String dataFilename, String fieldSeparator) {
+    public SurveySettings(String directory, String roomInfoFilename, String fieldSeparator) {
 
         String state = Environment.getExternalStorageState();
 
@@ -26,7 +26,7 @@ public class SurveySettings {
             File inputFile;
             File dir = Environment.getExternalStoragePublicDirectory(directory);
 
-            inputFile = new File(dir, dataFilename);
+            inputFile = new File(dir, roomInfoFilename);
             if (inputFile.exists())
                 roomInfo = RoomInfoLoader.loadList(inputFile, fieldSeparator);
             else

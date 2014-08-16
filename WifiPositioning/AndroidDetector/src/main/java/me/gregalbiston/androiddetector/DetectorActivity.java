@@ -29,8 +29,10 @@ import me.gregalbiston.androiddetector.survey.SurveySettings;
 import me.gregalbiston.androiddetector.survey.UpdateRoomInfo;
 
 public class DetectorActivity extends Activity {
+
     /**
      * Called when the activity is first created.
+     *
      * @author Greg Albiston
      */
 
@@ -76,10 +78,11 @@ public class DetectorActivity extends Activity {
         wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
 
         //check for internet connection
-        if (ENABLE_GOOGLE_DRIVE)
+        if (ENABLE_GOOGLE_DRIVE) {
             isConnected = checkConnectivity();
-        else
+        } else {
             isConnected = false;
+        }
     }
 
     public void startScan(View view) {
@@ -98,14 +101,11 @@ public class DetectorActivity extends Activity {
             NumberPicker frequencyPicker = (NumberPicker) findViewById(R.id.numberPickerFrequency);
             int frequency = frequencyPicker.getValue();
 
-            Spinner accuracySpinner = (Spinner) findViewById(R.id.spinnerAccuracy);
-            int accuracy = Integer.parseInt((String)accuracySpinner.getSelectedItem());
-
             //Disable buttons
             disableInteractions();
 
             //Setup and run the RSSI and Geo-Magnetic Scanner
-            Scanner scanner = new Scanner(duration, frequency, accuracy, this, new ScanSettings(fileOutput, isRSSISelected, isMagneticSelected));
+            Scanner scanner = new Scanner(duration, frequency, this, new ScanSettings(fileOutput, isRSSISelected, isMagneticSelected));
             scanner.start();
             showToast("Scan started");
             isScannedOnce = true;
@@ -129,7 +129,7 @@ public class DetectorActivity extends Activity {
                 if (credential != null) {
                     uploadFileToDrive();
                 } else {
-                    credential = GoogleAccountCredential.usingOAuth2(this, Arrays.asList(DriveScopes.DRIVE));                    
+                    credential = GoogleAccountCredential.usingOAuth2(this, Arrays.asList(DriveScopes.DRIVE));
                     startActivityForResult(credential.newChooseAccountIntent(), REQUEST_ACCOUNT_UPLOAD);
                 }
 
@@ -189,11 +189,13 @@ public class DetectorActivity extends Activity {
             disableInteractions();
 
             ArrayList<String> filenames = new ArrayList<>();
-            if (isRSSISelected)
+            if (isRSSISelected) {
                 filenames.add(fileOutput.getFilename(DetectorActivity.OUTPUT_FILENAME_RSSI));
+            }
 
-            if (isMagneticSelected)
+            if (isMagneticSelected) {
                 filenames.add(fileOutput.getFilename(DetectorActivity.OUTPUT_FILENAME_MAGNETIC));
+            }
 
             //Commence upload
             showToast("Uploading");
@@ -225,7 +227,7 @@ public class DetectorActivity extends Activity {
         }
     }
 
-    public void setupControls() {
+ public void setupControls() {
 
         NumberPicker duration = (NumberPicker) findViewById(R.id.numberPickerDuration);
         duration.setMinValue(1);
@@ -242,107 +244,121 @@ public class DetectorActivity extends Activity {
         List<String> roomNames = surveySettings.getRoomNames();
 
         //Setup the accuracy spinner
-        Spinner accuracy = (Spinner) findViewById(R.id.spinnerAccuracy);
+        final Spinner accuracy = (Spinner) findViewById(R.id.spinnerAccuracy);
         ArrayAdapter accuracyAdapter;
         accuracyAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, accuracyValues);
         accuracyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accuracy.setAdapter(accuracyAdapter);
 
-        //Accuracy spinner event handling
-        accuracy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
+        //Accuracy spinner event handling - work around for Android bug firing itemSelectionListener on layout.
+        //See: http://stackoverflow.com/questions/2562248/android-how-to-keep-onitemselected-from-firing-off-on-a-newly-instantiated-spin        
+        accuracy.post(new Runnable() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //upload current data if a file has been scanned
-                startUpload(view);
+            public void run() {
+                accuracy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-                //Retrieve the orientation and set for future filenames
-                String accuracyValue = (String) parent.getItemAtPosition(position);
-                fileOutput.setAccuracy(accuracyValue);
-                isScannedOnce = false;
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        //upload current data if a file has been scanned
+                        startUpload(view);
 
-                Spinner room = (Spinner) findViewById(R.id.spinnerRooms);
-                int roomIndex = room.getSelectedItemPosition();
+                        //Retrieve the orientation and set for future filenames
+                        String accuracyValue = (String) parent.getItemAtPosition(position);
+                        fileOutput.setAccuracy(accuracyValue);
+                        isScannedOnce = false;
 
-                Spinner orient = (Spinner) findViewById(R.id.spinnerOrientation);
-                int orientationIndex = orient.getSelectedItemPosition();
+                        Spinner room = (Spinner) findViewById(R.id.spinnerRooms);
+                        int roomIndex = room.getSelectedItemPosition();
 
-                setGrid(roomIndex, position, orientationIndex);
-            }
+                        Spinner orient = (Spinner) findViewById(R.id.spinnerOrientation);
+                        int orientationIndex = orient.getSelectedItemPosition();
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                        setGrid(roomIndex, position, orientationIndex);
+                    }
 
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
             }
         });
 
-
         //Setup the orientation spinner
-        Spinner orientation = (Spinner) findViewById(R.id.spinnerOrientation);
+        final Spinner orientation = (Spinner) findViewById(R.id.spinnerOrientation);
         ArrayAdapter orientationAdapter;
         orientationAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, orientationValues);
         orientationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         orientation.setAdapter(orientationAdapter);
 
-        //Orientation spinner event handling
-        orientation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
+        //Orientation spinner event handling - work around for Android bug firing itemSelectionListener on layout.
+        orientation.post(new Runnable() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //upload current data
-                startUpload(view);
+            public void run() {
+                orientation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-                //Retrieve the orientation and set for future filenames
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        //upload current data
+                        startUpload(view);
 
-                String orientationValue = (String) parent.getItemAtPosition(position);
-                fileOutput.setOrientation(orientationValue);
-                isScannedOnce = false;
+                        //Retrieve the orientation and set for future filenames
 
-                Spinner room = (Spinner) findViewById(R.id.spinnerRooms);
-                int roomIndex = room.getSelectedItemPosition();
+                        String orientationValue = (String) parent.getItemAtPosition(position);
+                        fileOutput.setOrientation(orientationValue);
+                        isScannedOnce = false;
 
-                Spinner acc = (Spinner) findViewById(R.id.spinnerAccuracy);
-                int accuracyIndex = acc.getSelectedItemPosition();
+                        Spinner room = (Spinner) findViewById(R.id.spinnerRooms);
+                        int roomIndex = room.getSelectedItemPosition();
 
-                setGrid(roomIndex, accuracyIndex, position);
-            }
+                        Spinner acc = (Spinner) findViewById(R.id.spinnerAccuracy);
+                        int accuracyIndex = acc.getSelectedItemPosition();
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                        setGrid(roomIndex, accuracyIndex, position);
+                    }
 
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
             }
         });
 
-
         //Setup the room spinner
-        Spinner rooms = (Spinner) findViewById(R.id.spinnerRooms);
+        final Spinner rooms = (Spinner) findViewById(R.id.spinnerRooms);
         ArrayAdapter roomsAdapter;
         roomsAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, roomNames);
         roomsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         rooms.setAdapter(roomsAdapter);
-        //Room spinner event handling
-        rooms.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
+        //Room spinner event handling - work around for Android bug firing itemSelectionListener on layout.
+        rooms.post(new Runnable() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void run() {
+                rooms.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
-                Spinner acc = (Spinner) findViewById(R.id.spinnerAccuracy);
-                int accuracyIndex = acc.getSelectedItemPosition();
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                Spinner orient = (Spinner) findViewById(R.id.spinnerOrientation);
-                int orientationIndex = orient.getSelectedItemPosition();
+                        Spinner acc = (Spinner) findViewById(R.id.spinnerAccuracy);
+                        int accuracyIndex = acc.getSelectedItemPosition();
 
-                setGrid(position, accuracyIndex, orientationIndex);
-            }
+                        Spinner orient = (Spinner) findViewById(R.id.spinnerOrientation);
+                        int orientationIndex = orient.getSelectedItemPosition();
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                        setGrid(position, accuracyIndex, orientationIndex);
+                    }
 
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
             }
         });
 
         //Default the grid values
-        setGrid(0, 0, 0);
+        setGrid(0, 1, 1);
     }
 
     private void setGrid(int roomIndex, int accuracyIndex, int orientationIndex) {
@@ -350,27 +366,43 @@ public class DetectorActivity extends Activity {
         int[] newLimits = surveySettings.selectRoom(roomIndex, accuracyIndex, orientationIndex);
         assert newLimits[3] == 1 | newLimits[3] == 0 : "MyActivity.setGrid newLimits[3] is not 0 or 1";
 
+        //X Reference
         NumberPicker xPicker = (NumberPicker) findViewById(R.id.numberPickerXXX);
-        xPicker.setMinValue(newLimits[3]);
-        xPicker.setMaxValue(newLimits[0]);        
-        xPicker.setDisplayedValues(getDisplayedValues(newLimits[3], newLimits[0], accuracyIndex));
+        String[] displayedValues = getDisplayedValues(newLimits[3], newLimits[0], accuracyIndex);
+        xPicker.setValue(0);
+        xPicker.setMinValue(0);
+        xPicker.setMaxValue(0);
+        xPicker.setDisplayedValues(displayedValues);
+        xPicker.setMaxValue(displayedValues.length-1);
+        xPicker.setWrapSelectorWheel(false);
 
-        NumberPicker yPicker = (NumberPicker) findViewById(R.id.numberPickerYYY);        
-        yPicker.setMinValue(newLimits[3]);
-        yPicker.setMaxValue(newLimits[1]);
-        yPicker.setDisplayedValues(getDisplayedValues(newLimits[3], newLimits[1], accuracyIndex));
+        //Y Reference
+        NumberPicker yPicker = (NumberPicker) findViewById(R.id.numberPickerYYY);
+        displayedValues = getDisplayedValues(newLimits[3], newLimits[1], accuracyIndex);
+        yPicker.setValue(0);
+        yPicker.setMinValue(0);
+        yPicker.setMaxValue(0);
+        yPicker.setDisplayedValues(displayedValues);
+        yPicker.setMaxValue(displayedValues.length-1);
+        yPicker.setWrapSelectorWheel(false);
 
+        //W Reference
         NumberPicker wPicker = (NumberPicker) findViewById(R.id.numberPickerWWW);
-        wPicker.setMinValue(1);
-        wPicker.setMaxValue(newLimits[2]);
-        wPicker.setDisplayedValues(getDisplayedValues(1, newLimits[2], accuracyIndex));
+        displayedValues = getDisplayedValues(1, newLimits[2], 1);
+        wPicker.setValue(0);
+        wPicker.setMinValue(0);
+        wPicker.setMaxValue(0);
+        wPicker.setDisplayedValues(displayedValues);
+        wPicker.setMaxValue(displayedValues.length-1);
+        wPicker.setWrapSelectorWheel(false);
     }
-    
-    private String[] getDisplayedValues(int min, int max, int multiple){
-        List<String> displayedValues = new ArrayList<>(max-min+1);
-        for(int i = min; i<max+1; i++)
-            displayedValues.add(String.valueOf(i*multiple));
-        return (String[])displayedValues.toArray();
+
+    private String[] getDisplayedValues(int min, int max, int multiple) {
+        String[] displayedValues = new String[max - min + 1];
+        for (int i = 0; i < displayedValues.length; i++) {
+            displayedValues[i] = String.valueOf((i + min) * multiple);
+        }
+        return displayedValues;
     }
 
     public void updateSettings(View view) {
@@ -451,7 +483,6 @@ public class DetectorActivity extends Activity {
         disableAccountButtons();
     }
 
-
     public void enableInteractions() {
         //Enable scan button
         Button scanButton = (Button) findViewById(R.id.buttonScan);
@@ -497,8 +528,8 @@ public class DetectorActivity extends Activity {
 
     public boolean checkConnectivity() {
 
-        ConnectivityManager cm =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork.isConnected();

@@ -25,12 +25,12 @@ public class Scanner extends CountDownTimer {
     private final ScanSettings scanSettings;
 
 
-    public Scanner(int duration, int frequency, int accuracy, DetectorActivity dectectorActivity, ScanSettings scanSettings) {
+    public Scanner(int duration, int frequency, DetectorActivity dectectorActivity, ScanSettings scanSettings) {
         super((duration * 1000) + 500, 1000 / frequency);       //add an extra half second to the duration to allow results to come back
 
         this.scanSettings = scanSettings;
 
-        setupScanDetails(dectectorActivity, accuracy);
+        setupScanDetails(dectectorActivity);
         setupProgressBar(dectectorActivity, duration * frequency);
 
         if (scanSettings.isMagneticSelected())
@@ -81,16 +81,22 @@ public class Scanner extends CountDownTimer {
         progressBar.setMax(limit);
     }
 
-    private void setupScanDetails(DetectorActivity dectectorActivity, int accuracy) {
+    private void setupScanDetails(DetectorActivity dectectorActivity) {
     
         Spinner room = (Spinner) dectectorActivity.findViewById(R.id.spinnerRooms);
-        NumberPicker xValue = (NumberPicker) dectectorActivity.findViewById(R.id.numberPickerXXX);
-        NumberPicker yValue = (NumberPicker) dectectorActivity.findViewById(R.id.numberPickerYYY);
-        NumberPicker wValue = (NumberPicker) dectectorActivity.findViewById(R.id.numberPickerWWW);
+        NumberPicker xPicker = (NumberPicker) dectectorActivity.findViewById(R.id.numberPickerXXX);
+        String[] xDisplayedValues = xPicker.getDisplayedValues();
+        int xValue = Integer.parseInt(xDisplayedValues[xPicker.getValue()]);
+        
+        NumberPicker yPicker = (NumberPicker) dectectorActivity.findViewById(R.id.numberPickerYYY);
+        String[] yDisplayedValues = yPicker.getDisplayedValues();
+        int yValue = Integer.parseInt(yDisplayedValues[yPicker.getValue()]);
+        
+        NumberPicker wPicker = (NumberPicker) dectectorActivity.findViewById(R.id.numberPickerWWW);
+        String[] wDisplayedValues = wPicker.getDisplayedValues();
+        int wValue = Integer.parseInt(wDisplayedValues[wPicker.getValue()]);
 
-
-        scanLocation = new Location(room.getSelectedItem().toString(), xValue.getValue()* accuracy, yValue.getValue()* accuracy, wValue.getValue()* accuracy, 0, 0, 0, 0);
+        scanLocation = new Location(room.getSelectedItem().toString(), xValue, yValue, wValue, 0, 0, 0, 0);
     }
-
 
 }

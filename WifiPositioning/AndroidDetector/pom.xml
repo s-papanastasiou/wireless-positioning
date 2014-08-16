@@ -43,13 +43,33 @@
         <dependency>
             <groupId>me.gregalbiston</groupId>
             <artifactId>BaseLibrary</artifactId>
-            <version>1.0</version>
+            <version>1.0</version>            
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+            </exclusions>            
         </dependency> 
     
         <dependency>
             <groupId>me.gregalbiston</groupId>
             <artifactId>KNNLibrary</artifactId>
             <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         
         <!-- Google Drive -->

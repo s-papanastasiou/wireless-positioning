@@ -101,9 +101,9 @@ public class MatchMap {
 
                         for (int counter = 0; counter < matches.size(); counter++) {
                             List<APLocation> matchLocations = matches.get(counter);
-                            if (!matchLocations.isEmpty()) {
+                            if (!matchLocations.isEmpty()) {                                
                                 //floorPlanImage = drawAPArea(ap, floorPlanImage, roomInfo);
-                                floorPlanImage = drawLocations(counter, matches.size(), matchLocations, floorPlanImage);
+                                floorPlanImage = drawLocations(counter, matches.size(), matchLocations, floorPlanImage);                                
                             }
                         }
 

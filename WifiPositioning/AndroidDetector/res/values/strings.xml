@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">RSSI Detector</string>
+    <string name="app_name">Android Detector</string>
     <string name="labelRooms">Room:</string>
     <string name="labelDuration">Duration\n(secs)</string>
     <string name="labelScan">Scan</string>

@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import visualinfo.DisplayGrid;
 import visualinfo.HeatMap;
-import visualinfo.MatchMap;
+import visualinfo.ValueMap;
 
 /**
  *
@@ -142,7 +142,7 @@ public class KNNFramework {
                             double rangeValue = Menus.Value("Enter the range value for matches:", 0.0f);
                             boolean isOrientationMerged = Menus.Choice("Merge the orientations together (W ref)?");
                             boolean isBSSIDMerged = Menus.Choice("Merge BSSIDs where first five hex pairs match?");
-                            MatchMap.print(workingPath, "MatchMap", settings.getFloorPlan(), settings.getRadioMapList(), rangeValue, isBSSIDMerged, isOrientationMerged, fieldSeparator);
+                            ValueMap.print(workingPath, "MatchMap", settings.getFloorPlan(), settings.getRadioMapList(), rangeValue, isBSSIDMerged, isOrientationMerged, fieldSeparator);
                         } else {
                             System.err.println(settings.isPrintReadyError());
                         }

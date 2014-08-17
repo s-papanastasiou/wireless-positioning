@@ -30,6 +30,8 @@ public class SurveySettings {
             if (inputFile.exists())
                 roomInfo = RoomInfoLoader.loadList(inputFile, fieldSeparator);
             else
+                roomInfo = new ArrayList<>();
+            if (roomInfo.isEmpty())
                 roomInfo = RoomInfoLoader.defaultList();
         }
     }

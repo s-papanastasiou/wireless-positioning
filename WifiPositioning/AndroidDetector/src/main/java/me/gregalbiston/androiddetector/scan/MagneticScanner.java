@@ -8,7 +8,7 @@ import android.hardware.SensorManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import datastorage.Location;
-import datastorage.MagneticData;
+import datastorage.GeomagneticData;
 import general.TimeStamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,12 +53,12 @@ public class MagneticScanner implements SensorEventListener {
 
         //Iterate over each recorded event
 
-        ArrayList<MagneticData> results = new ArrayList<>();
+        ArrayLiGeomagneticDataata> results = new ArrayList<>();
         ArrayList<String> screenResults = new ArrayList<>();
 
         for (MagneticResult result : magneticResults) {
             SensorEvent event = result.getEvent();
-            results.add(new MagneticData(result.getTimestamp(), scanLocation, event.values[0], event.values[1], event.values[2], event.accuracy));
+            results.adGeomagneticDataicData(result.getTimestamp(), scanLocation, event.values[0], event.values[1], event.values[2], event.accuracy));
             long timestamp = result.getTimestamp();
             screenResults.add(TimeStamp.formatShortDateTime(timestamp) + " " + scanLocation.toString() + DetectorActivity.OUTPUT_SEPARATOR + event.values[0] + DetectorActivity.OUTPUT_SEPARATOR + event.values[1] + DetectorActivity.OUTPUT_SEPARATOR + event.values[2] + DetectorActivity.OUTPUT_SEPARATOR + event.accuracy);
         }

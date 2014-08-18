@@ -14,7 +14,7 @@ import org.apache.commons.lang3.ArrayUtils;
  *
  * @author Greg Albiston
  */
-public class MagneticData extends Location {
+public class GeomagneticData extends Location {
 
     private final String timestamp;
     private final double xValue;
@@ -38,7 +38,7 @@ public class MagneticData extends Location {
      * @param roomInfo Information about the rooms on the floor.
      * @throws ParseException
      */
-    public MagneticData(final String[] parts, final HashMap<String, RoomInfo> roomInfo) throws ParseException {                            
+    public GeomagneticData(final String[] parts, final HashMap<String, RoomInfo> roomInfo) throws ParseException {                            
         super(RoomInfo.createLocation(parts[1], Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), roomInfo));
         this.timestamp = parts[0];
         this.xValue = Double.parseDouble(parts[5]);
@@ -58,7 +58,7 @@ public class MagneticData extends Location {
      * @param sensorAccuracy Sensor accuracy reported by Android device for the
      * reading.
      */
-    public MagneticData(long timestamp, Location location, double xValue, double yValue, double zValue, int sensorAccuracy) {
+    public GeomagneticData(long timestamp, Location location, double xValue, double yValue, double zValue, int sensorAccuracy) {
         super(location);
         this.timestamp = TimeStamp.formatDateTime(timestamp);
         this.xValue = xValue;

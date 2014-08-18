@@ -4,7 +4,7 @@
  */
 package filehandling;
 
-import datastorage.MagneticData;
+import datastorage.GeomagneticData;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Greg Albiston
  */
-public class MagneticStorer {
+public class GeomagneticStorer {
         
-    private static final Logger logger = LoggerFactory.getLogger(MagneticStorer.class);
+    private static final Logger logger = LoggerFactory.getLogger(GeomagneticStorer.class);
     
     /**
      * Store list of magnetic data to file.
@@ -31,7 +31,7 @@ public class MagneticStorer {
      * @param isNew Whether writing a new file or appending the data to the end.
      * @return 
      */
-    public static boolean store(File dataFile, List<MagneticData> magneticDataList, boolean isNew){
+    public static boolean store(File dataFile, List<GeomagneticData> magneticDataList, boolean isNew){
          return store(dataFile, magneticDataList, ",", isNew);
      }
     
@@ -44,7 +44,7 @@ public class MagneticStorer {
      * @param isNew Whether writing a new file or appending the data to the end.
      * @return 
      */
-    public static boolean store(File dataFile, List<MagneticData> magneticDataList, String fieldSeperator, boolean isNew){
+    public static boolean store(File dataFile, List<GeomagneticData> magneticDataList, String fieldSeperator, boolean isNew){
                
         boolean isSuccess = false;
         
@@ -53,9 +53,9 @@ public class MagneticStorer {
             try (BufferedWriter dataWriter = new BufferedWriter(new FileWriter(dataFile, true))) {
 
                 if(isNew)
-                    dataWriter.append(MagneticData.toStringHeadings(fieldSeperator) + System.getProperty("line.separator"));
+                    dataWriter.append(GeomagneticData.toStringHeadings(fieldSeperator) + System.getProperty("line.separator"));
                 
-                for(MagneticData magneticData:magneticDataList){
+                for(GeomagneticData magneticData:magneticDataList){
                     dataWriter.append(magneticData.toString(fieldSeperator) + System.getProperty("line.separator"));
                 } 
                 isSuccess = true;

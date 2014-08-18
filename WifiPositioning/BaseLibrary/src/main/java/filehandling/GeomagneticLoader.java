@@ -4,7 +4,7 @@
  */
 package filehandling;
 
-import datastorage.MagneticData;
+import datastorage.GeomagneticData;
 import datastorage.RoomInfo;
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,9 +23,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Greg Albiston
  */
-public class MagneticLoader {
+public class GeomagneticLoader {
 
-    private static final Logger logger = LoggerFactory.getLogger(MagneticLoader.class);
+    private static final Logger logger = LoggerFactory.getLogger(GeomagneticLoader.class);
     
     /**
      * Load list of magnetic data from file.
@@ -35,9 +35,9 @@ public class MagneticLoader {
      * @param roomInfo Information about the rooms on the floor.
      * @return 
      */
-    public static List<MagneticData> load(final File dataFile, final String seperator, HashMap<String, RoomInfo> roomInfo) {
+    public static List<GeomagneticData> load(final File dataFile, final String seperator, HashMap<String, RoomInfo> roomInfo) {
 
-        List<MagneticData> rawData = new ArrayList<>();
+       List<GeomagneticData> rawData = new ArrayList<>();
         
         int lineCounter = 1;
         try {            
@@ -46,14 +46,14 @@ public class MagneticLoader {
 
                 String line = dataReader.readLine(); //Read the header
                 String[] parts = line.split(seperator);
-                if (MagneticData.headerCheck(parts)) {
-                    int headerSize = MagneticData.headerSize();
+                if (GeomagneticData.headerCheck(parts)) {
+                    int headerSize = GeomagneticData.headerSize();
                     while ((line = dataReader.readLine()) != null) {
                         lineCounter++;
                         parts = line.split(seperator);
                         if (parts.length == headerSize) {
                             try {                                
-                                rawData.add(new MagneticData(parts, roomInfo));                                
+                                rawData.add(new GeomagneticData(parts, roomInfo));                                
                             } catch (ParseException ex) {
                                 logger.error("Error parsing line: {} {}", lineCounter, ex.getMessage());
                             }
@@ -84,7 +84,7 @@ public class MagneticLoader {
      * @param roomInfo Information about the rooms on the floor.
      * @return 
      */
-    public static List<MagneticData> load(final File dataFile, final HashMap<String, RoomInfo> roomInfo) {
+    private List<GeomagneticData> load(final File dataFile, final HashMap<String, RoomInfo> roomInfo) {
 
         return load(dataFile, ",", roomInfo);
     }   

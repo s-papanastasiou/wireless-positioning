@@ -7,10 +7,10 @@ package knnframework;
 import datastorage.KNNFloorPoint;
 import datastorage.KNNTrialPoint;
 import datastorage.RSSIData;
+import datastorage.RoomInfo;
 import filehandling.FilterSSID;
 import filehandling.KNNRSSI;
 import filehandling.RSSILoader;
-import datastorage.RoomInfo;
 import filehandling.RoomInfoLoader;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import visualinfo.DisplayGrid;
 import visualinfo.HeatMap;
+import visualinfo.MatchMap;
 import visualinfo.ValueMap;
 
 /**
@@ -139,10 +140,14 @@ public class KNNFramework {
                         break;
                     case 11:  //Print variance maps
                         if (settings.isPrintReady()) {
-                            double rangeValue = Menus.Value("Enter the range value for matches:", 0.0f);
+                            Double rangeValue = Menus.Value("Enter the range value for matches:", 0.0); 
+                            Double lowerBound = Menus.Value("Enter the range value for matches:", -90.0);
+                            Double upperBound = Menus.Value("Enter the range value for matches:", -90.0);
+                            Double step = Menus.Value("Enter the range value for matches:", 0.00001);
                             boolean isOrientationMerged = Menus.Choice("Merge the orientations together (W ref)?");
                             boolean isBSSIDMerged = Menus.Choice("Merge BSSIDs where first five hex pairs match?");
-                            ValueMap.print(workingPath, "MatchMap", settings.getFloorPlan(), settings.getRadioMapList(), rangeValue, isBSSIDMerged, isOrientationMerged, fieldSeparator);
+                            MatchMap.print(workingPath, "MatchMap", settings.getFloorPlan(), settings.getRadioMapList(), settings.getRoomInfo(), rangeValue, isBSSIDMerged, isOrientationMerged, fieldSeparator);
+                            ValueMap.print(workingPath, "ValueMap", settings.getFloorPlan(), settings.getRadioMapList(), settings.getRoomInfo(), rangeValue, lowerBound, upperBound, step, isBSSIDMerged, isOrientationMerged, fieldSeparator);
                         } else {
                             System.err.println(settings.isPrintReadyError());
                         }

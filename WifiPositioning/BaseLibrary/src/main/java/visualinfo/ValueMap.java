@@ -54,8 +54,8 @@ public class ValueMap {
      */
     public static void print(final File workingPath, final File floorPlanFile, final List<RSSIData> rssiDataList, final HashMap<String, RoomInfo> roomInfo) {
         print(workingPath, "ValueAnalysis", floorPlanFile, rssiDataList, roomInfo, 0.5, -100.0, -1.0, 1.0, false, false, ",");
-    }
-
+    }    
+    
     /**
      * Identifies points with matching or similar values from a list and draws
      * onto an image and stores the new image on the specified file path.

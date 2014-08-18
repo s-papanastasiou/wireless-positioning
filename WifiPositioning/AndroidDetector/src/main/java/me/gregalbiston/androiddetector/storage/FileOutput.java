@@ -4,9 +4,9 @@ import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
-import datastorage.MagneticData;
+import datastorage.GeomagneticData;
 import datastorage.RSSIData;
-import filehandling.MagneticStorer;
+import filehandling.GeomagneticStorer;
 import filehandling.RSSIStorer;
 import general.TimeStamp;
 import java.io.File;
@@ -46,12 +46,12 @@ public class FileOutput {
         return isSuccess;
     }
 
-    public boolean outputMagneticFile(ArrayList<MagneticData> results, String directory, String label, String fieldSeparator, String mimeType, Context context) {
+    public boolean outputMagneticFile(ArrayLiGeomagneticDataata> results, String directory, String label, String fieldSeparator, String mimeType, Context context) {
 
         //Create and store data as a file
         String filename = getFilename(label);
         File file = openFile(directory, filename);
-        boolean isSuccess = MagneticStorer.store(file, results, fieldSeparator, !file.exists());
+        boolean isSuccessGeomagneticStorerrer.store(file, results, fieldSeparator, !file.exists());
 
         if (isSuccess)
             scanFile(context, file, mimeType);

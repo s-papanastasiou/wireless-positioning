@@ -8,7 +8,6 @@ package visualinfo;
 
 import general.Point;
 import java.awt.Color;
-import java.io.File;
 import java.util.List;
 import junit.framework.TestCase;
 
@@ -41,7 +40,9 @@ public class DisplayRouteTest extends TestCase {
         String filename = "";        
         List<Point> trialPoints = null;
         List<Point> finalPoints = null;
-        DisplayRoute.print(VisualInfoTestDefaults.workingPath, filename, VisualInfoTestDefaults.floorPlanFile, trialPoints, finalPoints);        
+        DisplayRoute.print(VisualInfoTestDefaults.workingPath, filename, VisualInfoTestDefaults.floorPlanFile, trialPoints, finalPoints);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
     }
 
     /**

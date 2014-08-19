@@ -78,7 +78,7 @@ public class ValueMap {
     public static void print(final File workingPath, final String filename, final File floorPlanFile, final List<RSSIData> rssiDataList, final HashMap<String, RoomInfo> roomInfo, final Double rangeValue, final Double lowerBound, final Double upperBound, final Double step, final Boolean isBSSIDMerged, final Boolean isOrientationMerged, final String fieldSeparator) {
 
         //create sub-folder
-        File matchPath = new File(workingPath, "valuemaps");
+        File matchPath = new File(workingPath, "ValueMaps");
         matchPath.mkdir();
 
         logger.info("Starting value analysis.");

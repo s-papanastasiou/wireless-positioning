@@ -27,50 +27,108 @@ public class DisplayPosition {
     private static final int SIZE = 10;
     private static final int HALF_SIZE = SIZE / 2;
 
-    public static final boolean DRAW_POLYGON = false;  //whether to draw polygon around all the estimation points
+    
+    /**
+     * Draws the point onto the specified image and stores in
+     * the specified file.
+     *
+     * @param workingPath Path to store the image.
+     * @param filename Name of file to print, without file extension.   
+     * @param floorPlanFile Floor plan to draw upon.
+     * @param finalPosition Final position to be drawn.
+     */
+    public static void print(final File workingPath, final String filename, final File floorPlanFile, final Point finalPosition) {
 
-    //Render just the final position
+        try {
+            BufferedImage image = render(floorPlanFile, finalPosition);
+            File outputFile = new File(workingPath, filename + ".png");
+            ImageIO.write(image, "png", outputFile);
+            
+        } catch (IOException ex) {
+            logger.error(ex.getMessage());
+        }
+    }
+    
+    /**
+     * Draws the point onto the specified image and stores in
+     * the specified file.
+     *
+     * @param workingPath Path to store the image.
+     * @param filename Name of file to print, without file extension.   
+     * @param floorPlanFile Floor plan to draw upon.
+     * @param finalPosition Final position to be drawn.
+     * @param testLocation Test location to be drawn.     
+     */
+    public static void print(final File workingPath, final String filename, final File floorPlanFile, final Point finalPosition, final Location testLocation) {
+
+        try {
+            BufferedImage image = render(floorPlanFile, finalPosition, testLocation);
+            File outputFile = new File(workingPath, filename + ".png");
+            ImageIO.write(image, "png", outputFile);
+            
+        } catch (IOException ex) {
+            logger.error(ex.getMessage());
+        }
+    }
+    
+    /**
+     * Draws the point onto the specified image and stores in
+     * the specified file.
+     *
+     * @param workingPath Path to store the image.
+     * @param filename Name of file to print, without file extension.   
+     * @param floorPlanFile Floor plan to draw upon.
+     * @param finalPosition Final position to be drawn.
+     * @param testLocation Test location to be drawn.
+     * @param positionEstimates List of position estimates.
+     */
+    public static void print(final File workingPath, final String filename, final File floorPlanFile, final Point finalPosition, final Location testLocation, final List<ResultLocation> positionEstimates) {
+
+        try {
+            BufferedImage image = render(floorPlanFile, finalPosition, testLocation, positionEstimates);
+            File outputFile = new File(workingPath, filename + ".png");
+            ImageIO.write(image, "png", outputFile);
+            
+        } catch (IOException ex) {
+            logger.error(ex.getMessage());
+        }
+    }
+    
+    /**
+     * Render just the final and test position
+     * 
+     * @param floorPlanFile Floor plan to draw upon.
+     * @param finalPosition Final position to be drawn.     
+     * @return Drawn floor plan.
+     */
     public static BufferedImage render(final File floorPlanFile, final Point finalPosition) {
 
-        BufferedImage floorPlanImage = null;
-
-        try {
-
-            //load floor plan image            
-            floorPlanImage = ImageIO.read(floorPlanFile);
-
-            floorPlanImage = drawFinal(floorPlanImage, finalPosition);
-
-        } catch (IOException ex) {
-            logger.error(ex.getMessage());
-        }
-
-        return floorPlanImage;
+        return render(floorPlanFile, finalPosition, null, null);
     }
 
-    //Render just the final and test position
+    /**
+     * Render just the final and test position
+     * 
+     * @param floorPlanFile Floor plan to draw upon.
+     * @param finalPosition Final position to be drawn.
+     * @param testLocation Test location to be drawn.
+     * @return Drawn floor plan.
+     */
     public static BufferedImage render(final File floorPlanFile, final Point finalPosition, final Location testLocation) {
 
-        BufferedImage floorPlanImage = null;
-
-        try {
-
-            //load floor plan image            
-            floorPlanImage = ImageIO.read(floorPlanFile);
-
-            floorPlanImage = drawTest(floorPlanImage, testLocation);
-
-            floorPlanImage = drawFinal(floorPlanImage, finalPosition);
-
-        } catch (IOException ex) {
-            logger.error(ex.getMessage());
-        }
-
-        return floorPlanImage;
+        return render(floorPlanFile, finalPosition, testLocation, null);
     }
 
-    //Render the final, test and estimate positions
-    public static BufferedImage render(final File floorPlanFile, final List<ResultLocation> positionEstimates, final Point finalPosition, final Location testLocation) {
+    /**
+     * Render just the final and test position
+     * 
+     * @param floorPlanFile Floor plan to draw upon.
+     * @param finalPosition Final position to be drawn.
+     * @param testLocation Test location to be drawn.
+     * @param positionEstimates List of position estimates.
+     * @return Drawn floor plan.
+     */
+    public static BufferedImage render(final File floorPlanFile, final Point finalPosition, final Location testLocation, final List<ResultLocation> positionEstimates) {
 
         BufferedImage floorPlanImage = null;
 
@@ -79,11 +137,13 @@ public class DisplayPosition {
             //load floor plan image            
             floorPlanImage = ImageIO.read(floorPlanFile);
 
-            floorPlanImage = drawEstimates(floorPlanImage, positionEstimates);
-
-            floorPlanImage = drawLines(floorPlanImage, positionEstimates, finalPosition);
-
-            floorPlanImage = drawTest(floorPlanImage, testLocation);
+            if (positionEstimates!=null){
+                floorPlanImage = drawEstimates(floorPlanImage, positionEstimates);
+                floorPlanImage = drawLines(floorPlanImage, positionEstimates, finalPosition);
+            }
+            
+            if (testLocation!=null)
+                floorPlanImage = drawTest(floorPlanImage, testLocation);
 
             floorPlanImage = drawFinal(floorPlanImage, finalPosition);
 
@@ -107,15 +167,7 @@ public class DisplayPosition {
             floorPlan.drawLine(pos.getXint(), pos.getYint(), finalPosition.getXint(), finalPosition.getYint());
 
         }
-
-        //Draw polygon connecting all the position estimates
-       /*
-         if(DRAW_POLYGON)
-         {
-         floorPlan.setColor(Color.BLACK);  
-         floorPlan.drawPolygon(pointStore.getPolygon());
-         }
-         */
+        
         floorPlan.dispose();
         return floorPlanImage;
     }

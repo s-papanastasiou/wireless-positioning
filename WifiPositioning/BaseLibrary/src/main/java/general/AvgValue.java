@@ -15,20 +15,20 @@ import java.util.List;
  */
 public class AvgValue implements Serializable {
 
-    private double total;
-    private double mean;
+    private Double total;
+    private Double mean;
     private final List<Double> values = new ArrayList<>();
-    private double stdDev;
-    private double variance;
+    private Double stdDev;
+    private Double variance;
 
     /**
      * Constructor - zero value
      */
     public AvgValue() {
-        total = 0;
-        mean = 0;
-        stdDev = 0;
-        variance = 0;
+        total = 0.0;
+        mean = 0.0;
+        stdDev = 0.0;
+        variance = 0.0;
     }
 
     /**
@@ -40,8 +40,8 @@ public class AvgValue implements Serializable {
         total = value;
         mean = value;
         values.add(value);
-        stdDev = 0;
-        variance = 0;
+        stdDev = 0.0;
+        variance = 0.0;
     }
 
     /**
@@ -64,7 +64,7 @@ public class AvgValue implements Serializable {
      *
      * @return
      */
-    public double getTotal() {
+    public Double getTotal() {
         return total;
     }
 
@@ -73,7 +73,7 @@ public class AvgValue implements Serializable {
      *
      * @return
      */
-    public double getMean() {
+    public Double getMean() {
         return mean;
     }
 
@@ -82,7 +82,7 @@ public class AvgValue implements Serializable {
      *
      * @return
      */
-    public double getStdDev() {
+    public Double getStdDev() {
         return stdDev;
     }
 
@@ -91,7 +91,7 @@ public class AvgValue implements Serializable {
      *
      * @return
      */
-    public double getVariance() {
+    public Double getVariance() {
         return variance;
     }
 
@@ -100,7 +100,7 @@ public class AvgValue implements Serializable {
      *
      * @return
      */
-    public int getFrequency() {
+    public Integer getFrequency() {
         return values.size();
     }
 
@@ -119,8 +119,8 @@ public class AvgValue implements Serializable {
      *
      * @return
      */
-    private double calcMeanDiff() {
-        double meanDiff = 0;
+    private Double calcMeanDiff() {
+        Double meanDiff = 0.0;
 
         for (Double value : values) {
             meanDiff += Math.pow(value - mean, 2);

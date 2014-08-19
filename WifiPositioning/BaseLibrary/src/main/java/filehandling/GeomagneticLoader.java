@@ -84,7 +84,7 @@ public class GeomagneticLoader {
      * @param roomInfo Information about the rooms on the floor.
      * @return 
      */
-    private List<GeomagneticData> load(final File dataFile, final HashMap<String, RoomInfo> roomInfo) {
+    public static List<GeomagneticData> load(final File dataFile, final HashMap<String, RoomInfo> roomInfo) {
 
         return load(dataFile, ",", roomInfo);
     }   

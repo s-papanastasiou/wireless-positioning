@@ -33,7 +33,7 @@ import visualinfo.DisplayRoute;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class KNearestNeighbour {
 

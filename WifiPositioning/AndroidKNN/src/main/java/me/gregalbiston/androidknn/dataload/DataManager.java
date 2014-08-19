@@ -28,7 +28,7 @@ import me.gregalbiston.androidknn.logging.OutputLog;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 28/07/13
  * Time: 19:32
  * Controller class to hold retrieved preferences and loaded data.

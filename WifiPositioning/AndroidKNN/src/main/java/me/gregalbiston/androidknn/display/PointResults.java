@@ -12,7 +12,7 @@ import me.gregalbiston.androidknn.datacollection.ResultsInfo;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 22/07/13
  * Time: 23:49
  * Draws the scan, final and estimation points.

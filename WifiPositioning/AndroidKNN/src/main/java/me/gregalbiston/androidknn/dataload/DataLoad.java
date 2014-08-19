@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 22/07/13
  * Time: 14:43
  * Loads in files from external storage.

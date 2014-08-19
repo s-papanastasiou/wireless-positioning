@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 26/07/13
  * Time: 12:46
  * Extends log to provide all default values and handle control of raw data output.

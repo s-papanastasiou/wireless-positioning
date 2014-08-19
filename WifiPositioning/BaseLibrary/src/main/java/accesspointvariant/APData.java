@@ -22,6 +22,9 @@ public class APData {
     private Integer maxRSSIFrequency;
     private Double maxRSSIMean;
     private Double minRSSIMean;
+    private Double mean;
+    private Double variance;
+    private Double stdDev;
     
     private static final String[] LOCAL_HEADINGS = {"BSSID"};
     public static final String[] HEADINGS = ArrayUtils.addAll(LOCAL_HEADINGS, APLocation.HEADINGS);
@@ -39,6 +42,8 @@ public class APData {
         this.maxRSSIFrequency = location.frequency();
         this.maxRSSIMean = location.mean();
         this.minRSSIMean = location.mean();
+        this.stdDev = 0.0;
+        this.mean = location.mean();
     }
 
     /**
@@ -48,28 +53,57 @@ public class APData {
     public void add(final RSSIData item) {
         APLocation location = new APLocation(item, item.getRSSI());
 
-        int freq;
-        double mean;
+        int locFreq;
+        double locMean;
         if (locations.contains(location)) {
             int index = locations.indexOf(location);
             locations.get(index).add(item.getRSSI());
-            freq = locations.get(index).frequency();
-            mean = locations.get(index).mean();
+            locFreq = locations.get(index).frequency();
+            locMean = locations.get(index).mean();
         } else {
             this.locations.add(location);
-            freq = location.frequency();
-            mean = location.mean();
+            locFreq = location.frequency();
+            locMean = location.mean();
         }
         
-        if(freq>maxRSSIFrequency)
-            maxRSSIFrequency = freq;
+        if(locFreq>maxRSSIFrequency)
+            maxRSSIFrequency = locFreq;
         
-        if(mean>maxRSSIMean)
-            maxRSSIMean = mean;
+        if(locMean>maxRSSIMean)
+            maxRSSIMean = locMean;
         
-        if(mean<minRSSIMean)
-            minRSSIMean = mean;
+        if(locMean<minRSSIMean)
+            minRSSIMean = locMean;
         
+        
+        mean = calcTotal() / locations.size();        
+        variance = calcMeanDiff() / locations.size();
+        stdDev = Math.sqrt(variance); //Square root of the total mean differences divided by the number of values        
+    }
+    
+    private Double calcTotal(){
+        Double total = 0.0;
+        for (APLocation location : locations) {
+            total += location.mean();            
+        }
+        return total;
+    }
+    
+    /**
+     * Calculates the mean difference between all the values. Used to find the
+     * variance.
+     *
+     * @return
+     */
+    private Double calcMeanDiff() {
+        Double meanDiff = 0.0;
+
+        for (APLocation location : locations) {
+            Double value = location.mean();
+            meanDiff += Math.pow(value - mean, 2);
+        }
+
+        return meanDiff;
     }
 
     /**

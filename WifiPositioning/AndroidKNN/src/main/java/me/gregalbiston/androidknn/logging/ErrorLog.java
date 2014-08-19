@@ -6,7 +6,7 @@ import me.gregalbiston.androidknn.VisActivity;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 03/08/13
  * Time: 10:43
  * Error log class for output of none data messages. Extends basic log to provide all default values.

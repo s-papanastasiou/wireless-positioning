@@ -22,7 +22,7 @@ import processing.PositioningSettings;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 22/07/13
  * Time: 14:08
  * Starts scan and registers broadcast receiver.

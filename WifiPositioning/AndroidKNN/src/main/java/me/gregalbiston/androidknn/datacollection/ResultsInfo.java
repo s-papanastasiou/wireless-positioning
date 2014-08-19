@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 03/08/13
  * Time: 13:00
  * Stores the screen points for display and log message.

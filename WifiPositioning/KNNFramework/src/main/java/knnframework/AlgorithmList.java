@@ -9,7 +9,7 @@ import knnexecution.KNearestNeighbour;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class AlgorithmList {
 

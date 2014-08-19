@@ -5,7 +5,7 @@ import android.preference.PreferenceFragment;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 28/07/13
  * Time: 12:06
  * Extends Preference Fragment to load the preferences xml file: http://developer.android.com/guide/topics/ui/settings.html#Activity

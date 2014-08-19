@@ -28,7 +28,7 @@ import visualinfo.ValueMap;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class KNNFramework {
 
@@ -133,7 +133,7 @@ public class KNNFramework {
                         if (settings.isPrintReady()) {
                             boolean isOrientationMerged = Menus.Choice("Merge the orientations together (W ref)?");
                             boolean isBSSIDMerged = Menus.Choice("Merge BSSIDs where first five hex pairs match?");
-                            HeatMap.print(workingPath, settings.getFloorPlan(), settings.getRoomInfo(), settings.getRadioMapList(), isBSSIDMerged, isOrientationMerged, fieldSeparator);
+                            HeatMap.printRSSI(workingPath, settings.getFloorPlan(), settings.getRoomInfo(), settings.getRadioMapList(), isBSSIDMerged, isOrientationMerged, fieldSeparator);
                         } else {
                             System.err.println(settings.isPrintReadyError());
                         }

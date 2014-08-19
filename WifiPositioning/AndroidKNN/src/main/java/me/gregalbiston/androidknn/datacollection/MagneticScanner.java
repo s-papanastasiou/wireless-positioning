@@ -21,7 +21,7 @@ import me.gregalbiston.androidknn.dataload.SettingsController;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 03/08/13
  * Time: 12:09
  * Starts scan and registers event listener.

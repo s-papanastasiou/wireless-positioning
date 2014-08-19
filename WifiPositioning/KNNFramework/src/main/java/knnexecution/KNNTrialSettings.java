@@ -11,7 +11,7 @@ import processing.DistanceMeasure;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class KNNTrialSettings {
 

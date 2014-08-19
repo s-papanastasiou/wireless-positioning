@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 28/07/13
  * Time: 11:38
  * Extends activity to setup Activity Fragment following Android Developers advice: http://developer.android.com/guide/topics/ui/settings.html#Activity

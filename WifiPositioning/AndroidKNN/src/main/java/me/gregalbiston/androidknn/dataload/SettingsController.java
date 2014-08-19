@@ -9,7 +9,7 @@ import processing.DistanceMeasure;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 01/08/13
  * Time: 10:48
  * Handles all the preferences contained in the menu settings area.

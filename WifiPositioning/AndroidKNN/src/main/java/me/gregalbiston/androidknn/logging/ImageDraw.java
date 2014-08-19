@@ -6,7 +6,7 @@ import me.gregalbiston.androidknn.display.PointResults;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 03/08/13
  * Time: 16:58
  * Write results to an image file.

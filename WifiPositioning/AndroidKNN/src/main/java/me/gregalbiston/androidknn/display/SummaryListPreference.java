@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 28/07/13
  * Time: 18:39
  * Based on Michael answer on Aug 10 '11: http://stackoverflow.com/questions/7017082/change-the-summary-of-a-listpreference-with-the-new-value-android -

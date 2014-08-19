@@ -18,7 +18,7 @@ import me.gregalbiston.androidknn.datacollection.RSSIScanner;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 22/07/13
  * Time: 15:24
  * Floor view to show floor plan and handle touch interactions.

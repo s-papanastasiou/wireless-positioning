@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class Settings {
 

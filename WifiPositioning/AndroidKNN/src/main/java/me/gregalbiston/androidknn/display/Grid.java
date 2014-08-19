@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 22/07/13
  * Time: 22:33
  * Displays grid points on screen and identifies the screen co-ordinates of points.

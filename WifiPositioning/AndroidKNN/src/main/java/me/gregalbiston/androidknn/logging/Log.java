@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Gerg
+ * User: Greg Albiston
  * Date: 03/08/13
  * Time: 10:45
  * Base class for handling logging functions. Stores log messages and outputs to a text file in the public external file storage.

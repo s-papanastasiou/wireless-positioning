@@ -4,7 +4,7 @@
  */
 package filehandling;
 
-import datastorage.MagneticData;
+import datastorage.GeomagneticData;
 import datastorage.KNNFloorPoint;
 import datastorage.RoomInfo;
 import java.io.File;
@@ -19,9 +19,9 @@ import org.slf4j.LoggerFactory;
  * @author Greg Albiston
  * 
  */
-public class KNNMagnetic {
+public class KNNGeomagnetic {
     
-    private static final Logger logger = LoggerFactory.getLogger(KNNMagnetic.class);
+    private static final Logger logger = LoggerFactory.getLogger(KNNGeomagnetic.class);
     
     public static HashMap<String, KNNFloorPoint> load(final File dataFile, final HashMap<String, RoomInfo> roomInfo) {
 
@@ -33,7 +33,7 @@ public class KNNMagnetic {
     public static HashMap<String, KNNFloorPoint> load(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo) {
 
         //load raw data
-        List<MagneticData> magList = MagneticLoader.load(dataFile, fieldSeparator, roomInfo);
+        List<GeomagneticData> magList = GeomagneticLoader.load(dataFile, fieldSeparator, roomInfo);
 
         //convert raw
         HashMap<String, KNNFloorPoint> knnRadioMap = compile(magList);
@@ -53,7 +53,7 @@ public class KNNMagnetic {
     public static List<KNNFloorPoint> loadList(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo) {
 
         //load raw data
-        List<MagneticData> magList = MagneticLoader.load(dataFile, fieldSeparator, roomInfo);
+        List<GeomagneticData> magList = GeomagneticLoader.load(dataFile, fieldSeparator, roomInfo);
 
         //convert raw
         List<KNNFloorPoint> knnList = compileList(magList);
@@ -69,7 +69,7 @@ public class KNNMagnetic {
 
         if (isNewData || !knnFile.exists()) {
             //load raw data
-            List<MagneticData> dataList = MagneticLoader.load(dataFile, roomInfo);
+            List<GeomagneticData> dataList = GeomagneticLoader.load(dataFile, roomInfo);
 
             //convert raw
             knnRadioMap = compile(dataList);
@@ -82,24 +82,24 @@ public class KNNMagnetic {
         return knnRadioMap;
     }
     
-    public static HashMap<String, KNNFloorPoint> compile(final List<MagneticData> dataList) {
+    public static HashMap<String, KNNFloorPoint> compile(final List<GeomagneticData> dataList) {
 
         HashMap<String, KNNFloorPoint> knnRadioMap = new HashMap();
 
         logger.info("Compiling Magnetic location data....");
-        for (MagneticData magData : dataList) {
+        for (GeomagneticData magData : dataList) {
 
             if (knnRadioMap.containsKey(magData.getRoomRef())) //Update the existing entry
             {
                 KNNFloorPoint entry = knnRadioMap.get(magData.getRoomRef());
-                entry.add(MagneticData.X_Key, magData.getxValue());
-                entry.add(MagneticData.Y_Key, magData.getyValue());
-                entry.add(MagneticData.Z_Key, magData.getzValue());
+                entry.add(GeomagneticData.X_Key, magData.getxValue());
+                entry.add(GeomagneticData.Y_Key, magData.getyValue());
+                entry.add(GeomagneticData.Z_Key, magData.getzValue());
             } else //New entry created and added
             {
-                KNNFloorPoint entry = new KNNFloorPoint(magData, MagneticData.X_Key, magData.getxValue());
-                entry.add(MagneticData.Y_Key, magData.getyValue());
-                entry.add(MagneticData.Z_Key, magData.getzValue());
+                KNNFloorPoint entry = new KNNFloorPoint(magData, GeomagneticData.X_Key, magData.getxValue());
+                entry.add(GeomagneticData.Y_Key, magData.getyValue());
+                entry.add(GeomagneticData.Z_Key, magData.getzValue());
                 knnRadioMap.put(magData.getRoomRef(), entry);
             }
         }
@@ -107,25 +107,23 @@ public class KNNMagnetic {
         return knnRadioMap;
     }
     
-    public static List<KNNFloorPoint> compileList(final List<MagneticData> dataList) {
+    public static List<KNNFloorPoint> compileList(final List<GeomagneticData> dataList) {
              
         List<KNNFloorPoint> knnList = new ArrayList();
 
         logger.info("Compiling Magnetic location data list....");
                
         
-        for (MagneticData magData : dataList) {
+        for (GeomagneticData magData : dataList) {
 
             boolean isMatch = false;
             
-            for(int counter = 0; counter < knnList.size(); counter++)
-            {
-                KNNFloorPoint entry = knnList.get(counter);
+            for (KNNFloorPoint entry : knnList) {
                 if(entry.getRoomRef().equals(magData.getRoomRef()))
                 {
-                   entry.add(MagneticData.X_Key, magData.getxValue());
-                    entry.add(MagneticData.Y_Key, magData.getyValue());
-                    entry.add(MagneticData.Z_Key, magData.getzValue());
+                    entry.add(GeomagneticData.X_Key, magData.getxValue());
+                    entry.add(GeomagneticData.Y_Key, magData.getyValue());
+                    entry.add(GeomagneticData.Z_Key, magData.getzValue());
                     isMatch = true;
                     break;
                 }                
@@ -133,9 +131,9 @@ public class KNNMagnetic {
             
             if(!isMatch)
             {     
-                KNNFloorPoint entry = new KNNFloorPoint(magData, MagneticData.X_Key, magData.getxValue());
-                entry.add(MagneticData.Y_Key, magData.getyValue());
-                entry.add(MagneticData.Z_Key, magData.getzValue());                                
+                KNNFloorPoint entry = new KNNFloorPoint(magData, GeomagneticData.X_Key, magData.getxValue());
+                entry.add(GeomagneticData.Y_Key, magData.getyValue());
+                entry.add(GeomagneticData.Z_Key, magData.getzValue());                                
                 knnList.add(entry);
             }            
         }

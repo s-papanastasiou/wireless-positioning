@@ -13,7 +13,7 @@ import me.gregalbiston.androiddetector.R;
 
 public class Scanner extends CountDownTimer {
 
-    private final MagneticScanner magneticScanner;
+    private final GeomagneticScanner magneticScanner;
     private final RSSIScanner RSSIScanner;
 
     private ProgressBar progressBar;
@@ -34,7 +34,7 @@ public class Scanner extends CountDownTimer {
         setupProgressBar(dectectorActivity, duration * frequency);
 
         if (scanSettings.isMagneticSelected())
-            magneticScanner = new MagneticScanner(dectectorActivity, scanLocation);
+            magneticScanner = new GeomagneticScanner(dectectorActivity, scanLocation);
         else
             magneticScanner = null;
 

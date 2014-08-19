@@ -22,10 +22,10 @@ import me.gregalbiston.androiddetector.storage.FileOutput;
  * Events stored in an array for later processing.
  * @author Greg Albiston
  */
-public class MagneticScanner implements SensorEventListener {
+public class GeomagneticScanner implements SensorEventListener {
 
     private final SensorManager sensorManager;
-    private final List<MagneticResult> magneticResults = new ArrayList<>();
+    private final List<GeomagneticResult> magneticResults = new ArrayList<>();
     private ListView magneticListView;
     private final Sensor magneticSensor;
 
@@ -34,7 +34,7 @@ public class MagneticScanner implements SensorEventListener {
     private boolean isSampling = true;
 
 
-    public MagneticScanner(DetectorActivity dectectorActivity, Location scanLocation) {
+    public GeomagneticScanner(DetectorActivity dectectorActivity, Location scanLocation) {
 
         this.scanLocation = scanLocation;
 
@@ -53,12 +53,12 @@ public class MagneticScanner implements SensorEventListener {
 
         //Iterate over each recorded event
 
-        ArrayLiGeomagneticDataata> results = new ArrayList<>();
+        ArrayList<GeomagneticData> results = new ArrayList<>();
         ArrayList<String> screenResults = new ArrayList<>();
 
-        for (MagneticResult result : magneticResults) {
+        for (GeomagneticResult result : magneticResults) {
             SensorEvent event = result.getEvent();
-            results.adGeomagneticDataicData(result.getTimestamp(), scanLocation, event.values[0], event.values[1], event.values[2], event.accuracy));
+            results.add(new GeomagneticData(result.getTimestamp(), scanLocation, event.values[0], event.values[1], event.values[2], event.accuracy));
             long timestamp = result.getTimestamp();
             screenResults.add(TimeStamp.formatShortDateTime(timestamp) + " " + scanLocation.toString() + DetectorActivity.OUTPUT_SEPARATOR + event.values[0] + DetectorActivity.OUTPUT_SEPARATOR + event.values[1] + DetectorActivity.OUTPUT_SEPARATOR + event.values[2] + DetectorActivity.OUTPUT_SEPARATOR + event.accuracy);
         }
@@ -75,7 +75,7 @@ public class MagneticScanner implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
 
         if (isSampling) {
-            magneticResults.add(new MagneticResult(System.currentTimeMillis(), event));
+            magneticResults.add(new GeomagneticResult(System.currentTimeMillis(), event));
             isSampling = false;
         }
     }

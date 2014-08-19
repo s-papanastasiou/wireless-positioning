@@ -70,7 +70,7 @@ public class MatchMap {
     public static void print( final File workingPath, final String filename, final File floorPlanFile, final List<RSSIData> rssiDataList, final HashMap<String, RoomInfo> roomInfo, final Double rangeValue, final Boolean isBSSIDMerged, final Boolean isOrientationMerged, final String fieldSeparator) {
 
         //create sub-folder
-        File matchPath = new File(workingPath, "matchmaps");
+        File matchPath = new File(workingPath, "MatchMaps");
         matchPath.mkdir();
 
         logger.info("Starting match analysis.");

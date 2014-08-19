@@ -68,7 +68,7 @@ public class GeomagneticScanner implements SensorEventListener {
         ArrayAdapter magneticAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, screenResults);
         magneticListView.setAdapter(magneticAdapter);
 
-        fileOutput.outputMagneticFile(results, DetectorActivity.FILE_DIRECTORY, DetectorActivity.OUTPUT_FILENAME_MAGNETIC, DetectorActivity.OUTPUT_SEPARATOR, DetectorActivity.OUTPUT_MIME_TYPE, context);
+        fileOutput.outputMagneticFile(results, DetectorActivity.FILE_DIRECTORY, DetectorActivity.OUTPUT_FILENAME_GEOMAGNETIC, DetectorActivity.OUTPUT_SEPARATOR, DetectorActivity.OUTPUT_MIME_TYPE, context);
     }
 
     @Override

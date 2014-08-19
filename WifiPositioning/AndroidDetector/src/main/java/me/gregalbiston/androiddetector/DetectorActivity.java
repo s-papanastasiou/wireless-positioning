@@ -63,7 +63,7 @@ public class DetectorActivity extends Activity {
     public final static String OUTPUT_EXTENSION = ".csv";
     public final static String OUTPUT_LINE_SEPARATOR = System.getProperty("line.separator");
     public final static String OUTPUT_FILENAME_RSSI = "RSSI Results";
-    public final static String OUTPUT_FILENAME_MAGNETIC = "Magnetic Results";
+    public final static String OUTPUT_FILENAME_GEOMAGNETIC = "Geomagnetic Results";
 
     private boolean isConnected;
     private boolean isSignedIn = false;
@@ -194,7 +194,7 @@ public class DetectorActivity extends Activity {
             }
 
             if (isMagneticSelected) {
-                filenames.add(fileOutput.getFilename(DetectorActivity.OUTPUT_FILENAME_MAGNETIC));
+                filenames.add(fileOutput.getFilename(DetectorActivity.OUTPUT_FILENAME_GEOMAGNETIC));
             }
 
             //Commence upload

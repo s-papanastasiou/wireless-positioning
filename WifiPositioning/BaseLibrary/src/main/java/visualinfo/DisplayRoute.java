@@ -45,8 +45,8 @@ public class DisplayRoute {
      * @param trialPoints List of points in the trial.
      * @param finalPoints List of points in final estimated points.
      */
-    public static void draw(File workingPath, String filename, File floorPlanFile, List<Point> trialPoints, List<Point> finalPoints) {
-        draw(workingPath, filename, floorPlanFile, trialPoints, finalPoints, Color.RED, Color.BLUE);
+    public static void print(File workingPath, String filename, File floorPlanFile, List<Point> trialPoints, List<Point> finalPoints) {
+        print(workingPath, filename, floorPlanFile, trialPoints, finalPoints, Color.RED, Color.BLUE);
     }
 
     /**
@@ -61,7 +61,7 @@ public class DisplayRoute {
      * @param trialColor Colour of trial path.
      * @param finalColor Colour of final path.
      */
-    public static void draw(File workingPath, String filename, File floorPlanFile, List<Point> trialPoints, List<Point> finalPoints, Color trialColor, Color finalColor) {
+    public static void print(File workingPath, String filename, File floorPlanFile, List<Point> trialPoints, List<Point> finalPoints, Color trialColor, Color finalColor) {
 
         try {
             BufferedImage floorPlanImage = ImageIO.read(floorPlanFile);

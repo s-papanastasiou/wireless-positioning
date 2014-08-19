@@ -48,12 +48,12 @@ public class DisplayGrid {
      * @param workingPath Path to store the image.
      * @param filename Name of file to print, without file extension.
      * @param floorPlanFile Floor plan image to draw upon.
-     * @param rssiDataList List of locations to draw.
+     * @param locationList List of locations to draw.
      * @param roomInfo Information about the location coordinates.
      * @param isRoomOutlineDraw True, draw outline of rooms in roomInfo.
      */
-    public static void print(File workingPath, String filename, File floorPlanFile, List<RSSIData> rssiDataList, HashMap<String, RoomInfo> roomInfo, boolean isRoomOutlineDraw) {
-        render(floorPlanFile, rssiDataList, roomInfo, isRoomOutlineDraw, Color.RED, Color.BLUE);
+    public static void print(File workingPath, String filename, File floorPlanFile, List<? extends Location> locationList, HashMap<String, RoomInfo> roomInfo, boolean isRoomOutlineDraw) {
+        render(floorPlanFile, locationList, roomInfo, isRoomOutlineDraw, Color.RED, Color.BLUE);
     }
 
     /**
@@ -63,19 +63,19 @@ public class DisplayGrid {
      * @param workingPath Path to store the image.
      * @param filename Name of file to print, without file extension.
      * @param floorPlanFile Floor plan image to draw upon.
-     * @param rssiDataList List of locations to draw.
+     * @param locationList List of locations to draw.
      * @param roomInfo Information about the location coordinates.
      * @param isRoomOutlineDraw True, draw outline of rooms in roomInfo.
      * @param pointColour Colour to draw points.
      * @param roomColour Colour to draw room outlines.
      */
-    public static void print(File workingPath, String filename, File floorPlanFile, List<RSSIData> rssiDataList, HashMap<String, RoomInfo> roomInfo, boolean isRoomOutlineDraw, Color pointColour, Color roomColour) {
+    public static void print(File workingPath, String filename, File floorPlanFile, List<? extends Location> locationList, HashMap<String, RoomInfo> roomInfo, boolean isRoomOutlineDraw, Color pointColour, Color roomColour) {
 
         String fullFileName = filename + ".png";
         try {
 
             //Add in colour selection.
-            BufferedImage gridImage = render(floorPlanFile, rssiDataList, roomInfo, isRoomOutlineDraw, pointColour, roomColour);
+            BufferedImage gridImage = render(floorPlanFile, locationList, roomInfo, isRoomOutlineDraw, pointColour, roomColour);
             File outputfile = new File(workingPath, fullFileName);
             ImageIO.write(gridImage, "png", outputfile);
         } catch (IOException ex) {
@@ -88,15 +88,15 @@ public class DisplayGrid {
      * new image on the specified file path.
      *
      * @param floorPlanFile Floor plan image to draw upon.
-     * @param radioMap Map of locations to draw.
+     * @param locationMap Map of locations to draw.
      * @param roomInfo Information
      * @param isRoomOutlineDraw
      * @param pointColour Colour to draw points.
      * @param roomColour Colour to draw room outlines.
      * @return
      */
-    public static BufferedImage render(final File floorPlanFile, final HashMap<String, Location> radioMap, final HashMap<String, RoomInfo> roomInfo, boolean isRoomOutlineDraw, Color pointColour, Color roomColour) {
-        return render(floorPlanFile, new ArrayList<>(radioMap.values()), roomInfo, isRoomOutlineDraw, pointColour, roomColour);
+    public static BufferedImage render(final File floorPlanFile, final HashMap<String, Location> locationMap, final HashMap<String, RoomInfo> roomInfo, boolean isRoomOutlineDraw, Color pointColour, Color roomColour) {
+        return render(floorPlanFile, new ArrayList<>(locationMap.values()), roomInfo, isRoomOutlineDraw, pointColour, roomColour);
     }
 
     /**

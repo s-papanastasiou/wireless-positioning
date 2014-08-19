@@ -52,10 +52,9 @@ public class AvgValue implements Serializable {
     public void add(final double value) {
         total += value;
         values.add(value);
-        mean = (double) total / values.size();
-
-        double meanDiff = calcMeanDiff();
-        variance = meanDiff / values.size();
+        mean = total / values.size();
+        
+        variance = calcMeanDiff() / values.size();
         stdDev = Math.sqrt(variance); //Square root of the total mean differences divided by the number of values
     }
 

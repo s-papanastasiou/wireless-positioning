@@ -6,36 +6,13 @@
 
 package visualinfo;
 
-import datastorage.RSSIData;
-import datastorage.RoomInfo;
-import filehandling.RSSILoader;
-import filehandling.RoomInfoLoader;
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
 import junit.framework.TestCase;
 
 /**
  *
- * @author Gerg
+ * @author Greg Albiston
  */
 public class MatchMapTest extends TestCase {
-    
-    private static final String workingDirectory = "C:\\WirelessPositioningTestFiles";
-    private static final File workingPath = new File(workingDirectory);
-    private static final String floorPlanFilename = "floor2.png";
-    private static final File floorPlanFile = new File(workingPath, floorPlanFilename);
-    private static final String roomInfoFilename = "RoomInfo.csv";
-    private static final File roomInfoFile = new File(workingPath, roomInfoFilename);
-    private static final String roomInfoSep = ",";
-    private static final HashMap<String, RoomInfo> roomInfo = RoomInfoLoader.load(roomInfoFile, roomInfoSep);
-    private static final String rssiData = "RSSISurveyData.csv";
-    private static final File rssiDataFile = new File(workingPath, rssiData);
-    private static final String dataSep = ",";
-    
-    
-    private static final List<RSSIData> rssiDataList = RSSILoader.load(rssiDataFile, dataSep, roomInfo);
-    
     
     public MatchMapTest(String testName) {               
         super(testName);
@@ -56,7 +33,7 @@ public class MatchMapTest extends TestCase {
      */
     public void testPrint_3args() {
         System.out.println("print");        
-        MatchMap.print(workingPath, floorPlanFile, rssiDataList, roomInfo);
+        MatchMap.print(VisualInfoTestDefaults.workingPath, VisualInfoTestDefaults.floorPlanFile, VisualInfoTestDefaults.rssiDataList, VisualInfoTestDefaults.roomInfo);
         assertEquals(true, true);
     }
 
@@ -70,8 +47,8 @@ public class MatchMapTest extends TestCase {
         double rangeValue = 0.0;
         boolean isBSSIDMerged = false;
         boolean isOrientationMerged = false;
-        String fieldSeparator = ",";
-        MatchMap.print(workingPath, filename, floorPlanFile, rssiDataList, roomInfo, rangeValue, isBSSIDMerged, isOrientationMerged, fieldSeparator);        
+        
+        MatchMap.print(VisualInfoTestDefaults.workingPath, filename, VisualInfoTestDefaults.floorPlanFile, VisualInfoTestDefaults.rssiDataList, VisualInfoTestDefaults.roomInfo, rangeValue, isBSSIDMerged, isOrientationMerged, VisualInfoTestDefaults.fieldSeparator);        
         assertEquals(true, true);
     }
     

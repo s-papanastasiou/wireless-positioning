@@ -20,6 +20,8 @@ public class APData {
     private final String BSSID;
     private final List<APLocation> locations = new ArrayList<>();
     private Integer maxRSSIFrequency;
+    private Double maxRSSIMean;
+    private Double minRSSIMean;
     
     private static final String[] LOCAL_HEADINGS = {"BSSID"};
     public static final String[] HEADINGS = ArrayUtils.addAll(LOCAL_HEADINGS, APLocation.HEADINGS);
@@ -35,6 +37,8 @@ public class APData {
         this.BSSID = BSSID;
         this.locations.add(location);
         this.maxRSSIFrequency = location.frequency();
+        this.maxRSSIMean = location.mean();
+        this.minRSSIMean = location.mean();
     }
 
     /**
@@ -45,17 +49,27 @@ public class APData {
         APLocation location = new APLocation(item, item.getRSSI());
 
         int freq;
+        double mean;
         if (locations.contains(location)) {
             int index = locations.indexOf(location);
             locations.get(index).add(item.getRSSI());
             freq = locations.get(index).frequency();
+            mean = locations.get(index).mean();
         } else {
             this.locations.add(location);
             freq = location.frequency();
+            mean = location.mean();
         }
         
         if(freq>maxRSSIFrequency)
             maxRSSIFrequency = freq;
+        
+        if(mean>maxRSSIMean)
+            maxRSSIMean = mean;
+        
+        if(mean<minRSSIMean)
+            minRSSIMean = mean;
+        
     }
 
     /**
@@ -83,6 +97,24 @@ public class APData {
      */
     public Integer getMaxRSSIFrequency() {
         return maxRSSIFrequency;
+    }
+
+    /**
+     * Maximum RSSI mean of the locations for this BSSID.
+     * 
+     * @return 
+     */
+    public Double getMaxRSSIMean() {
+        return maxRSSIMean;
+    }
+
+    /**
+     * Minimum RSSI mean of the locations for this BSSID.
+     * 
+     * @return 
+     */
+    public Double getMinRSSIMean() {
+        return minRSSIMean;
     }
     
     /**

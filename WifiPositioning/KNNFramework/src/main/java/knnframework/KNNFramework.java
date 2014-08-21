@@ -8,7 +8,7 @@ import datastorage.KNNFloorPoint;
 import datastorage.KNNTrialPoint;
 import datastorage.RSSIData;
 import datastorage.RoomInfo;
-import filehandling.FilterSSID;
+import filehandling.FilterBSSID;
 import filehandling.KNNRSSI;
 import filehandling.RSSILoader;
 import filehandling.RoomInfoLoader;
@@ -37,8 +37,8 @@ public class KNNFramework {
     /**
      * @param args the command line arguments
      */
-    private final static String[] options = {"Exit", "Instructions", "Change Working Directory", "Change Field Separator", "Load Default Filesnames", "Load SSID Filter", "Load Radio Map", "Load Trial", "Load Floor Plan", "Print Data Grid", "Print Heatmap", "Print Matchmap", "Test Algorithms"};
-    private final static String defaultFilterSSID = "FilterSSID.txt";
+    private final static String[] options = {"Exit", "Instructions", "Change Working Directory", "Change Field Separator", "Load Default Filesnames", "Load BSSID Filter", "Load Radio Map", "Load Trial", "Load Floor Plan", "Print Data Grid", "Print Heatmap", "Print Matchmap", "Test Algorithms"};
+    private final static String defaultFilterBSSID = "FilterBSSID.txt";
     private final static String defaultRadioMap = "RSSISurveyData.csv";
     private final static String defaultTrial = "RSSITrialData.csv";
     private final static String defaultFloorPlan = "floor2.png";
@@ -108,8 +108,8 @@ public class KNNFramework {
                     case 4:  //Load default files
                         settings = loadDefaults(workingPath, fieldSeparator);
                         break;
-                    case 5:  //Load SSID filter
-                        System.out.println(settings.addFilterSSID(loadFilterSSID(workingPath)));  //TODO this doesn't work - also needs to reload the trial and radio map data with the filter applied
+                    case 5:  //Load BSSID filter
+                        System.out.println(settings.addFilterBSSID(loadFilterBSSID(workingPath)));  //TODO this doesn't work - also needs to reload the trial and radio map data with the filter applied
                         break;
                     case 6:  //Load Radio Map
                         System.out.println(settings.addRadioMapList(loadRadioMap(workingPath, settings, fieldSeparator)));
@@ -173,12 +173,12 @@ public class KNNFramework {
         System.out.println("Attempting to load default files.");
         Settings settings = new Settings();
 
-        //SSID Filter
-        File filterFile = new File(workingPath, defaultFilterSSID);
+        //BSSID Filter
+        File filterFile = new File(workingPath, defaultFilterBSSID);
         if (filterFile.exists()) {
-            settings.addFilterSSID(FilterSSID.load(filterFile));
+            settings.addFilterBSSID(FilterBSSID.load(filterFile));
         } else {
-            System.out.println(defaultFilterSSID + " not found.");
+            System.out.println(defaultFilterBSSID + " not found.");
         }
 
         //Room Info
@@ -194,7 +194,7 @@ public class KNNFramework {
         File radioMapFile = new File(workingPath, defaultRadioMap);
         if (radioMapFile.exists()) {
             System.out.print("Radio map ");
-            settings.addRadioMapList(RSSILoader.load(radioMapFile, settings.getFilterSSIDList(), fieldSeparator, settings.getRoomInfo()));
+            settings.addRadioMapList(RSSILoader.load(radioMapFile, settings.getFilterBSSIDList(), fieldSeparator, settings.getRoomInfo()));
         } else {
             System.out.println(defaultRadioMap + " not found.");
         }
@@ -203,7 +203,7 @@ public class KNNFramework {
         File trialFile = new File(workingPath, defaultTrial);
         if (trialFile.exists()) {
             System.out.print("Trial ");
-            settings.addTrialList(RSSILoader.load(trialFile, settings.getFilterSSIDList(), fieldSeparator, settings.getRoomInfo()));
+            settings.addTrialList(RSSILoader.load(trialFile, settings.getFilterBSSIDList(), fieldSeparator, settings.getRoomInfo()));
         } else {
             System.out.println(defaultTrial + " not found.");
         }
@@ -227,15 +227,15 @@ public class KNNFramework {
         return settings;
     }
 
-    private static List<String> loadFilterSSID(File workingPath) {
-        List<String> filterSSIDList = new ArrayList<>();
-        File filePath = Menus.getFilename("Enter SSID filter filename: ", workingPath);
+    private static List<String> loadFilterBSSID(File workingPath) {
+        List<String> filterBSSIDList = new ArrayList<>();
+        File filePath = Menus.getFilename("Enter BSSID filter filename: ", workingPath);
 
         if (!filePath.isFile()) {
-            filterSSIDList = FilterSSID.load(filePath);
+            filterBSSIDList = FilterBSSID.load(filePath);
         }
 
-        return filterSSIDList;
+        return filterBSSIDList;
     }
 
     private static List<RSSIData> loadRadioMap(File workingPath, Settings settings, String fieldSeparator) {
@@ -243,12 +243,12 @@ public class KNNFramework {
         File filePath = Menus.getFilename("Enter radio map filename: ", workingPath);
 
         if (!filePath.isFile()) {
-            if (settings.isSSIDFilterLoaded()) {
-                System.out.println("SSID filter applied");
+            if (settings.isBSSIDFilterLoaded()) {
+                System.out.println("BSSID filter applied");
             }
 
             System.out.print("Radio Map ");
-            radioMapList = RSSILoader.load(filePath, settings.getFilterSSIDList(), fieldSeparator, settings.getRoomInfo());
+            radioMapList = RSSILoader.load(filePath, settings.getFilterBSSIDList(), fieldSeparator, settings.getRoomInfo());
 
         }
 
@@ -260,12 +260,12 @@ public class KNNFramework {
         File filePath = Menus.getFilename("Enter trial data filename: ", workingPath);
 
         if (!filePath.isFile()) {
-            if (settings.isSSIDFilterLoaded()) {
-                System.out.println("SSID filter applied");
+            if (settings.isBSSIDFilterLoaded()) {
+                System.out.println("BSSID filter applied");
             }
 
             System.out.print("Trial ");
-            trialList = RSSILoader.load(filePath, settings.getFilterSSIDList(), fieldSeparator, settings.getRoomInfo());
+            trialList = RSSILoader.load(filePath, settings.getFilterBSSIDList(), fieldSeparator, settings.getRoomInfo());
         }
 
         return trialList;

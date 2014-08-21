@@ -22,8 +22,8 @@ public class Settings {
     private boolean isRadioMapLoaded = false;
     private List<RSSIData> trialList = new ArrayList<>();
     private boolean isTrialLoaded = false;
-    private List<String> filterSSIDList = new ArrayList<>();
-    private boolean isSSIDFilterLoaded = false;
+    private List<String> filterBSSIDList = new ArrayList<>();
+    private boolean isBSSIDFilterLoaded = false;
     private File floorPlan = null;
     private boolean isFloorPlanLoaded = false;
     private HashMap<String, RoomInfo> roomInfo = RoomInfoLoader.defaultHashMap();
@@ -36,7 +36,7 @@ public class Settings {
     public String statusReport() {
 
         String message;
-        message = "SSID Filter Loaded: " + isSSIDFilterLoaded + System.lineSeparator();
+        message = "BSSID Filter Loaded: " + isBSSIDFilterLoaded + System.lineSeparator();
         message += "Radio Map Loaded: " + isRadioMapLoaded + System.lineSeparator();
         message += "Trial Loaded: " + isTrialLoaded + System.lineSeparator();
         message += "Floor Plan Loaded: " + isFloorPlanLoaded + System.lineSeparator();
@@ -103,20 +103,20 @@ public class Settings {
         return message;
     }
     
-    public String addFilterSSID(List<String> filterSSIDList) {
+    public String addFilterBSSID(List<String> filterBSSIDList) {
         
         String message = FILE_ERROR;
-        this.filterSSIDList = filterSSIDList;
-        if (!this.filterSSIDList.isEmpty()) {
-            isSSIDFilterLoaded = true;
+        this.filterBSSIDList = filterBSSIDList;
+        if (!this.filterBSSIDList.isEmpty()) {
+            isBSSIDFilterLoaded = true;
             message = FILE_SUCCESS;
         }
         return message;
     }
 
-    public String cancelSSIDFilter() {
-        this.filterSSIDList = new ArrayList<>();
-        isSSIDFilterLoaded = false;
+    public String cancelBSSIDFilter() {
+        this.filterBSSIDList = new ArrayList<>();
+        isBSSIDFilterLoaded = false;
         return FILE_CANCEL;
     }
 
@@ -194,8 +194,8 @@ public class Settings {
         return trialList;
     }
 
-    public List<String> getFilterSSIDList() {
-        return filterSSIDList;
+    public List<String> getFilterBSSIDList() {
+        return filterBSSIDList;
     }
 
     public File getFloorPlan() {
@@ -206,8 +206,8 @@ public class Settings {
         return roomInfo;
     }
 
-    public boolean isSSIDFilterLoaded() {
-        return isSSIDFilterLoaded;
+    public boolean isBSSIDFilterLoaded() {
+        return isBSSIDFilterLoaded;
     }
 
     public boolean isRadioMapLoaded() {

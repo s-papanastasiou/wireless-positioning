@@ -53,8 +53,8 @@ public class KNearestNeighbour {
 
         KNNTrialSettings knnSettings = KNNTrialSettings.commandSetup(args);
         //compile to KNN format and the settings           
-        HashMap<String, KNNFloorPoint> radioMap = KNNRSSI.compile(settings.getRadioMapList(), knnSettings.isBSSIDMerge, knnSettings.isOrientationMerge);
-        List<KNNTrialPoint> trialList = KNNRSSI.compileTrialList(settings.getTrialList(), knnSettings.isBSSIDMerge, knnSettings.isOrientationMerge);
+        HashMap<String, KNNFloorPoint> radioMap = KNNRSSI.compile(settings.getRadioMapList(), knnSettings.isBSSIDMerged, knnSettings.isOrientationMerged);
+        List<KNNTrialPoint> trialList = KNNRSSI.compileTrialList(settings.getTrialList(), knnSettings.isBSSIDMerged, knnSettings.isOrientationMerged);
 
         runTrials(knnSettings, knnPath, radioMap, trialList, settings.getRoomInfo(), settings.getFloorPlan());
     }
@@ -71,7 +71,7 @@ public class KNearestNeighbour {
 
         //compile to KNN format
         System.out.println("Radio map");
-        HashMap<String, KNNFloorPoint> radioMap = KNNRSSI.compile(settings.getRadioMapList(), knnSettings.isBSSIDMerge, knnSettings.isOrientationMerge);
+        HashMap<String, KNNFloorPoint> radioMap = KNNRSSI.compile(settings.getRadioMapList(), knnSettings.isBSSIDMerged, knnSettings.isOrientationMerged);
 
         //store the compiled data question
         if (Menus.Choice("Do you want to store the compiled K Nearest Neighbour data?")) {
@@ -80,7 +80,7 @@ public class KNearestNeighbour {
         }
 
         System.out.println("Trial data");
-        List<KNNTrialPoint> trialList = KNNRSSI.compileTrialList(settings.getTrialList(), knnSettings.isBSSIDMerge, knnSettings.isOrientationMerge);
+        List<KNNTrialPoint> trialList = KNNRSSI.compileTrialList(settings.getTrialList(), knnSettings.isBSSIDMerged, knnSettings.isOrientationMerged);
 
         runTrials(knnSettings, knnPath, radioMap, trialList, settings.getRoomInfo(), settings.getFloorPlan());
     }
@@ -139,7 +139,7 @@ public class KNearestNeighbour {
                             }
 
                             //draw the trial route to the floor plan
-                            DisplayRoute.draw(trialPath, filename, floorPlanFile, trialPoints, finalPoints);
+                            DisplayRoute.print(trialPath, filename, floorPlanFile, trialPoints, finalPoints);
 
                         } catch (IOException ex) {
                             logger.error("Error writing trial {} to file: {}", filename, ex);
@@ -206,7 +206,7 @@ public class KNearestNeighbour {
         writer.flush();
 
         //Draw the estimates and final point to the floor plan.        
-        BufferedImage floorPlanImage = DisplayPosition.render(floorPlanFile, positionEstimates, finalLocation.getDrawPoint(), trialLocation);
+        BufferedImage floorPlanImage = DisplayPosition.render(floorPlanFile, finalLocation.getDrawPoint(), trialLocation, positionEstimates);
 
         //Draw the image to file                     
         File outputFile = new File(estimatesPath, executeSettings.filename(trialLocation, "estimates", ".png"));

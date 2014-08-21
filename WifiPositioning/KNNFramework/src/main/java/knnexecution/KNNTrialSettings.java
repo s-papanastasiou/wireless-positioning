@@ -24,8 +24,8 @@ public class KNNTrialSettings {
     public int varLowerCount = 0;
     public int varUpperCount = 0;
     public boolean isVariance = false;
-    public boolean isBSSIDMerge = false;
-    public boolean isOrientationMerge = false;
+    public boolean isBSSIDMerged = false;
+    public boolean isOrientationMerged = false;
 
     public KNNTrialSettings() {
         //Enter k value
@@ -49,10 +49,10 @@ public class KNNTrialSettings {
         }
         
         if(Menus.Choice("Do you want to merge BSSIDs?"))
-            isBSSIDMerge = true;
+            isBSSIDMerged = true;
         
         if(Menus.Choice("Do you want to merge the orientation?"))
-            isOrientationMerge = true;
+            isOrientationMerged = true;
     }
 
     public static KNNTrialSettings commandSetup(String[] args) {
@@ -131,7 +131,7 @@ public class KNNTrialSettings {
         this.varLowerCount = varLowerCount;
         this.varUpperCount = varUpperCount;
         this.isVariance = true;
-        this.isBSSIDMerge = isBSSIDMerged;
+        this.isBSSIDMerged = isBSSIDMerged;
     }
     
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount, boolean isBSSIDMerged, boolean isOrientationMerged) {
@@ -144,8 +144,8 @@ public class KNNTrialSettings {
         this.varLowerCount = varLowerCount;
         this.varUpperCount = varUpperCount;
         this.isVariance = true;
-        this.isBSSIDMerge = isBSSIDMerged;
-        this.isOrientationMerge = isOrientationMerged;
+        this.isBSSIDMerged = isBSSIDMerged;
+        this.isOrientationMerged = isOrientationMerged;
     }
 
     public static String[] getDistanceOptions() {

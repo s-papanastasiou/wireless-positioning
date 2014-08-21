@@ -107,7 +107,7 @@ public class ProbSimulation {
 
         //Draw the image for the trial
         if (sp.isOutputImage()) {
-            DisplayRoute.draw(fc.probImageDir, "Trial " + proTrial.getTitle(), fc.image, trialPoints, probabilisticFinalPoints);
+            DisplayRoute.print(fc.probImageDir, "Trial " + proTrial.getTitle(), fc.image, trialPoints, probabilisticFinalPoints);
         }
     }
     

@@ -142,7 +142,7 @@ public class ParticleSimulation {
 
         //Draw the image for the trial
         if (sp.isOutputImage()) {
-            DisplayRoute.draw(fc.partImageDir, "Trial " + parTrial.getTitle(), fc.image, trialPoints, particleFinalPoints);
+            DisplayRoute.print(fc.partImageDir, "Trial " + parTrial.getTitle(), fc.image, trialPoints, particleFinalPoints);
         }
     }
     

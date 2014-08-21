@@ -26,7 +26,7 @@ public class VisActivity extends Activity {
     public static final String KNN_DATA_FILE_RSSI = "RSSIKNNData.knn";
     public static final String KNN_DATA_FILE_MAGNETIC = "MagneticKNNData.knn";
     public static final String ROOM_INFO_FILE = "RoomInfo.csv";
-    public static final String FILTER_SSID_FILE = "FilterSSID.txt";
+    public static final String FILTER_SSID_FILE = "FilterBSSID.txt";
 
     public static final String FIELD_SEPARATOR = ",";
 

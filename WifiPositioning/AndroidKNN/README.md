@@ -11,5 +11,5 @@
 # RSSI Offline Map (compiled from raw RSSI data points): RSSIKNNData.knn
 # Magnetic Offline Map (compiled from raw Magnetic data points): MagneticKNNData.knn
 # Information about room layouts on the floor and how relate to floor plan image: RoomInfo.csv
-# SSID filter - white list of SSIDs to keep, one per line - if left out or blank then all accepted: FilterSSID.txt
+# BSSID filter - white list of BSSIDs to keep, one per line - if left out or blank then all accepted: FilterBSSID.txt
 # Image to display floor plan: floorplan.png

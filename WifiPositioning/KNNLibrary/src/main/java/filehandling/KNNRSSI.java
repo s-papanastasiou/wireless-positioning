@@ -77,20 +77,20 @@ public class KNNRSSI {
         return load(dataFile, knnFile, roomInfo, isNewData, new ArrayList<String>());
     }
 
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final boolean isNewData, final List<String> filterSSIDs) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final boolean isNewData, final List<String> filterBSSIDs) {
 
-        return load(dataFile, knnFile, roomInfo, isNewData, filterSSIDs, false, false);
+        return load(dataFile, knnFile, roomInfo, isNewData, filterBSSIDs, false, false);
     }
 
     //loader that tries to load from precompiled data unless missing or told that it is new data (in which case the compiled data is stored)
     //can only be used on RSSI data which is filtered through list of SSIDs
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final boolean isNewData, final List<String> filterSSIDs, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final boolean isNewData, final List<String> filterBSSIDs, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
 
         HashMap<String, KNNFloorPoint> knnRadioMap;
 
         if (isNewData || !knnFile.exists()) {
             //load raw data
-            List<RSSIData> dataList = RSSILoader.load(dataFile, filterSSIDs, roomInfo);
+            List<RSSIData> dataList = RSSILoader.load(dataFile, filterBSSIDs, roomInfo);
 
             //convert raw
             knnRadioMap = compile(dataList, isBSSIDMerged, isOrientationMerged);
@@ -184,8 +184,7 @@ public class KNNRSSI {
                 roomRef = rssiData.getRoomRef();
             }
 
-            for (int counter = 0; counter < knnList.size(); counter++) {
-                KNNFloorPoint entry = knnList.get(counter);
+            for (KNNFloorPoint entry : knnList) {
                 if (entry.getRoomRef().equals(roomRef)) {
                     entry.add(bssid, rssiData.getRSSI());
                     isMatch = true;
@@ -237,8 +236,7 @@ public class KNNRSSI {
 
             //Check against timestamp and room ref of floor point for matches
             long timestamp = rssiData.getTimestamp();
-            for (int counter = 0; counter < knnList.size(); counter++) {
-                KNNTrialPoint entry = knnList.get(counter);
+            for (KNNTrialPoint entry : knnList) {
                 if (entry.equals(timestamp, roomRef)) {
                     entry.add(bssid, rssiData.getRSSI());
                     isMatch = true;

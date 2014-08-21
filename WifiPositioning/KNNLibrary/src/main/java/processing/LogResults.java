@@ -58,7 +58,7 @@ public class LogResults {
         writer.newLine();
     } 
      
-    public static String logRSSI(KNNFloorPoint scanPoint, general.Point screenPoint, List<ResultLocation> estimates, general.Point finalPoint, KNNFloorPoint scanPointUnfiltered, List<String> filterSSIDs, PositioningSettings positioningSettings){
+    public static String logRSSI(KNNFloorPoint scanPoint, general.Point screenPoint, List<ResultLocation> estimates, general.Point finalPoint, KNNFloorPoint scanPointUnfiltered, List<String> filterBSSIDs, PositioningSettings positioningSettings){
         String message = "";
         String endl = System.getProperty("line.separator");
         
@@ -73,7 +73,7 @@ public class LogResults {
 
         message +="<access_points>" + endl;
 
-        if (filterSSIDs.isEmpty()) {
+        if (filterBSSIDs.isEmpty()) {
 
             HashMap<String, AvgValue> filteredAttributes = scanPoint.getAttributes();
             Set<String> filterKeys = filteredAttributes.keySet();
@@ -84,11 +84,11 @@ public class LogResults {
 
         } else {
 
-            //SSID Filter
-            message +=String.format("<ssid_filter count=\"%s\" >", filterSSIDs.size()) + endl;
-            for (String ssid : filterSSIDs)
-                message +=String.format("<ssid name=\"%s\" />", ssid) + endl;
-            message +="</ssid_filter>" + endl;
+            //BSSID Filter
+            message +=String.format("<bssid_filter count=\"%s\" >", filterBSSIDs.size()) + endl;
+            for (String bssid : filterBSSIDs)
+                message +=String.format("<bssid name=\"%s\" />", bssid) + endl;
+            message +="</bssid_filter>" + endl;
 
             //Pre-Filter BSSIDs
             HashMap<String, AvgValue> unfilteredAttributes = scanPointUnfiltered.getAttributes();

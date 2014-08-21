@@ -31,12 +31,12 @@ public class RSSILoader {
      * Load list of RSSI data from file.
      * 
      * @param dataFile File of geomagnetic data with header row.     
-     * @param filterSSIDs List of SSIDs to only include from loaded file - empty to permit all SSIDs.
+     * @param filterBSSIDs List of BSSIDs to only include from loaded file - empty to permit all BSSIDs.
      * @param seperator Field separator between columns.
      * @param roomInfo Information about the rooms on the floor.
      * @return 
      */
-    public static List<RSSIData> load(final File dataFile, final List<String> filterSSIDs, final String seperator, final HashMap<String, RoomInfo> roomInfo) {
+    public static List<RSSIData> load(final File dataFile, final List<String> filterBSSIDs, final String seperator, final HashMap<String, RoomInfo> roomInfo) {
 
         List<RSSIData> rawData = new ArrayList<>();
 
@@ -54,8 +54,8 @@ public class RSSILoader {
                         parts = line.split(seperator);
                         if (parts.length == headerSize) {
                             try {
-                                if (!filterSSIDs.isEmpty()) {
-                                    if (filterSSIDs.contains(parts[6])) //sixth element is SSID - only add if it is in the filter list
+                                if (!filterBSSIDs.isEmpty()) {
+                                    if (filterBSSIDs.contains(parts[5])) //fifth element is BSSID - only add if it is in the filter list
                                     {
                                         rawData.add(new RSSIData(parts, roomInfo));
                                     }
@@ -94,13 +94,13 @@ public class RSSILoader {
      * Assumes comma separation between columns.
      * 
      * @param dataFile File of geomagnetic data with header row.          
-     * @param filterSSIDs List of SSIDs to only include from loaded file - empty to permit all SSIDs.
+     * @param filterBSSIDs List of BSSIDs to only include from loaded file - empty to permit all BSSIDs.
      * @param roomInfo Information about the rooms on the floor.
      * @return 
      */
-    public static List<RSSIData> load(final File dataFile, final List<String> filterSSIDs, final HashMap<String, RoomInfo> roomInfo) {
+    public static List<RSSIData> load(final File dataFile, final List<String> filterBSSIDs, final HashMap<String, RoomInfo> roomInfo) {
 
-        return load(dataFile, filterSSIDs, ",", roomInfo);
+        return load(dataFile, filterBSSIDs, ",", roomInfo);
     }
 
     /**

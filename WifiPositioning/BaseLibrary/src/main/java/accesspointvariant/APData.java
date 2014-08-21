@@ -25,6 +25,7 @@ public class APData {
     private Double mean;
     private Double variance;
     private Double stdDev;
+    private Integer itemCount;
     
     private static final String[] LOCAL_HEADINGS = {"BSSID"};
     public static final String[] HEADINGS = ArrayUtils.addAll(LOCAL_HEADINGS, APLocation.HEADINGS);
@@ -44,6 +45,7 @@ public class APData {
         this.minRSSIMean = location.mean();
         this.stdDev = 0.0;
         this.mean = location.mean();
+        this.itemCount = 1;
     }
 
     /**
@@ -53,6 +55,8 @@ public class APData {
     public void add(final RSSIData item) {
         APLocation location = new APLocation(item, item.getRSSI());
 
+        itemCount++;
+        
         int locFreq;
         double locMean;
         if (locations.contains(location)) {
@@ -149,6 +153,38 @@ public class APData {
      */
     public Double getMinRSSIMean() {
         return minRSSIMean;
+    }
+
+    /**
+     * Mean RSSI locations for this access point.
+     * @return 
+     */
+    public Double getMean() {
+        return mean;
+    }
+
+    /**
+     * Variance of the mean RSSI locations for this access point.
+     * @return 
+     */
+    public Double getVariance() {
+        return variance;
+    }
+
+    /**
+     * Standard deviation of the mean RSSI locations for this access point.
+     * @return 
+     */
+    public Double getStdDev() {
+        return stdDev;
+    }
+
+    /**
+     * Count of items that have been added for this access point.
+     * @return 
+     */
+    public Integer getItemCount() {
+        return itemCount;
     }
     
     /**

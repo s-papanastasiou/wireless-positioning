@@ -27,31 +27,31 @@ public class RSSIStorer {
      * Store list of magnetic data to file.
      * Assumes comma separation between columns.
      * 
-     * @param dataFile File to store the data.
+     * @param outputFile File to store the data.
      * @param rssiDataList List of RSSI data.     
      * @param isNew Whether writing a new file or appending the data to the end.
      * @return 
      */
-     public static boolean store(File dataFile, List<RSSIData> rssiDataList, boolean isNew){
-         return store(dataFile, rssiDataList, ",", isNew);
+     public static boolean store(File outputFile, List<RSSIData> rssiDataList, boolean isNew){
+         return store(outputFile, rssiDataList, ",", isNew);
      }
        
      /**
      * Store list of RSSI data to file.     
      * 
-     * @param dataFile File to store the data.
+     * @param outputFile File to store the data.
      * @param rssiDataList List of RSSI data.
      * @param fieldSeperator Separator between columns.     
      * @param isNew Whether writing a new file or appending the data to the end.
      * @return 
      */
-     public static boolean store(File dataFile, List<RSSIData> rssiDataList, String fieldSeperator, boolean isNew){
+     public static boolean store(File outputFile, List<RSSIData> rssiDataList, String fieldSeperator, boolean isNew){
                 
-        boolean isSucces = false;
+        boolean isSuccess = false;
         
         try {            
 
-            try (BufferedWriter dataWriter = new BufferedWriter(new FileWriter(dataFile, true))) {
+            try (BufferedWriter dataWriter = new BufferedWriter(new FileWriter(outputFile, true))) {
 
                 if(isNew)
                     dataWriter.append(RSSIData.toStringHeadings(fieldSeperator) + System.getProperty("line.separator"));
@@ -59,12 +59,12 @@ public class RSSIStorer {
                 for(RSSIData rssiData:rssiDataList){
                     dataWriter.append(rssiData.toString(fieldSeperator) + System.getProperty("line.separator"));
                 }
-                isSucces = true;
+                isSuccess = true;
             }
         } catch (IOException x) {
             logger.error(x.getMessage());
         }
         
-        return isSucces;
+        return isSuccess;
     }          
 }

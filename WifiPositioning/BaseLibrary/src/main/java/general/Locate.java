@@ -35,7 +35,7 @@ public class Locate {
 
         if (!positions.isEmpty()) {
 
-            final double zeroWeight = 0.1f; //nominal none zero value to prevent problems in inverse normalisation
+            final double zeroWeight = 0.0001f; //nominal none zero value to prevent problems in inverse normalisation
             double x = 0;
             double y = 0;
             double totalWeight = 0;  //to normalise the values

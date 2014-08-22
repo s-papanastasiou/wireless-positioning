@@ -187,7 +187,7 @@ public class KNNFloorPoint extends Location implements Serializable {
                 Double lower = mean - variance;
                 if(otherAttributes.containsKey(key)){
                     Double otherMean = otherAttributes.get(key).getMean();
-                    if(!(lower < otherMean && otherMean < upper)){
+                    if(!(lower <= otherMean && otherMean <= upper)){
                         result = false;
                         break;
                     }

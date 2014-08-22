@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -239,12 +238,10 @@ public class APFormat {
             try (BufferedWriter outputWriter = new BufferedWriter(new FileWriter(outputFile, true))) {
 
                 outputWriter.append(toStringHeadings(fieldSeparator) + System.getProperty("line.separator"));
-
-                Set<String> keys = apDataMap.keySet();
-                for (String key : keys) {
-                    APData item = apDataMap.get(key);
-                    String bssid = item.getBSSID();
-                    for (APLocation location : item.getLocations()) {
+                
+                for (APData apData : apDataMap.values()) {                    
+                    String bssid = apData.getBSSID();
+                    for (APLocation location : apData.getLocations()) {
                         outputWriter.append(bssid + fieldSeparator + location.toString(fieldSeparator) + System.getProperty("line.separator"));
                     }
 

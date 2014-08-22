@@ -21,7 +21,7 @@ import junit.framework.TestCase;
  */
 public class APFormatTest extends TestCase {
    
-    private static final String workingDirectory = "C:\\WirelessPositioningTestFiles";
+    private static final String workingDirectory = "C:\\WirelessPositioningTestFiles\\Access Point Files";
     private static final File workingPath = new File(workingDirectory);
     private static final String roomInfoFilename = "RoomInfo.csv";
     private static final File roomInfoFile = new File(workingPath, roomInfoFilename);
@@ -41,6 +41,7 @@ public class APFormatTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        workingPath.mkdir();
     }
     
     @Override
@@ -51,6 +52,7 @@ public class APFormatTest extends TestCase {
     /**
      * Test of compile method, of class APFormat.
      */
+    /*
     public void testCompile() {
         System.out.println("compile");
         // TODO review the generated test code and remove the default call to fail.
@@ -62,10 +64,11 @@ public class APFormatTest extends TestCase {
         assertEquals(expResult, result);
         
     }
-
+*/
     /**
      * Test of compileList method, of class APFormat.
      */
+    /*
     public void testCompileList() {
         System.out.println("compileList");
         // TODO review the generated test code and remove the default call to fail.
@@ -77,10 +80,11 @@ public class APFormatTest extends TestCase {
         assertEquals(expResult, result);
 
     }
-
+*/
     /**
      * Test of load method, of class APFormat.
      */
+    /*
     public void testLoad_4args() {
         System.out.println("load");
         // TODO review the generated test code and remove the default call to fail.
@@ -91,10 +95,11 @@ public class APFormatTest extends TestCase {
         assertEquals(expResult, result);
         
     }
-
+*/
     /**
      * Test of load method, of class APFormat.
      */
+    /*
     public void testLoad_5args() {
         System.out.println("load"); 
         // TODO review the generated test code and remove the default call to fail.
@@ -105,10 +110,11 @@ public class APFormatTest extends TestCase {
         HashMap<String, APData> result = APFormat.load(dataFile, dataSep, roomInfo, isBSSIDMerged, isOrientationMerged);
         assertEquals(expResult, result);       
     }
-
+*/
     /**
      * Test of loadList method, of class APFormat.
      */
+    /*
     public void testLoadList_4args() {
         System.out.println("loadList");
         // TODO review the generated test code and remove the default call to fail.
@@ -119,10 +125,11 @@ public class APFormatTest extends TestCase {
         assertEquals(expResult, result);
 
     }
-
+*/
     /**
      * Test of loadList method, of class APFormat.
      */
+    /*
     public void testLoadList_5args() {
         System.out.println("loadList");
         // TODO review the generated test code and remove the default call to fail.
@@ -134,7 +141,7 @@ public class APFormatTest extends TestCase {
         assertEquals(expResult, result);
 
     }
-
+*/
     /**
      * Test of print method, of class APFormat with false BSSID merged and false Orientation merged.
      */

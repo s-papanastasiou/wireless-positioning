@@ -60,8 +60,8 @@ public class RSSIScanner {
 
         //Filter by SSID if required
         KNNFloorPoint scanPoint;
-        if (settingsController.getFilterSSID())
-            scanPoint = convertToFloorPointFiltered(scanResults, location, dataManager.getFilterSSIDs());
+        if (settingsController.getFilterBSSID())
+            scanPoint = convertToFloorPointFiltered(scanResults, location, dataManager.getFilterBSSIDs());
         else
             scanPoint = scanPointUnfiltered;
 
@@ -97,8 +97,8 @@ public class RSSIScanner {
 
         //only supply SSID filter list when the setting is on
         String message;
-        if (settingsController.getFilterSSID())
-            message = LogResults.logRSSI(scanPoint, screenPoint, estimates, finalPoint, scanPointUnfiltered, dataManager.getFilterSSIDs(), positioningSettings);
+        if (settingsController.getFilterBSSID())
+            message = LogResults.logRSSI(scanPoint, screenPoint, estimates, finalPoint, scanPointUnfiltered, dataManager.getFilterBSSIDs(), positioningSettings);
         else
             message = LogResults.logRSSI(scanPoint, screenPoint, estimates, finalPoint, scanPointUnfiltered, new ArrayList<String>(), positioningSettings);
 
@@ -108,11 +108,11 @@ public class RSSIScanner {
 
 
     //filter out access points which don't have the required SSID
-    private static KNNFloorPoint convertToFloorPointFiltered(List<ScanResult> results, Location location, List<String> filterSSIDs) {
+    private static KNNFloorPoint convertToFloorPointFiltered(List<ScanResult> results, Location location, List<String> filterBSSIDs) {
 
         KNNFloorPoint scanPoint = new KNNFloorPoint(location);
         for (ScanResult result : results) {
-            if (filterSSIDs.contains(result.SSID)) {
+            if (filterBSSIDs.contains(result.SSID)) {
                 scanPoint.add(result.BSSID, result.level);
             }
         }

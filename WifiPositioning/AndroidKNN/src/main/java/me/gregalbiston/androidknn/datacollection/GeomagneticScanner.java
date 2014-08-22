@@ -5,19 +5,19 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import datastorage.GeomagneticData;
 import datastorage.KNNFloorPoint;
 import datastorage.Location;
-import datastorage.MagneticData;
 import datastorage.ResultLocation;
 import general.Locate;
 import general.Point;
-import processing.LogResults;
-import processing.Positioning;
-import processing.PositioningSettings;
 import java.util.List;
 import me.gregalbiston.androidknn.VisActivity;
 import me.gregalbiston.androidknn.dataload.DataManager;
 import me.gregalbiston.androidknn.dataload.SettingsController;
+import processing.LogResults;
+import processing.Positioning;
+import processing.PositioningSettings;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,7 +27,7 @@ import me.gregalbiston.androidknn.dataload.SettingsController;
  * Starts scan and registers event listener.
  * Processes the results which are passed back and returns ResultsInfo with drawing points and log text.
  */
-public class MagneticScanner {
+public class GeomagneticScanner {
 
     public static void scan(final VisActivity visActivity, final Location location, final Point screenPoint) {
 
@@ -60,11 +60,11 @@ public class MagneticScanner {
         Point finalPoint;
 
         // find list of estimates
-        estimates = Positioning.estimate(scanPoint, dataManager.getMagneticRadioMap(), settingsController.getDistMeasure());
+        estimates = Positioning.estimate(scanPoint, dataManager.getGeomagneticRadioMap(), settingsController.getDistMeasure());
 
         //find the nearest neighbours
         if (settingsController.getVariance())
-            estimates = Positioning.nearestVarianceEstimates(scanPoint, estimates, settingsController.getkLimit(), settingsController.getVarLimit(), settingsController.getVarCount(), dataManager.getMagneticRadioMap());
+            estimates = Positioning.nearestVarianceEstimates(scanPoint, estimates, settingsController.getkLimit(), settingsController.getVarLimit(), settingsController.getVarCount(), dataManager.getGeomagneticRadioMap());
         else
             estimates = Positioning.nearestEstimates(estimates, settingsController.getkLimit());
 
@@ -89,7 +89,7 @@ public class MagneticScanner {
 
         float values[] = event.values;
 
-        return new KNNFloorPoint(location, MagneticData.X_Key, values[0], MagneticData.Y_Key, values[1], MagneticData.Z_Key, values[2]);
+        return new KNNFloorPoint(location, GeomagneticData.X_Key, values[0], GeomagneticData.Y_Key, values[1], GeomagneticData.Z_Key, values[2]);
     }
 
 }

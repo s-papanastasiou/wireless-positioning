@@ -13,7 +13,7 @@ import android.view.WindowManager;
 import datastorage.Location;
 import me.gregalbiston.androidknn.R;
 import me.gregalbiston.androidknn.VisActivity;
-import me.gregalbiston.androidknn.datacollection.MagneticScanner;
+import me.gregalbiston.androidknn.datacollection.GeomagneticScanner;
 import me.gregalbiston.androidknn.datacollection.RSSIScanner;
 
 /**
@@ -78,7 +78,7 @@ public class FloorView extends View {
                 Location location = grid.find(screenPoint);
 
                 RSSIScanner.scan(visActivity, location, screenPoint);
-                MagneticScanner.scan(visActivity, location, screenPoint);
+                GeomagneticScanner.scan(visActivity, location, screenPoint);
                 break;
         }
 

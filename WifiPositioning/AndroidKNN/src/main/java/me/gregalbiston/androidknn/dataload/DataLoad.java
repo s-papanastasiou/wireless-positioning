@@ -3,11 +3,10 @@ package me.gregalbiston.androidknn.dataload;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import datastorage.KNNFloorPoint;
-import filehandling.FilterSSID;
-import filehandling.KNNFormatStorage;
 import datastorage.RoomInfo;
+import filehandling.FilterBSSID;
+import filehandling.KNNFormatStorage;
 import filehandling.RoomInfoLoader;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -53,21 +52,21 @@ public class DataLoad {
         return roomInfo;
     }
 
-    public static List<String> loadFilterSSID(String directory, String filterFilename) {
+    public static List<String> loadFilterBSSID(String directory, String filterFilename) {
 
         String state = Environment.getExternalStorageState();
-        List<String> filterSSID = null;
+        List<String> filterBSSID = null;
 
         if (Environment.MEDIA_MOUNTED.equals(state)) {
             File dir = Environment.getExternalStoragePublicDirectory(directory);
             File filterFile = new File(dir, filterFilename);
             if (filterFile.exists()) {
-                filterSSID = FilterSSID.load(filterFile);
+                filterBSSID = FilterBSSID.load(filterFile);
             }
 
         }
 
-        return filterSSID;
+        return filterBSSID;
     }
 
 

@@ -22,7 +22,7 @@ public class SettingsController implements SharedPreferences.OnSharedPreferenceC
     protected static final String SHOW_ESTIMATES = "show_estimates";
     protected static final String SHOW_GRID = "show_grid";
     protected static final String USE_VARIANCE = "use_variance";
-    protected static final String FILTER_SSID = "filter_ssid";
+    protected static final String FILTER_BSSID = "filter_ssid";
     protected static final String DIST_MEASURE = "dist_measure";
     protected static final String K_LIMIT = "k_limit";
     protected static final String VAR_COUNT = "var_count";
@@ -37,7 +37,7 @@ public class SettingsController implements SharedPreferences.OnSharedPreferenceC
     protected Boolean isShowLog;
     protected Boolean isShowEstimates;
     protected Boolean isShowGrid;
-    protected Boolean isFilterSSID;
+    protected Boolean isFilterBSSID;
     protected Boolean isVariance;
     protected int kLimit;
     protected int varCount;
@@ -70,7 +70,7 @@ public class SettingsController implements SharedPreferences.OnSharedPreferenceC
         isShowEstimates = preferences.getBoolean(SHOW_ESTIMATES, true);
         isShowGrid = preferences.getBoolean(SHOW_GRID, true);
         isVariance = preferences.getBoolean(USE_VARIANCE, false);
-        isFilterSSID = preferences.getBoolean(FILTER_SSID, false);
+        isFilterBSSID = preferences.getBoolean(FILTER_BSSID, false);
         kLimit = Integer.parseInt(preferences.getString(K_LIMIT, "5"));
         varCount = Integer.parseInt(preferences.getString(VAR_COUNT, "5"));
         varLimit = Double.parseDouble(preferences.getString(VAR_LIMIT, "1.0"));
@@ -141,8 +141,8 @@ public class SettingsController implements SharedPreferences.OnSharedPreferenceC
             case USE_VARIANCE:                                            //TODO showing as Magnetic/RSSI rather than ON/OFF
                 isVariance = sharedPreferences.getBoolean(USE_VARIANCE, false);
                 break;
-            case FILTER_SSID:
-                isFilterSSID = sharedPreferences.getBoolean(FILTER_SSID, false);
+            case FILTER_BSSID:
+                isFilterBSSID = sharedPreferences.getBoolean(FILTER_BSSID, false);
                 break;
             case DIST_MEASURE:
                 String distString = sharedPreferences.getString(DIST_MEASURE, DistanceMeasure.Manhatten.toString());
@@ -166,8 +166,8 @@ public class SettingsController implements SharedPreferences.OnSharedPreferenceC
 
     }
 
-    public Boolean getFilterSSID() {
-        return isFilterSSID;
+    public Boolean getFilterBSSID() {
+        return isFilterBSSID;
     }
 
     public Boolean getVariance() {

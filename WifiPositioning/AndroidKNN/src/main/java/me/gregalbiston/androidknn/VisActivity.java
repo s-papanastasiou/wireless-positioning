@@ -86,7 +86,7 @@ public class VisActivity extends Activity {
     }
 
     public void magneticScanResult(SensorEvent event, Location location, Point screenPoint) {
-        dataManager.magneticScanResult(event, location, screenPoint);
+        dataManager.geomagneticScanResult(event, location, screenPoint);
     }
 
     /*

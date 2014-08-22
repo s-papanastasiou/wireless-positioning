@@ -5,19 +5,18 @@ import android.graphics.drawable.Drawable;
 import android.hardware.SensorEvent;
 import android.net.wifi.ScanResult;
 import android.widget.TextView;
+import datastorage.GeomagneticData;
 import datastorage.KNNFloorPoint;
 import datastorage.Location;
-import datastorage.MagneticData;
 import datastorage.RSSIData;
 import datastorage.RoomInfo;
 import general.Point;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import me.gregalbiston.androidknn.R;
 import me.gregalbiston.androidknn.VisActivity;
-import me.gregalbiston.androidknn.datacollection.MagneticScanner;
+import me.gregalbiston.androidknn.datacollection.GeomagneticScanner;
 import me.gregalbiston.androidknn.datacollection.RSSIScanner;
 import me.gregalbiston.androidknn.datacollection.ResultsInfo;
 import me.gregalbiston.androidknn.display.FloorView;
@@ -36,20 +35,20 @@ import me.gregalbiston.androidknn.logging.OutputLog;
 public class DataManager {
 
     protected HashMap<String, KNNFloorPoint> rssiRadioMap;
-    protected HashMap<String, KNNFloorPoint> magneticRadioMap;
+    protected HashMap<String, KNNFloorPoint> geomagneticRadioMap;
     protected HashMap<String, RoomInfo> roomInfo;
-    protected List<String> filterSSIDs;
+    protected List<String> filterBSSIDs;
 
     protected FloorView floorView;
 
     protected Grid grid = null;
     protected PointResults rssiPointResults = null;
-    protected PointResults magneticPointResults = null;
+    protected PointResults geomagneticPointResults = null;
 
     protected Drawable floorPlan;
 
     protected OutputLog rssiLog;
-    protected OutputLog magneticLog;
+    protected OutputLog geomagneticLog;
 
     protected ErrorLog errorLog;
 
@@ -85,8 +84,8 @@ public class DataManager {
         String rawHeadings = RSSIData.toStringHeadings(VisActivity.FIELD_SEPARATOR);
         this.rssiLog = new OutputLog(context, logTextView, settingsController.isShowLog, "RSSI", rawHeadings);
 
-        rawHeadings = MagneticData.toStringHeadings(VisActivity.FIELD_SEPARATOR);
-        this.magneticLog = new OutputLog(context, logTextView, settingsController.isShowLog, "Magnetic", rawHeadings);
+        rawHeadings = GeomagneticData.toStringHeadings(VisActivity.FIELD_SEPARATOR);
+        this.geomagneticLog = new OutputLog(context, logTextView, settingsController.isShowLog, "Magnetic", rawHeadings);
     }
 
     public void start(Context context, TextView logTextView, FloorView floorView) {
@@ -94,22 +93,22 @@ public class DataManager {
         this.floorView = floorView;
         errorLog.restart(context, logTextView, settingsController.isShowLog);
         rssiLog.restart(context, logTextView, settingsController.isShowLog);
-        magneticLog.restart(context, logTextView, settingsController.isShowLog);
+        geomagneticLog.restart(context, logTextView, settingsController.isShowLog);
         setupFloorView();
     }
 
     public void stop() {
         errorLog.close();
         rssiLog.close();
-        magneticLog.close();
+        geomagneticLog.close();
     }
 
     public void newRoute() {
 
         rssiLog.newRoute("RSSI", RSSIData.toStringHeadings(VisActivity.FIELD_SEPARATOR));
-        magneticLog.newRoute("Magnetic", MagneticData.toStringHeadings(VisActivity.FIELD_SEPARATOR));
+        geomagneticLog.newRoute("Geomagnetic", GeomagneticData.toStringHeadings(VisActivity.FIELD_SEPARATOR));
         rssiPointResults.newRoute();
-        magneticPointResults.newRoute();
+        geomagneticPointResults.newRoute();
         floorView.invalidate();
         errorLog.printLogLine(R.string.new_route);
     }
@@ -122,20 +121,20 @@ public class DataManager {
         rssiRadioMap = DataLoad.loadData(VisActivity.FILE_DIRECTORY, VisActivity.KNN_DATA_FILE_RSSI);
 
         //load Magnetic data
-        magneticRadioMap = DataLoad.loadData(VisActivity.FILE_DIRECTORY, VisActivity.KNN_DATA_FILE_MAGNETIC);
+        geomagneticRadioMap = DataLoad.loadData(VisActivity.FILE_DIRECTORY, VisActivity.KNN_DATA_FILE_MAGNETIC);
 
         if (rssiRadioMap == null) {
             errorLog.printLogLine(R.string.rssi_error_message);
         }
 
-        if (magneticRadioMap == null) {
+        if (geomagneticRadioMap == null) {
             errorLog.printLogLine(R.string.magnetic_error_message);
         }
-        if (rssiRadioMap == null && magneticRadioMap == null) {
+        if (rssiRadioMap == null && geomagneticRadioMap == null) {
             errorLog.printLogLine(R.string.nodata_message);
             errorLog.close();
             rssiLog.close();
-            magneticLog.close();
+            geomagneticLog.close();
             throw new AssertionError(R.string.nodata_message);
         }
 
@@ -147,10 +146,10 @@ public class DataManager {
             errorLog.printLogLine(R.string.noroominfo_message);
         }
 
-        filterSSIDs = DataLoad.loadFilterSSID(VisActivity.FILE_DIRECTORY, VisActivity.FILTER_SSID_FILE);
-        if (filterSSIDs == null) {
+        filterBSSIDs = DataLoad.loadFilterBSSID(VisActivity.FILE_DIRECTORY, VisActivity.FILTER_SSID_FILE);
+        if (filterBSSIDs == null) {
             errorLog.printLogLine(R.string.nofilter_message);
-            filterSSIDs = new ArrayList<>();
+            filterBSSIDs = new ArrayList<>();
         }
     }
 
@@ -159,25 +158,25 @@ public class DataManager {
         if (isShowRSSI)
             floorView.setPointResults(rssiPointResults);
         else
-            floorView.setPointResults(magneticPointResults);
+            floorView.setPointResults(geomagneticPointResults);
 
     }
 
     public void showLog(boolean isShowLog) {
         errorLog.showLog(isShowLog);
         rssiLog.showLog(isShowLog);
-        magneticLog.showLog(isShowLog);
+        geomagneticLog.showLog(isShowLog);
     }
 
     public void showPath(boolean isShowPath) {
         rssiPointResults.showPath(isShowPath);
-        magneticPointResults.showPath(isShowPath);
+        geomagneticPointResults.showPath(isShowPath);
         floorView.invalidate();
     }
 
     public void showEstimates(boolean isShowEstimates) {
         rssiPointResults.showEstimates(isShowEstimates);
-        magneticPointResults.showEstimates(isShowEstimates);
+        geomagneticPointResults.showEstimates(isShowEstimates);
         floorView.invalidate();
     }
 
@@ -196,8 +195,8 @@ public class DataManager {
                 if (roomInfo != null && rssiRadioMap != null)
                     grid = new Grid(rssiRadioMap, roomInfo, settingsController.isShowGrid, settingsController.colourGrid);
             } else {
-                if (roomInfo != null && magneticRadioMap != null)
-                    grid = new Grid(magneticRadioMap, roomInfo, settingsController.isShowGrid, settingsController.colourGrid);
+                if (roomInfo != null && geomagneticRadioMap != null)
+                    grid = new Grid(geomagneticRadioMap, roomInfo, settingsController.isShowGrid, settingsController.colourGrid);
             }
         }
 
@@ -207,14 +206,14 @@ public class DataManager {
             rssiPointResults = new PointResults(settingsController.isShowGrid, settingsController.isShowPath, settingsController.colourFinal, settingsController.colourScan, settingsController.colourEstimates);
         }
 
-        if (magneticPointResults == null) {
-            magneticPointResults = new PointResults(settingsController.isShowGrid, settingsController.isShowPath, settingsController.colourFinal, settingsController.colourScan, settingsController.colourEstimates);
+        if (geomagneticPointResults == null) {
+            geomagneticPointResults = new PointResults(settingsController.isShowGrid, settingsController.isShowPath, settingsController.colourFinal, settingsController.colourScan, settingsController.colourEstimates);
         }
 
         if (settingsController.isShowRSSI)
             floorView.setPointResults(rssiPointResults);
         else
-            floorView.setPointResults(magneticPointResults);
+            floorView.setPointResults(geomagneticPointResults);
 
         if (floorPlan != null) {
             floorView.setFloorPlan(floorPlan);
@@ -223,7 +222,7 @@ public class DataManager {
 
     public void setPointResultsColours(int colourFinal, int colourScan, int colourEstimates) {
         rssiPointResults.setColours(colourFinal, colourScan, colourEstimates);
-        magneticPointResults.setColours(colourFinal, colourScan, colourEstimates);
+        geomagneticPointResults.setColours(colourFinal, colourScan, colourEstimates);
         floorView.invalidate();
     }
 
@@ -236,8 +235,8 @@ public class DataManager {
         return rssiRadioMap;
     }
 
-    public HashMap<String, KNNFloorPoint> getMagneticRadioMap() {
-        return magneticRadioMap;
+    public HashMap<String, KNNFloorPoint> getGeomagneticRadioMap() {
+        return geomagneticRadioMap;
     }
 
     public HashMap<String, RoomInfo> getRoomInfo() {
@@ -248,8 +247,8 @@ public class DataManager {
         return settingsController;
     }
 
-    public List<String> getFilterSSIDs() {
-        return filterSSIDs;
+    public List<String> getFilterBSSIDs() {
+        return filterBSSIDs;
     }
 
     public void rssiScanResult(List<ScanResult> scanResults, Location location, Point screenPoint) {
@@ -271,23 +270,23 @@ public class DataManager {
         }
     }
 
-    public void magneticScanResult(SensorEvent event, Location location, Point screenPoint) {
+    public void geomagneticScanResult(SensorEvent event, Location location, Point screenPoint) {
 
-        outputRawMagneticData(event, location);
-        ResultsInfo results = MagneticScanner.processResult(event, location, screenPoint, this);
-        magneticPointResults.add(results);
+        outputRawGeoMagneticData(event, location);
+        ResultsInfo results = GeomagneticScanner.processResult(event, location, screenPoint, this);
+        geomagneticPointResults.add(results);
         floorView.invalidate();
 
-        magneticLog.printLogLine(results.message);
+        geomagneticLog.printLogLine(results.message);
     }
 
-    //Convert ScanResult to RSSIData format and send to file
-    private void outputRawMagneticData(SensorEvent event, Location location) {
+    //Convert ScanResult to GeomagneticData format and send to file
+    private void outputRawGeoMagneticData(SensorEvent event, Location location) {
         long timestamp = System.currentTimeMillis();
 
         float[] values = event.values;
-        MagneticData magneticData = new MagneticData(timestamp, location, values[0], values[1], values[2], event.accuracy);
-        magneticLog.printRawLine(magneticData.toString(VisActivity.FIELD_SEPARATOR));
+        GeomagneticData geomagneticData = new GeomagneticData(timestamp, location, values[0], values[1], values[2], event.accuracy);
+        geomagneticLog.printRawLine(geomagneticData.toString(VisActivity.FIELD_SEPARATOR));
     }
 
      /*

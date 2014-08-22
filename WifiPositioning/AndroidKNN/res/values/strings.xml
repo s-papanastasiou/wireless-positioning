@@ -28,7 +28,7 @@
     <string name="ok">OK</string>
     <string name="app_start">Application Started</string>
     <string name="new_route">New Route</string>
-    <string name="nofilter_message">No SSID filter found: Add SSIDFilter.txt to KNN folder on device.</string>
+    <string name="nofilter_message">No BSSID filter found: Add BSSIDFilter.txt to KNN folder on device.</string>
 
 
     <!-- /////////////////////////////////////////Settings Strings//////////////////////////////////// -->

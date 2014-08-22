@@ -10,8 +10,8 @@ import datastorage.RSSIData;
 import datastorage.KNNTrialPoint;
 import datastorage.RoomInfo;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +74,7 @@ public class KNNRSSI {
     //loader that tries to load from precompiled data unless missing or told that it is new data (in which case the compiled data is stored)
     public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final boolean isNewData) {
 
-        return load(dataFile, knnFile, roomInfo, isNewData, new ArrayList<String>());
+        return load(dataFile, knnFile, roomInfo, isNewData, new LinkedList<String>());
     }
 
     public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final boolean isNewData, final List<String> filterBSSIDs) {
@@ -161,7 +161,7 @@ public class KNNRSSI {
 
     public static List<KNNFloorPoint> compileList(final List<RSSIData> dataList, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
 
-        List<KNNFloorPoint> knnList = new ArrayList();
+        List<KNNFloorPoint> knnList = new LinkedList();
 
         //logger.info("Compiling RSSI location data list....");
         int beginIndex = 0;
@@ -211,7 +211,7 @@ public class KNNRSSI {
     //Stores the timestamp as well as the floor point so that only readings at the same time are stored together. Used for generating lists of trial points.
     public static List<KNNTrialPoint> compileTrialList(final List<RSSIData> dataList, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
 
-        List<KNNTrialPoint> knnList = new ArrayList();
+        List<KNNTrialPoint> knnList = new LinkedList();
 
         //logger.info("Compiling RSSI trial location data list....");
         int beginIndex = 0;

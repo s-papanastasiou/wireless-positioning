@@ -152,5 +152,56 @@ public class KNNFloorPoint extends Location implements Serializable {
 
         return orientatedMap;
     }
+    
+    public Boolean equivalentTo(KNNFloorPoint other) {
+        
+        Boolean result = true;
+        
+        HashMap<String, AvgValue> otherAttributes = other.attributes;
+        if(this.attributes.size()==otherAttributes.size()){
+            
+            for(String bssid: this.attributes.keySet()){
+                if(!otherAttributes.containsKey(bssid)){
+                    result = false;
+                    break;
+                }
+            }
+            
+        }else{
+            result =false;
+        }
+        
+        return result;
+    }
+    
+    public Boolean equivalentTo(KNNFloorPoint other, Double variance) {
+        
+        Boolean result = true;
+        
+        HashMap<String, AvgValue> otherAttributes = other.attributes;
+        if(this.attributes.size()==otherAttributes.size()){
+            
+            for(String key: this.attributes.keySet()){
+                Double mean = this.attributes.get(key).getMean();
+                Double upper = mean + variance;
+                Double lower = mean - variance;
+                if(otherAttributes.containsKey(key)){
+                    Double otherMean = otherAttributes.get(key).getMean();
+                    if(!(lower < otherMean && otherMean < upper)){
+                        result = false;
+                        break;
+                    }
+                }else{
+                        result = false;
+                        break;
+                }
+            }
+            
+        }else{
+            result =false;
+        }
+        
+        return result;
+    }
 
 }

@@ -21,7 +21,7 @@ import junit.framework.TestCase;
  */
 public class APFormatTest extends TestCase {
    
-    private static final String workingDirectory = "C:\\WirelessPositioningTestFiles\\Access Point Files";
+    private static final String workingDirectory = "C:\\WirelessPositioningTestFiles";
     private static final File workingPath = new File(workingDirectory);
     private static final String roomInfoFilename = "RoomInfo.csv";
     private static final File roomInfoFile = new File(workingPath, roomInfoFilename);
@@ -30,7 +30,7 @@ public class APFormatTest extends TestCase {
     private static final String rssiData = "RSSISurveyData.csv";
     private static final File dataFile = new File(workingPath, rssiData);
     private static final String dataSep = ",";
-    
+     private static final File outputPath = new File(workingPath, "Access Point Files");
     
     private static final List<RSSIData> rssiDataList = RSSILoader.load(dataFile, dataSep, roomInfo);        
     
@@ -41,7 +41,7 @@ public class APFormatTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        workingPath.mkdir();
+        outputPath.mkdir();
     }
     
     @Override
@@ -149,7 +149,7 @@ public class APFormatTest extends TestCase {
         System.out.println("print BSSID: False, Orientation: False");
 
         HashMap<String, APData> apDataMap = APFormat.load(dataFile, dataSep, roomInfo, false, false);
-        File outputFile = new File(workingDirectory, "APData-false-false.csv");
+        File outputFile = new File(outputPath, "APData-false-false.csv");
         boolean expResult = true;        
         boolean result = APFormat.print(outputFile, apDataMap, dataSep);
         assertEquals(expResult, result);
@@ -163,7 +163,7 @@ public class APFormatTest extends TestCase {
         System.out.println("print BSSID: True, Orientation: False");
 
         HashMap<String, APData> apDataMap = APFormat.load(dataFile, dataSep, roomInfo, true, false);
-        File outputFile = new File(workingDirectory, "APData-true-false.csv");
+        File outputFile = new File(outputPath, "APData-true-false.csv");
         boolean expResult = true;        
         boolean result = APFormat.print(outputFile, apDataMap, dataSep);
         assertEquals(expResult, result);
@@ -177,7 +177,7 @@ public class APFormatTest extends TestCase {
         System.out.println("print BSSID: False, Orientation: True");
 
         HashMap<String, APData> apDataMap = APFormat.load(dataFile, dataSep, roomInfo, false, true);
-        File outputFile = new File(workingDirectory, "APData-false-true.csv");
+        File outputFile = new File(outputPath, "APData-false-true.csv");
         boolean expResult = true;        
         boolean result = APFormat.print(outputFile, apDataMap, dataSep);
         assertEquals(expResult, result);
@@ -191,7 +191,7 @@ public class APFormatTest extends TestCase {
         System.out.println("print BSSID: True, Orientation: True");
        
         HashMap<String, APData> apDataMap = APFormat.load(dataFile, dataSep, roomInfo, true, true);
-        File outputFile = new File(workingDirectory, "APData-true-true.csv");
+        File outputFile = new File(outputPath, "APData-true-true.csv");
         boolean expResult = true;        
         boolean result = APFormat.print(outputFile, apDataMap, dataSep);
         assertEquals(expResult, result);

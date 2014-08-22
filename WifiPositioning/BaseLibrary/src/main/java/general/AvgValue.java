@@ -29,7 +29,7 @@ public class AvgValue implements Serializable {
         mean = 0.0;
         stdDev = 0.0;
         variance = 0.0;
-    }
+    }        
 
     /**
      * Constructor

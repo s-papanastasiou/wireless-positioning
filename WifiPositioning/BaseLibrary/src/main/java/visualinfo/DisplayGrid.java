@@ -53,7 +53,7 @@ public class DisplayGrid {
      * @param isRoomOutlineDraw True, draw outline of rooms in roomInfo.
      */
     public static void print(File workingPath, String filename, File floorPlanFile, List<? extends Location> locationList, HashMap<String, RoomInfo> roomInfo, boolean isRoomOutlineDraw) {
-        render(floorPlanFile, locationList, roomInfo, isRoomOutlineDraw, Color.RED, Color.BLUE);
+        print(workingPath, filename, floorPlanFile, locationList, roomInfo, isRoomOutlineDraw, Color.RED, Color.BLUE);
     }
 
     /**

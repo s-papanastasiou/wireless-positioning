@@ -47,7 +47,7 @@ public class HeatMapTest extends TestCase {
         System.out.println("printRSSI");
         String filename = "HeatMapRSSI8Arg";   
         
-        boolean isBSSIDMerged = false;
+        boolean isBSSIDMerged = true;
         boolean isOrientationMerged = false;
         
         HeatMap.printRSSI(VisualInfoTestDefaults.workingPath, filename, VisualInfoTestDefaults.floorPlanFile, VisualInfoTestDefaults.roomInfo, VisualInfoTestDefaults.rssiDataList, isBSSIDMerged, isOrientationMerged, VisualInfoTestDefaults.fieldSeparator);

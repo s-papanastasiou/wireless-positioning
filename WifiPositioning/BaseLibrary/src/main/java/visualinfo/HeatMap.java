@@ -111,8 +111,8 @@ public class HeatMap {
 
         for (APData apData : apDataMap.values()) {
             
-            try {
-                BufferedImage heatImage = drawRSSIHeat(floorPlanFile, roomInfo, apData, maxFrequency, -10.0f, -100.0f);
+            try {                
+                BufferedImage heatImage = drawRSSIHeat(floorPlanFile, roomInfo, apData, maxFrequency, -10.0f, -105.0f);
                 File outputFile = new File(absHeatPath, filename + "-Abs-" + apData.getBSSID().replace(':', '-') + ".png");
                 ImageIO.write(heatImage, "png", outputFile);
                 logger.info("Heatmap created: {}", outputFile.toString());

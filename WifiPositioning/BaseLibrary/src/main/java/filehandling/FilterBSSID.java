@@ -60,17 +60,38 @@ public class FilterBSSID {
      * Generate a list of BSSIDs to use for filtering data on loading.
      * 
      * @param rssiDataList List of data to use to generate BSSID list.
-     * @param minCount Minimum number of RSSI data items to be included on the BSSID list.
+     * @param minSampleCount Minimum number of RSSI data items to be included on the BSSID list.
      * @param isBSSIDMerged Whether or not to merge BSSIDs (5 hex pairs compared to 6 hex pairs).
      * @return 
      */
-    public static List<String> generate(List<RSSIData> rssiDataList, Integer minCount, Boolean isBSSIDMerged){
+    public static List<String> generateBySampleCount(List<RSSIData> rssiDataList, Integer minSampleCount, Boolean isBSSIDMerged){
         
         List<String> filterBSSIDs = new ArrayList<>();
         List<APData> apDataList = APFormat.compileList(rssiDataList, isBSSIDMerged, true);
         
         for(APData apData: apDataList){
-            if(apData.getItemCount()>minCount){
+            if(apData.getItemCount()>=minSampleCount){
+                filterBSSIDs.add(apData.getBSSID());
+            }
+        }
+        return filterBSSIDs;
+    }
+    
+    /**
+     * Generate a list of BSSIDs to use for filtering data on loading.
+     * 
+     * @param rssiDataList List of data to use to generate BSSID list.
+     * @param minLocationCount Minimum number of RSSI data items to be included on the BSSID list.
+     * @param isBSSIDMerged Whether or not to merge BSSIDs (5 hex pairs compared to 6 hex pairs).
+     * @return 
+     */
+    public static List<String> generateByLocationCount(List<RSSIData> rssiDataList, Integer minLocationCount, Boolean isBSSIDMerged){
+        
+        List<String> filterBSSIDs = new ArrayList<>();
+        List<APData> apDataList = APFormat.compileList(rssiDataList, isBSSIDMerged, true);
+        
+        for(APData apData: apDataList){
+            if(apData.getLocations().size()>=minLocationCount){
                 filterBSSIDs.add(apData.getBSSID());
             }
         }

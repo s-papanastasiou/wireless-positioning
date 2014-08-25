@@ -45,15 +45,30 @@ public class FilterBSSIDTest extends TestCase {
     }
 
     /**
-     * Test of generate method, of class FilterBSSID.
+     * Test of generatebySampleByCount method, of class FilterBSSID.
      */
-    public void testGenerate() {
-        System.out.println("generate");
+    public void testGenerateBySampleCount() {
+        System.out.println("generateBySampleCount");
         List<RSSIData> rssiDataList = null;
-        Integer minLocations = null;
+        Integer minSampleCount = null;
         Boolean isBSSIDMerged = null;
         List<String> expResult = null;
-        List<String> result = FilterBSSID.generate(rssiDataList, minLocations, isBSSIDMerged);
+        List<String> result = FilterBSSID.generateBySampleCount(rssiDataList, minSampleCount, isBSSIDMerged);
+        assertEquals(expResult, result);
+        // TODO review the generated test code and remove the default call to fail.
+        fail("The test case is a prototype.");
+    }
+    
+    /**
+     * Test of generatebyLocationByCount method, of class FilterBSSID.
+     */
+    public void testGenerateByLocationCount() {
+        System.out.println("generateByLocationCount");
+        List<RSSIData> rssiDataList = null;
+        Integer minLocationsCount = null;
+        Boolean isBSSIDMerged = null;
+        List<String> expResult = null;
+        List<String> result = FilterBSSID.generateByLocationCount(rssiDataList, minLocationsCount, isBSSIDMerged);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");

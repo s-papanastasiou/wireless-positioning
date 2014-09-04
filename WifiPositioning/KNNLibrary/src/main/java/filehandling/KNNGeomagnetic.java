@@ -63,7 +63,7 @@ public class KNNGeomagnetic {
 
     
     //loader that tries to load from precompiled data unless missing or told that it is new data (in which case the compiled data is stored)
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, boolean isNewData) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, Boolean isNewData) {
 
         HashMap<String, KNNFloorPoint> knnRadioMap;
 
@@ -116,7 +116,7 @@ public class KNNGeomagnetic {
         
         for (GeomagneticData magData : dataList) {
 
-            boolean isMatch = false;
+            Boolean isMatch = false;
             
             for (KNNFloorPoint entry : knnList) {
                 if(entry.getRoomRef().equals(magData.getRoomRef()))

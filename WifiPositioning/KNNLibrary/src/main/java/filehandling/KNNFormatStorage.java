@@ -110,7 +110,7 @@ public class KNNFormatStorage {
             try (BufferedWriter dataWriter = new BufferedWriter(new FileWriter(outputFile, false))) {
 
                 StringBuilder stb = new StringBuilder();
-                stb.append("Locations").append(fieldSeparator).append("Max Attribues").append(fieldSeparator).append("Min Attributes").append(fieldSeparator).append("Max Mean").append(fieldSeparator).append("Min Mean").append(fieldSeparator).append("Max Frequency").append(fieldSeparator).append("Min Frequency").append(fieldSeparator).append("Max Std Dev").append(fieldSeparator).append("Min Std Dev").append(fieldSeparator).append("Mean Std Dev").append(fieldSeparator).append("Max Variance").append(fieldSeparator).append("Min Variance").append(System.getProperty("line.separator"));
+                stb.append("Locations").append(fieldSeparator).append("Max Attributes").append(fieldSeparator).append("Min Attributes").append(fieldSeparator).append("Max Mean").append(fieldSeparator).append("Min Mean").append(fieldSeparator).append("Max Frequency").append(fieldSeparator).append("Min Frequency").append(fieldSeparator).append("Max Std Dev").append(fieldSeparator).append("Min Std Dev").append(fieldSeparator).append("Mean Std Dev").append(fieldSeparator).append("Max Variance").append(fieldSeparator).append("Min Variance").append(System.getProperty("line.separator"));
                 int locations = knnFloorPoints.size();
                 int maxAttr = 0;
                 int minAttr = Integer.MAX_VALUE;

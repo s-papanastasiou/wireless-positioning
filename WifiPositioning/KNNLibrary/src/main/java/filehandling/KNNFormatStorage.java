@@ -15,8 +15,11 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import datastorage.KNNFloorPoint;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,6 +86,21 @@ public class KNNFormatStorage {
         }
 
         return knnRadioMap;
-    }       
+    }
     
+    public void print(File outputFile, List<KNNFloorPoint> knnFloorPoints, String fieldSeparator) {
+        try {
+            try (BufferedWriter dataWriter = new BufferedWriter(new FileWriter(outputFile, false))) {
+
+                StringBuilder stb = new StringBuilder();
+                stb.append("Location").append(fieldSeparator).append("Attributes").append(System.getProperty("line.separator"));
+                for (KNNFloorPoint floorPoint : knnFloorPoints) {                    
+                    stb.append(floorPoint).append(fieldSeparator).append(floorPoint.toStringAttributes(fieldSeparator)).append(System.getProperty("line.separator"));                                                            
+                }
+                dataWriter.append(stb);
+            }
+        } catch (IOException ex) {
+            logger.error(ex.getMessage());
+        }
+    }
 }

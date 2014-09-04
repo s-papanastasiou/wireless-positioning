@@ -13,8 +13,8 @@ import java.util.Set;
  *
  * @author Greg Albiston
  *
- * Generic container to store either Magnetic or RSSI data. Key would be X,Y or
- * Z for Magnetic and the BSSID for RSSI. Value would be microTesla for Magnetic
+ * Generic container to store either Magnetic or RSSI data. key would be X,Y or
+ * Z for Magnetic and the BSSID for RSSI. value would be microTesla for Magnetic
  * and dbm for RSSI.
  *
  */
@@ -45,35 +45,48 @@ public class KNNFloorPoint extends Location implements Serializable {
 
     /**
      *
-     * @param Key
-     * @param Value
+     * @param key
+     * @param value
      */
-    public KNNFloorPoint(final String Key, final double Value) {
+    public KNNFloorPoint(final String key, final Double value) {
         super();
-        this.attributes.put(Key, new AvgValue(Value));
+        this.attributes.put(key, new AvgValue(value));
         this.roomReference = super.getRoomRef();
     }
 
     //constructor for adding rssi data
-    public KNNFloorPoint(final Location location, final String Key, final double Value) {
+    public KNNFloorPoint(final Location location, final String key, final Double value) {
         super(location);
-        this.attributes.put(Key, new AvgValue(Value));
+        this.attributes.put(key, new AvgValue(value));
         this.roomReference = super.getRoomRef();
+    }
+    
+    public KNNFloorPoint(final Location location, final String key, final Integer value) {
+        super(location);
+        this.attributes.put(key, new AvgValue(value));
+        this.roomReference = super.getRoomRef();
+    }
+    
+    //constructor for adding rssi data - allows room reference to be specifed
+    public KNNFloorPoint(final Location location, final String key, final Integer value, final String roomReference) {
+        super(location);
+        this.attributes.put(key, new AvgValue(value));
+        this.roomReference = roomReference;
     }
 
     //constructor for adding rssi data - allows room reference to be specifed
-    public KNNFloorPoint(final Location location, final String Key, final double Value, final String roomReference) {
+    public KNNFloorPoint(final Location location, final String key, final Double value, final String roomReference) {
         super(location);
-        this.attributes.put(Key, new AvgValue(Value));
+        this.attributes.put(key, new AvgValue(value));
         this.roomReference = roomReference;
     }
 
     //constructor for adding magnetic data
-    public KNNFloorPoint(final Location location, final String KeyX, final double ValueX, final String KeyY, final double ValueY, final String KeyW, final double ValueW) {
+    public KNNFloorPoint(final Location location, final String keyX, final Double valueX, final String keyY, final Double valueY, final String keyW, final Double valueW) {
         super(location);
-        this.attributes.put(KeyX, new AvgValue(ValueX));
-        this.attributes.put(KeyY, new AvgValue(ValueY));
-        this.attributes.put(KeyW, new AvgValue(ValueW));
+        this.attributes.put(keyX, new AvgValue(valueX));
+        this.attributes.put(keyY, new AvgValue(valueY));
+        this.attributes.put(keyW, new AvgValue(valueW));
         this.roomReference = super.getRoomRef();
     }
 
@@ -99,18 +112,26 @@ public class KNNFloorPoint extends Location implements Serializable {
         return results;
     }
 
-    public void add(final String Key, final double Value) {
+    public void add(final String key, final Double value) {
 
-        if (attributes.containsKey(Key)) {
-            AvgValue value = attributes.get(Key);
-            value.add(Value);
+        if (attributes.containsKey(key)) {
+            AvgValue avgValue = attributes.get(key);
+            avgValue.add(value);
         } else {
-            attributes.put(Key, new AvgValue(Value));
+            attributes.put(key, new AvgValue(value));
         }
+    }
+    
+    public void add(final String key, final Integer value) {
+        add(key, value.doubleValue());
+    }
+    
+    public void add(final String key, final Integer value, final Boolean isBSSIDMerged) {
+        add(key, value.doubleValue(), isBSSIDMerged);
     }
 
     //Variant that strips the key (BSSID) down from six hex pairs to five.
-    public void add(final String Key, final double Value, final boolean isBSSIDMerged) {
+    public void add(final String key, final Double value, final Boolean isBSSIDMerged) {
 
         int beginIndex = 0;
         int endIndex = 17; //full BSSID - six hex pairs
@@ -119,12 +140,12 @@ public class KNNFloorPoint extends Location implements Serializable {
             endIndex = 14;
         }
 
-        String bssid = Key.substring(beginIndex, endIndex);  //Copy out the BSSID based on whether merging or not.                           
+        String bssid = key.substring(beginIndex, endIndex);  //Copy out the BSSID based on whether merging or not.                           
         if (attributes.containsKey(bssid)) {
-            AvgValue value = attributes.get(bssid);
-            value.add(Value);
+            AvgValue avgValue = attributes.get(bssid);
+            avgValue.add(value);
         } else {
-            attributes.put(bssid, new AvgValue(Value));
+            attributes.put(bssid, new AvgValue(value));
         }
     }
 
@@ -160,8 +181,8 @@ public class KNNFloorPoint extends Location implements Serializable {
         HashMap<String, AvgValue> otherAttributes = other.attributes;
         if(this.attributes.size()==otherAttributes.size()){
             
-            for(String bssid: this.attributes.keySet()){
-                if(!otherAttributes.containsKey(bssid)){
+            for(String key: this.attributes.keySet()){
+                if(!otherAttributes.containsKey(key)){
                     result = false;
                     break;
                 }
@@ -174,26 +195,23 @@ public class KNNFloorPoint extends Location implements Serializable {
         return result;
     }
     
-    public Boolean equivalentTo(KNNFloorPoint other, Double variance) {
-        
+    public Boolean matchingAttributes(KNNFloorPoint other, Double tolerance){
         Boolean result = true;
         
         HashMap<String, AvgValue> otherAttributes = other.attributes;
         if(this.attributes.size()==otherAttributes.size()){
             
             for(String key: this.attributes.keySet()){
-                Double mean = this.attributes.get(key).getMean();
-                Double upper = mean + variance;
-                Double lower = mean - variance;
                 if(otherAttributes.containsKey(key)){
+                    Double mean = attributes.get(key).getMean();
                     Double otherMean = otherAttributes.get(key).getMean();
-                    if(!(lower <= otherMean && otherMean <= upper)){
+                    if (!(otherMean - tolerance <= mean && mean < otherMean+tolerance)){
                         result = false;
                         break;
                     }
                 }else{
-                        result = false;
-                        break;
+                    result = false;
+                    break;
                 }
             }
             
@@ -201,7 +219,16 @@ public class KNNFloorPoint extends Location implements Serializable {
             result =false;
         }
         
-        return result;
+        return result;        
+    }
+    
+    public String toStringAttributes(String fieldSeparator){
+        
+        StringBuilder stb = new StringBuilder();
+        for(String key: attributes.keySet()){
+            stb.append(key).append(" ").append(attributes.get(key)).append(fieldSeparator);
+        }
+        return stb.substring(0, stb.length()-1);
     }
 
 }

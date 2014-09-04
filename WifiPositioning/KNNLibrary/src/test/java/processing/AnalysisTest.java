@@ -57,7 +57,7 @@ public class AnalysisTest extends TestCase {
      */
     public void testPrintNonUniques_3args() {
         System.out.println("printNonUniques3args");
-        File outputFile = new File(outputPath, "NonUniques.csv");
+        File outputFile = new File(outputPath, "NonUniquesFingerprint.csv");
                 
         Analysis instance = new Analysis();
         instance.printNonUniques(outputFile, rssiDataList, dataSep);
@@ -69,7 +69,7 @@ public class AnalysisTest extends TestCase {
      */
     public void testPrintNonUniques_4args() {
         System.out.println("printNonUniques4args");
-        File outputFile = new File(outputPath, "NonUniques2.csv");
+        File outputFile = new File(outputPath, "NonUniquesVarianceFingerprint.csv");
         
         Double variance = 2.0;
         

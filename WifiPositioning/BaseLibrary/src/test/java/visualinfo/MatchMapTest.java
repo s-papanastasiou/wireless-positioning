@@ -45,7 +45,7 @@ public class MatchMapTest extends TestCase {
         
         String filename = "MatchAnalysis8Arg";        
         double rangeValue = 0.0;
-        boolean isBSSIDMerged = false;
+        boolean isBSSIDMerged = true;
         boolean isOrientationMerged = false;
         
         MatchMap.print(VisualInfoTestDefaults.workingPath, filename, VisualInfoTestDefaults.floorPlanFile, VisualInfoTestDefaults.rssiDataList, VisualInfoTestDefaults.roomInfo, rangeValue, isBSSIDMerged, isOrientationMerged, VisualInfoTestDefaults.fieldSeparator);        

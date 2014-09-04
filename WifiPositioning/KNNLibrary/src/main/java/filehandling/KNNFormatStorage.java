@@ -114,13 +114,14 @@ public class KNNFormatStorage {
                 int locations = knnFloorPoints.size();
                 int maxAttr = 0;
                 int minAttr = Integer.MAX_VALUE;
-                double maxMean = 0;
+                double maxMean = -1000;
                 double minMean = Double.MAX_VALUE;
                 int maxFrequency = 0;
                 int minFrequency = Integer.MAX_VALUE;
                 double maxStdDev = 0;
                 double minStdDev = Double.MAX_VALUE;
                 double totalStdDev = 0;
+                double totalAttr = 0;
                 double maxVariance = 0;
                 double minVariance = Double.MAX_VALUE;               
 
@@ -160,6 +161,7 @@ public class KNNFormatStorage {
                         }
                         
                         totalStdDev += value.getStdDev();
+                        totalAttr += 1;
                         
                         if (value.getVariance() > maxVariance) {
                             maxVariance = value.getVariance();
@@ -171,7 +173,7 @@ public class KNNFormatStorage {
                     }
                 }
 
-                stb.append(locations).append(fieldSeparator).append(maxAttr).append(fieldSeparator).append(minAttr).append(fieldSeparator).append(maxMean).append(fieldSeparator).append(minMean).append(fieldSeparator).append(maxFrequency).append(fieldSeparator).append(minFrequency).append(fieldSeparator).append(maxStdDev).append(fieldSeparator).append(minStdDev).append(fieldSeparator).append(totalStdDev/locations).append(fieldSeparator).append(maxVariance).append(fieldSeparator).append(minVariance).append(System.getProperty("line.separator"));
+                stb.append(locations).append(fieldSeparator).append(maxAttr).append(fieldSeparator).append(minAttr).append(fieldSeparator).append(maxMean).append(fieldSeparator).append(minMean).append(fieldSeparator).append(maxFrequency).append(fieldSeparator).append(minFrequency).append(fieldSeparator).append(maxStdDev).append(fieldSeparator).append(minStdDev).append(fieldSeparator).append(totalStdDev/totalAttr).append(fieldSeparator).append(maxVariance).append(fieldSeparator).append(minVariance).append(System.getProperty("line.separator"));
                 
                 dataWriter.append(stb);
                 logger.info(stb.toString());

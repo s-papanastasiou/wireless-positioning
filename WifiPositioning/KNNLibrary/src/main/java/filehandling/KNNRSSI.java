@@ -31,13 +31,13 @@ public class KNNRSSI {
     }
 
     //loader that only loads data and does not store the compiled
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final boolean isBSSIDMerged) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final Boolean isBSSIDMerged) {
 
         return load(dataFile, ",", roomInfo, isBSSIDMerged, false);
     }
 
     //loader that only loads data and does not store the compiled
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {
 
         //load raw data
         List<RSSIData> rssiList = RSSILoader.load(dataFile, fieldSeparator, roomInfo);
@@ -54,13 +54,13 @@ public class KNNRSSI {
         return loadList(dataFile, ",", roomInfo, false, false);
     }
 
-    public static List<KNNFloorPoint> loadList(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final boolean isBSSIDMerged) {
+    public static List<KNNFloorPoint> loadList(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final Boolean isBSSIDMerged) {
 
         return loadList(dataFile, ",", roomInfo, isBSSIDMerged, false);
     }
 
     //loader that only loads data, using field separator, and does not store the compiled - returns a list
-    public static List<KNNFloorPoint> loadList(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+    public static List<KNNFloorPoint> loadList(final File dataFile, final String fieldSeparator, final HashMap<String, RoomInfo> roomInfo, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {
 
         //load raw data
         List<RSSIData> rssiList = RSSILoader.load(dataFile, fieldSeparator, roomInfo);
@@ -72,19 +72,19 @@ public class KNNRSSI {
     }
 
     //loader that tries to load from precompiled data unless missing or told that it is new data (in which case the compiled data is stored)
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final boolean isNewData) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final Boolean isNewData) {
 
         return load(dataFile, knnFile, roomInfo, isNewData, new LinkedList<String>());
     }
 
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final boolean isNewData, final List<String> filterBSSIDs) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final Boolean isNewData, final List<String> filterBSSIDs) {
 
         return load(dataFile, knnFile, roomInfo, isNewData, filterBSSIDs, false, false);
     }
 
     //loader that tries to load from precompiled data unless missing or told that it is new data (in which case the compiled data is stored)
     //can only be used on RSSI data which is filtered through list of SSIDs
-    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final boolean isNewData, final List<String> filterBSSIDs, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+    public static HashMap<String, KNNFloorPoint> load(final File dataFile, final File knnFile, final HashMap<String, RoomInfo> roomInfo, final Boolean isNewData, final List<String> filterBSSIDs, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {
 
         HashMap<String, KNNFloorPoint> knnRadioMap;
 
@@ -103,12 +103,12 @@ public class KNNRSSI {
         return knnRadioMap;
     }
 
-    public static HashMap<String, KNNFloorPoint> compile(final List<RSSIData> dataList, final boolean isBSSIDMerged) {
+    public static HashMap<String, KNNFloorPoint> compile(final List<RSSIData> dataList, final Boolean isBSSIDMerged) {
 
         return compile(dataList, isBSSIDMerged, false);
     }
 
-    public static HashMap<String, KNNFloorPoint> compile(final List<RSSIData> dataList, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+    public static HashMap<String, KNNFloorPoint> compile(final List<RSSIData> dataList, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {
 
         HashMap<String, KNNFloorPoint> knnRadioMap = new HashMap();
 
@@ -155,11 +155,11 @@ public class KNNRSSI {
         return knnRadioMap;
     }
 
-    public static List<KNNFloorPoint> compileList(final List<RSSIData> dataList, final boolean isBSSIDMerged) {
+    public static List<KNNFloorPoint> compileList(final List<RSSIData> dataList, final Boolean isBSSIDMerged) {
         return compileList(dataList, isBSSIDMerged, false);
     }
 
-    public static List<KNNFloorPoint> compileList(final List<RSSIData> dataList, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+    public static List<KNNFloorPoint> compileList(final List<RSSIData> dataList, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {
 
         List<KNNFloorPoint> knnList = new LinkedList();
 
@@ -173,7 +173,7 @@ public class KNNRSSI {
 
         for (RSSIData rssiData : dataList) {
 
-            boolean isMatch = false;
+            Boolean isMatch = false;
             String bssid = rssiData.getBSSID().substring(beginIndex, endIndex);  //Copy out the BSSID based on whether merging or not.                
 
             String roomRef;
@@ -209,7 +209,7 @@ public class KNNRSSI {
     }
 
     //Stores the timestamp as well as the floor point so that only readings at the same time are stored together. Used for generating lists of trial points.
-    public static List<KNNTrialPoint> compileTrialList(final List<RSSIData> dataList, final boolean isBSSIDMerged, final boolean isOrientationMerged) {
+    public static List<KNNTrialPoint> compileTrialList(final List<RSSIData> dataList, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {
 
         List<KNNTrialPoint> knnList = new LinkedList();
 
@@ -223,7 +223,7 @@ public class KNNRSSI {
 
         for (RSSIData rssiData : dataList) {
 
-            boolean isMatch = false;
+            Boolean isMatch = false;
             String bssid = rssiData.getBSSID().substring(beginIndex, endIndex);  //Copy out the BSSID based on whether merging or not.                
 
             String roomRef;

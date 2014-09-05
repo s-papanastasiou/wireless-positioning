@@ -114,6 +114,7 @@ public class Analysis {
         summary.add(avgValue.getMean());
         summary.add(avgValue.getStdDev());
         summary.add(avgValue.getVariance());
+        summary.add(avgValue.getTotal());
 
         return summary;
     }
@@ -165,7 +166,7 @@ public class Analysis {
             try (BufferedWriter dataWriter = new BufferedWriter(new FileWriter(outputFile, false))) {
 
                 StringBuilder stb = new StringBuilder();
-                stb.append("Tolerance").append(fieldSeparator).append("Size").append(fieldSeparator).append("Max Count").append(fieldSeparator).append("Min Count").append(fieldSeparator).append("Mean Count").append(fieldSeparator).append("Std Dev Count").append(fieldSeparator).append("Variance Count").append(System.getProperty("line.separator"));
+                stb.append("Tolerance").append(fieldSeparator).append("Size").append(fieldSeparator).append("Max Count").append(fieldSeparator).append("Min Count").append(fieldSeparator).append("Mean Count").append(fieldSeparator).append("Std Dev Count").append(fieldSeparator).append("Variance Count").append(fieldSeparator).append("Total Count").append(System.getProperty("line.separator"));
 
                 for (Double key : summary.keySet()) {
 

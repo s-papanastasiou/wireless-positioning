@@ -53,7 +53,7 @@ public class ValueMap {
      * @param roomInfo Information about the floor plan for drawing.
      */
     public static void print(final File workingPath, final File floorPlanFile, final List<RSSIData> rssiDataList, final HashMap<String, RoomInfo> roomInfo) {
-        print(workingPath, "ValueAnalysis", floorPlanFile, rssiDataList, roomInfo, 0.5, -100.0, -1.0, 1.0, false, false, ",");
+        print(workingPath, "ValueAnalysis", floorPlanFile, rssiDataList, roomInfo, 0.5, -105.0, -1.0, 1.0, false, false, ",");
     }    
     
     /**

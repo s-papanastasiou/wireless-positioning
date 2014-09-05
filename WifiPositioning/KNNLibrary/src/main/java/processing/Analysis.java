@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,7 +170,8 @@ public class Analysis {
                 StringBuilder stb = new StringBuilder();
                 stb.append("Tolerance").append(fieldSeparator).append("Size").append(fieldSeparator).append("Max Count").append(fieldSeparator).append("Min Count").append(fieldSeparator).append("Mean Count").append(fieldSeparator).append("Std Dev Count").append(fieldSeparator).append("Variance Count").append(fieldSeparator).append("Total Count").append(System.getProperty("line.separator"));
 
-                for (Double key : summary.keySet()) {
+                SortedSet<Double> keys = new TreeSet(summary.keySet());
+                for (Double key : keys) {
 
                     if (key.equals(Double.NaN)) {
                         stb.append("Any");

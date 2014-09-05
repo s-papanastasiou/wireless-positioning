@@ -88,4 +88,32 @@ public class KNNFormatStorageTest extends TestCase {
         instance.print(outputFile, knnFloorPoints, dataSep);        
     }
     
+    public void testRSSIUnmergedPrintAnalysis() {
+        System.out.println("printRSSIUnmergedAnalysis");
+        File outputFile = new File(outputPath, "KNNRSSIUnmerged-Analysis.csv");
+        Boolean isBSSIDMerged = false;
+        List<KNNFloorPoint> knnFloorPoints = KNNRSSI.loadList(rssiDataFile, fieldSeparator, roomInfo, isBSSIDMerged);
+        
+        KNNFormatStorage instance = new KNNFormatStorage();
+        instance.printAnalysis(outputFile, knnFloorPoints, dataSep);        
+    }
+    
+    public void testRSSIMergedPrintAnalysis() {
+        System.out.println("printRSSIMergedAnalysis");
+        File outputFile = new File(outputPath, "KNNRSSIMerged-Analysis.csv");
+        Boolean isBSSIDMerged = true;
+        List<KNNFloorPoint> knnFloorPoints = KNNRSSI.loadList(rssiDataFile, fieldSeparator, roomInfo, isBSSIDMerged);
+        
+        KNNFormatStorage instance = new KNNFormatStorage();
+        instance.printAnalysis(outputFile, knnFloorPoints, dataSep);        
+    }
+    
+    public void testGeomagneticPrintAnalysis() {
+        System.out.println("printGeomagneticAnalysis");
+        File outputFile = new File(outputPath, "KNNGEO-Analysis.csv");        
+        List<KNNFloorPoint> knnFloorPoints = KNNGeomagnetic.loadList(geomagneticDataFile, fieldSeparator, roomInfo);        
+        KNNFormatStorage instance = new KNNFormatStorage();
+        instance.printAnalysis(outputFile, knnFloorPoints, dataSep);        
+    }
+    
 }

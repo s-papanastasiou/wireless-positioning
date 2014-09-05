@@ -98,8 +98,8 @@ public class AnalysisTest extends TestCase {
                 
         Analysis instance = new Analysis();        
         Double lowerBound = 0.0;
-        Double upperBound = 10.0;
-        Double step = 0.5;
+        Double upperBound = 1.01;
+        Double step = 0.01;
         List<KNNFloorPoint> knnFloorList = KNNGeomagnetic.compileList(geomagneticDataList);
         instance.printNonUniques(outputPath, "GeomagneticNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, lowerBound, upperBound, step);
         

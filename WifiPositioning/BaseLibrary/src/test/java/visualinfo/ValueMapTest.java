@@ -44,12 +44,12 @@ public class ValueMapTest extends TestCase {
         System.out.println("print");
         
         String filename = "ValueAnalysis8Arg";        
-        double rangeValue = 0.0;
-        boolean isBSSIDMerged = false;
+        double rangeValue = 0.5;
+        boolean isBSSIDMerged = true;
         boolean isOrientationMerged = false;
         
-        Double lowerBound = -30.0;
-        Double upperBound = -20.0;
+        Double lowerBound = -105.0;
+        Double upperBound = -1.0;
         Double step = 1.0;
         ValueMap.print(VisualInfoTestDefaults.workingPath, filename, VisualInfoTestDefaults.floorPlanFile, VisualInfoTestDefaults.rssiDataList, VisualInfoTestDefaults.roomInfo, rangeValue, lowerBound, upperBound, step, isBSSIDMerged, isOrientationMerged, VisualInfoTestDefaults.fieldSeparator);        
         assertEquals(true, true);

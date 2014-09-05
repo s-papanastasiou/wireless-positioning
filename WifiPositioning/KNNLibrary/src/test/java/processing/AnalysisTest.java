@@ -6,10 +6,14 @@
 
 package processing;
 
+import datastorage.GeomagneticData;
 import datastorage.KNNFloorPoint;
 import datastorage.Location;
 import datastorage.RSSIData;
 import datastorage.RoomInfo;
+import filehandling.GeomagneticLoader;
+import filehandling.KNNGeomagnetic;
+import filehandling.KNNRSSI;
 import filehandling.RSSILoader;
 import filehandling.RoomInfoLoader;
 import java.io.File;
@@ -26,6 +30,8 @@ public class AnalysisTest extends TestCase {
     
     private static final String workingDirectory = "C:\\WirelessPositioningTestFiles";
     private static final File workingPath = new File(workingDirectory);
+    public static final String floorPlanFilename = "floor2.png";
+    public static final File floorPlanFile = new File(workingPath, floorPlanFilename);
     private static final String roomInfoFilename = "RoomInfo.csv";
     private static final File roomInfoFile = new File(workingPath, roomInfoFilename);
     private static final String roomInfoSep = ",";
@@ -35,7 +41,13 @@ public class AnalysisTest extends TestCase {
     private static final String dataSep = ",";
     private static final File outputPath = new File(workingPath, "KNNAnalysis");
     
+    
     private static final List<RSSIData> rssiDataList = RSSILoader.load(dataFile, dataSep, roomInfo);
+    
+     public static final String geomagneticData = "GeomagneticSurveyData.csv";
+    public static final File geomagneticDataFile = new File(workingPath, geomagneticData);
+    public static final List<GeomagneticData> geomagneticDataList = GeomagneticLoader.load(geomagneticDataFile, dataSep, roomInfo);
+    
     
     public AnalysisTest(String testName) {
         super(testName);
@@ -55,58 +67,92 @@ public class AnalysisTest extends TestCase {
     /**
      * Test of printNonUniques method, of class Analysis.
      */
-    public void testPrintNonUniques_3args() {
-        System.out.println("printNonUniques3args");
-        File outputFile = new File(outputPath, "NonUniquesFingerprint.csv");
+    public void testPrintMergedRSSINonUniques_3args() {
+        System.out.println("printRSSIMergedNonUniques");        
                 
         Analysis instance = new Analysis();
-        instance.printNonUniques(outputFile, rssiDataList, dataSep);
+        Boolean isBSSIDMerged = true;
+        Double lowerBound = 0.0;
+        Double upperBound = 10.0;
+        Double step = 0.5;
+        List<KNNFloorPoint> knnFloorList = KNNRSSI.compileList(rssiDataList, isBSSIDMerged);
+        instance.printNonUniques(outputPath, "RSSIMergedNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, lowerBound, upperBound, step);
+        
+    }
+    
+    public void testPrintUnmergedRSSINonUniques() {
+        System.out.println("printRSSIUnmergedNonUniques");        
+                
+        Analysis instance = new Analysis();
+        Boolean isBSSIDMerged = false;
+        Double lowerBound = 0.0;
+        Double upperBound = 10.0;
+        Double step = 0.5;
+        List<KNNFloorPoint> knnFloorList = KNNRSSI.compileList(rssiDataList, isBSSIDMerged);
+        instance.printNonUniques(outputPath, "RSSIUnmergedNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, lowerBound, upperBound, step);
+        
+    }
+    
+    public void testPrintGeomagneticNonUniques() {
+        System.out.println("printGeomagneticNonUniques");        
+                
+        Analysis instance = new Analysis();        
+        Double lowerBound = 0.0;
+        Double upperBound = 10.0;
+        Double step = 0.5;
+        List<KNNFloorPoint> knnFloorList = KNNGeomagnetic.compileList(geomagneticDataList);
+        instance.printNonUniques(outputPath, "GeomagneticNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, lowerBound, upperBound, step);
         
     }
 
     /**
      * Test of printNonUniques method, of class Analysis.
      */
+    /*
     public void testPrintNonUniques_4args() {
-        System.out.println("printNonUniques4args");
-        File outputFile = new File(outputPath, "NonUniquesVarianceFingerprint.csv");
+        System.out.println("printNonUniques4args");        
         
         Double variance = 2.0;
         
         Analysis instance = new Analysis();
-        instance.printNonUniques(outputFile, rssiDataList, variance, dataSep);
+        Boolean isBSSIDMerged = true;
+        instance.printNonUniques(outputPath, "NonUniquesVarianceFingerprint", floorPlanFile, rssiDataList, roomInfo, dataSep, isBSSIDMerged, variance);
        
     }
-
+*/
     /**
      * Test of nonUniques method, of class Analysis.
      */
+    /*
     public void testNonUniques_List() {
-        System.out.println("nonUniques");
+        System.out.println("nonUniquesList");
         List<RSSIData> rssiDataList = testData();
         Analysis instance = new Analysis();
         HashMap<KNNFloorPoint, List<KNNFloorPoint>> expResult = null;
-        HashMap<KNNFloorPoint, List<KNNFloorPoint>> result = instance.nonUniques(rssiDataList);
+        Boolean isBSSIDMerged = false;
+        HashMap<KNNFloorPoint, List<KNNFloorPoint>> result = instance.nonUniques(rssiDataList, isBSSIDMerged);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
-
+*/
     /**
      * Test of nonUniques method, of class Analysis.
      */
+    /*
     public void testNonUniques_List_Double() {
-        System.out.println("nonUniques");
+        System.out.println("nonUniquesListDouble");
         List<RSSIData> rssiDataList = testData();
         Double variance = 2.0;
         Analysis instance = new Analysis();
+        Boolean isBSSIDMerged = false;
         HashMap<KNNFloorPoint, List<KNNFloorPoint>> expResult = null;
-        HashMap<KNNFloorPoint, List<KNNFloorPoint>> result = instance.nonUniques(rssiDataList, variance);
+        HashMap<KNNFloorPoint, List<KNNFloorPoint>> result = instance.nonUniques(rssiDataList, isBSSIDMerged, variance);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
-    
+    */
     private List<RSSIData> testData(){
         
         List<RSSIData> test = new ArrayList<>();

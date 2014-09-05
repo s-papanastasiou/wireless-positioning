@@ -18,8 +18,11 @@ public class AvgValue implements Serializable {
     private Double total;
     private Double mean;
     private final List<Double> values = new ArrayList<>();
+    private Double max;
+    private Double min;
     private Double stdDev;
     private Double variance;
+    
 
     /**
      * Constructor - zero value
@@ -29,6 +32,8 @@ public class AvgValue implements Serializable {
         mean = 0.0;
         stdDev = 0.0;
         variance = 0.0;
+        max = 0.0;
+        min = Double.MAX_VALUE;
     }        
 
     /**
@@ -42,6 +47,8 @@ public class AvgValue implements Serializable {
         values.add(value);
         stdDev = 0.0;
         variance = 0.0;
+        max = value;
+        min = value;
     }
 
     /**
@@ -56,6 +63,12 @@ public class AvgValue implements Serializable {
         
         variance = calcMeanDiff() / values.size();
         stdDev = Math.sqrt(variance); //Square root of the total mean differences divided by the number of values
+        
+        if(value > max)
+            max = value;
+        
+        if(value < min)
+            min = value;
     }
 
     /**
@@ -74,6 +87,25 @@ public class AvgValue implements Serializable {
      */
     public Double getMean() {
         return mean;
+    }
+    
+    /**
+     * Maximum value stored.
+     * @return 
+     */
+    public Double getMax(){
+        return max;
+    }
+    
+    /**
+     * Minimum value stored.
+     * @return 
+     */
+    public Double getMin(){
+        if(min.equals(Double.MAX_VALUE))
+            return 0.0;
+        else
+            return min;
     }
 
     /**

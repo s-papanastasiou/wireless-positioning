@@ -112,7 +112,7 @@ public class AnalysisTest extends TestCase {
         //Tolerance range
         Analysis instance = new Analysis();        
         Double geoLowerBound = 0.0;
-        Double geoUpperBound = 1.0;
+        Double geoUpperBound = 1.01;
         Double geoStep = 0.01;
         List<KNNFloorPoint> knnFloorList = KNNGeomagnetic.compileList(geomagneticDataList);
         
@@ -137,7 +137,7 @@ public class AnalysisTest extends TestCase {
         
         //Tolerance Geomagnetic range
         Double geoLowerBound = 0.0;
-        Double geoUpperBound = 1.0;
+        Double geoUpperBound = 1.01;
         Double geoStep = 0.01;
         HashMap<String, KNNFloorPoint> geoKNNFloorMap = KNNGeomagnetic.compile(geomagneticDataList);        
         
@@ -166,7 +166,7 @@ public class AnalysisTest extends TestCase {
         
         //Tolerance Geomagnetic range
         Double geoLowerBound = 0.0;
-        Double geoUpperBound = 1.0;
+        Double geoUpperBound = 1.01;
         Double geoStep = 0.01;
         HashMap<String, KNNFloorPoint> geoKNNFloorMap = KNNGeomagnetic.compile(geomagneticDataList);        
         

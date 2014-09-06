@@ -19,12 +19,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,33 +70,51 @@ public class Analysis {
 
         return matches;
     }
+    
+    public void printNonUniques(File outputPath, String filename, File floorPlanFile, List<KNNFloorPoint> knnFloorList, HashMap<String, RoomInfo> roomInfo, String fieldSeparator, Double rssiLowerBound, Double rssiUpperBound, Double rssiStep) {
+        printNonUniques(outputPath, filename, floorPlanFile, knnFloorList, roomInfo, fieldSeparator, rssiLowerBound, rssiUpperBound, rssiStep, 0.0, 0.0, 0.0);
+    }
+    
+    public void printNonUniques(File outputPath, String filename, File floorPlanFile, List<KNNFloorPoint> knnFloorList, HashMap<String, RoomInfo> roomInfo, String fieldSeparator, Double rssiLowerBound, Double rssiUpperBound, Double rssiStep, Double geoLowerBound, Double geoUpperBound, Double geoStep) {
 
-    public void printNonUniques(File outputPath, String filename, File floorPlanFile, List<KNNFloorPoint> knnFloorList, HashMap<String, RoomInfo> roomInfo, String fieldSeparator, Double lowerBound, Double upperBound, Double step) {
-
-        HashMap<Double, List<Double>> summaryInfo = new HashMap<>();
+        logger.info("Any Tolerance");
+        HashMap<String, List<Double>> summaryInfo = new HashMap<>();
 
         HashMap<KNNFloorPoint, List<KNNFloorPoint>> results = nonUniques(knnFloorList);
         List<Double> summary = summarise(results);
-        summaryInfo.put(Double.NaN, summary);
+        summaryInfo.put("Any" + fieldSeparator + "Any", summary);
         File outputFile = new File(outputPath, filename + logExtension);
         printToFile(outputFile, results, fieldSeparator);
         File outputDetailFile = new File(outputPath, filename + logDetail + logExtension);
         printDetailToFile(outputDetailFile, results, fieldSeparator);
         printToImage(outputPath, filename, floorPlanFile, results, roomInfo);
 
-        //Check range of exact matches
-        for (Double tolerance = lowerBound; tolerance <= upperBound; tolerance += step) {
-            HashMap<KNNFloorPoint, List<KNNFloorPoint>> exactResults = exactMatch(results, tolerance);
-            summary = summarise(exactResults);
-            summaryInfo.put(tolerance, summary);
-
-            String exactExtensionTol = exactExtension + tolerance;
-            File exactOutputFile = new File(outputPath, filename + exactExtensionTol + logExtension);
-            printToFile(exactOutputFile, exactResults, fieldSeparator);
-            File exactOutputDetailFile = new File(outputPath, filename + exactExtensionTol + logDetail + logExtension);
-            printDetailToFile(exactOutputDetailFile, exactResults, fieldSeparator);
-            printToImage(outputPath, filename + exactExtensionTol, floorPlanFile, exactResults, roomInfo);
+        //Avoid infinite loop
+        if(rssiLowerBound.equals(rssiUpperBound)){
+            rssiStep = 0.1;
         }
+        
+        if(geoLowerBound.equals(geoUpperBound)){
+            geoStep = 0.1;
+        }
+        
+        //Check range of exact matches
+        logger.info("Tolerance Testing");
+        for (Double rssiTolerance = rssiLowerBound; rssiTolerance <= rssiUpperBound; rssiTolerance += rssiStep) {
+            for (Double geoTolerance = geoLowerBound; geoTolerance <= geoUpperBound; geoTolerance += geoStep) {
+                HashMap<KNNFloorPoint, List<KNNFloorPoint>> exactResults = exactMatch(results, rssiTolerance, geoTolerance);
+                summary = summarise(exactResults);
+                summaryInfo.put(rssiTolerance + fieldSeparator + geoTolerance, summary);
+
+                String exactExtensionTol = exactExtension + rssiTolerance + "-" + geoTolerance;
+                File exactOutputFile = new File(outputPath, filename + exactExtensionTol + logExtension);
+                printToFile(exactOutputFile, exactResults, fieldSeparator);
+                File exactOutputDetailFile = new File(outputPath, filename + exactExtensionTol + logDetail + logExtension);
+                printDetailToFile(exactOutputDetailFile, exactResults, fieldSeparator);
+                printToImage(outputPath, filename + exactExtensionTol, floorPlanFile, exactResults, roomInfo);
+            }
+        }
+        logger.info("Print summary");
         File outputSummaryFile = new File(outputPath, filename + summaryExtension + logExtension);
         printSummary(outputSummaryFile, summaryInfo, fieldSeparator);
     }
@@ -117,11 +134,11 @@ public class Analysis {
         summary.add(avgValue.getStdDev());
         summary.add(avgValue.getVariance());
         summary.add(avgValue.getTotal());
-        
+
         return summary;
     }
-
-    private HashMap<KNNFloorPoint, List<KNNFloorPoint>> exactMatch(HashMap<KNNFloorPoint, List<KNNFloorPoint>> results, Double tolerance) {
+    
+    private HashMap<KNNFloorPoint, List<KNNFloorPoint>> exactMatch(HashMap<KNNFloorPoint, List<KNNFloorPoint>> results, Double rssiTolerance, Double geoTolerance) {
 
         List<List<KNNFloorPoint>> allPoints = new LinkedList<>();
         for (KNNFloorPoint result : results.keySet()) {
@@ -144,7 +161,7 @@ public class Analysis {
                 List<KNNFloorPoint> dups = new ArrayList<>();
                 while (it.hasNext()) {
                     KNNFloorPoint test = (KNNFloorPoint) it.next();
-                    if (current.matchingAttributes(test, tolerance)) {
+                    if (current.matchingAttributes(test, rssiTolerance, geoTolerance)) {
                         dups.add(test);
                         it.remove();
                     }
@@ -163,22 +180,19 @@ public class Analysis {
         return exactMatches;
     }
 
-    private void printSummary(File outputFile, HashMap<Double, List<Double>> summary, String fieldSeparator) {
+    private void printSummary(File outputFile, HashMap<String, List<Double>> summary, String fieldSeparator) {
         try {
             try (BufferedWriter dataWriter = new BufferedWriter(new FileWriter(outputFile, false))) {
 
                 StringBuilder stb = new StringBuilder();
-                stb.append("Tolerance").append(fieldSeparator).append("Size").append(fieldSeparator).append("Max Count").append(fieldSeparator).append("Min Count").append(fieldSeparator).append("Mean Count").append(fieldSeparator).append("Std Dev Count").append(fieldSeparator).append("Variance Count").append(fieldSeparator).append("Total Count").append(System.getProperty("line.separator"));
-                SortedSet<Double> keys = new TreeSet(summary.keySet());
-                for (Double key : keys) {
-
-                    if (key.equals(Double.NaN)) {
-                        stb.append("Any");
-                    } else {
-                        stb.append(key);
-                    }
+                stb.append("RSSI Tolerance").append(fieldSeparator).append("GEO Tolerance").append(fieldSeparator).append("Size").append(fieldSeparator).append("Max Count").append(fieldSeparator).append("Min Count").append(fieldSeparator).append("Mean Count").append(fieldSeparator).append("Std Dev Count").append(fieldSeparator).append("Variance Count").append(fieldSeparator).append("Total Count").append(System.getProperty("line.separator"));
+                
+                List<String> keys = new ArrayList<>(summary.keySet());
+                Collections.sort(keys, new AlphanumComparator());
+                for (String key : keys) {
+                    stb.append(key);
                     List<Double> values = summary.get(key);
-                    for(Double value : values){
+                    for (Double value : values) {
                         stb.append(fieldSeparator).append(value);
                     }
                     stb.append(System.getProperty("line.separator"));

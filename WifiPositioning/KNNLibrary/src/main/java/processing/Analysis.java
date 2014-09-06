@@ -19,11 +19,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.TreeSet;
 import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,8 +187,7 @@ public class Analysis {
                 StringBuilder stb = new StringBuilder();
                 stb.append("RSSI Tolerance").append(fieldSeparator).append("GEO Tolerance").append(fieldSeparator).append("Size").append(fieldSeparator).append("Max Count").append(fieldSeparator).append("Min Count").append(fieldSeparator).append("Mean Count").append(fieldSeparator).append("Std Dev Count").append(fieldSeparator).append("Variance Count").append(fieldSeparator).append("Total Count").append(System.getProperty("line.separator"));
                 
-                List<String> keys = new ArrayList<>(summary.keySet());
-                Collections.sort(keys, new AlphanumComparator());
+                TreeSet<String> keys = new TreeSet<>(summary.keySet());
                 for (String key : keys) {
                     stb.append(key);
                     List<Double> values = summary.get(key);

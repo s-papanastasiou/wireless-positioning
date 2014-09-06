@@ -45,6 +45,7 @@ public class KNNFloorPoint extends Location implements Serializable {
 
     /**
      * Constructor
+     *
      * @param key
      * @param value
      */
@@ -56,60 +57,62 @@ public class KNNFloorPoint extends Location implements Serializable {
 
     /**
      * Constructor - location specified
-     * 
+     *
      * @param location
      * @param key
-     * @param value 
+     * @param value
      */
     public KNNFloorPoint(final Location location, final String key, final Double value) {
         super(location);
         this.attributes.put(key, new AvgValue(value));
         this.roomReference = super.getRoomRef();
     }
-    
+
     public KNNFloorPoint(final Location location, final String key, final Integer value) {
         super(location);
         this.attributes.put(key, new AvgValue(value));
         this.roomReference = super.getRoomRef();
     }
-    
+
     //
     /**
      * Constructor - location and room reference specified
+     *
      * @param location
      * @param key
      * @param value
-     * @param roomReference 
+     * @param roomReference
      */
     public KNNFloorPoint(final Location location, final String key, final Integer value, final String roomReference) {
         super(location);
         this.attributes.put(key, new AvgValue(value));
         this.roomReference = roomReference;
     }
-    
+
     /**
      * Constructor for adding RSSI data - allows room reference to be specified
+     *
      * @param location
      * @param key
      * @param value
-     * @param roomReference 
+     * @param roomReference
      */
     public KNNFloorPoint(final Location location, final String key, final Double value, final String roomReference) {
         super(location);
         this.attributes.put(key, new AvgValue(value));
         this.roomReference = roomReference;
     }
-    
+
     /**
      * Constructor - allows multiple values to be added
-     * 
+     *
      * @param location
      * @param keyX
      * @param valueX
      * @param keyY
      * @param valueY
      * @param keyW
-     * @param valueW 
+     * @param valueW
      */
     public KNNFloorPoint(final Location location, final String keyX, final Double valueX, final String keyY, final Double valueY, final String keyW, final Double valueW) {
         super(location);
@@ -121,18 +124,18 @@ public class KNNFloorPoint extends Location implements Serializable {
 
     /**
      * Copy constructor
-     * 
-     * @param floorPoint 
+     *
+     * @param floorPoint
      */
     public KNNFloorPoint(final KNNFloorPoint floorPoint) {
         super(floorPoint);
-                
+
         this.attributes = new HashMap<>();
-        for(String key: floorPoint.attributes.keySet()){
+        for (String key : floorPoint.attributes.keySet()) {
             AvgValue value = new AvgValue(floorPoint.attributes.get(key));
             this.attributes.put(key, value);
         }
-        
+
         this.roomReference = floorPoint.roomReference;
     }
 
@@ -161,11 +164,24 @@ public class KNNFloorPoint extends Location implements Serializable {
             attributes.put(key, new AvgValue(value));
         }
     }
-    
+
     public void add(final String key, final Integer value) {
         add(key, value.doubleValue());
     }
-    
+
+    public void add(HashMap<String, AvgValue> attributes) {
+
+        for (String key : attributes.keySet()) {
+            AvgValue value = attributes.get(key);
+            if (this.attributes.containsKey(key)) {
+                AvgValue avgValue = this.attributes.get(key);
+                avgValue.add(value);
+            } else {
+                attributes.put(key, new AvgValue(value));
+            }            
+        }
+    }
+
     public void add(final String key, final Integer value, final Boolean isBSSIDMerged) {
         add(key, value.doubleValue(), isBSSIDMerged);
     }
@@ -213,62 +229,62 @@ public class KNNFloorPoint extends Location implements Serializable {
 
         return orientatedMap;
     }
-    
+
     public Boolean equivalentTo(KNNFloorPoint other) {
-        
+
         Boolean result = true;
-        
+
         HashMap<String, AvgValue> otherAttributes = other.attributes;
-        if(this.attributes.size()==otherAttributes.size()){
-            
-            for(String key: this.attributes.keySet()){
-                if(!otherAttributes.containsKey(key)){
+        if (this.attributes.size() == otherAttributes.size()) {
+
+            for (String key : this.attributes.keySet()) {
+                if (!otherAttributes.containsKey(key)) {
                     result = false;
                     break;
                 }
             }
-            
-        }else{
-            result =false;
+
+        } else {
+            result = false;
         }
-        
+
         return result;
     }
-    
-    public Boolean matchingAttributes(KNNFloorPoint other, Double tolerance){
+
+    public Boolean matchingAttributes(KNNFloorPoint other, Double tolerance) {
         Boolean result = true;
-        
+
         HashMap<String, AvgValue> otherAttributes = other.attributes;
-        if(this.attributes.size()==otherAttributes.size()){
-            
-            for(String key: this.attributes.keySet()){
-                if(otherAttributes.containsKey(key)){
+        if (this.attributes.size() == otherAttributes.size()) {
+
+            for (String key : this.attributes.keySet()) {
+                if (otherAttributes.containsKey(key)) {
                     Double mean = attributes.get(key).getMean();
                     Double otherMean = otherAttributes.get(key).getMean();
-                    if (!(otherMean - tolerance <= mean && mean < otherMean+tolerance)){
+                    if (!(otherMean - tolerance <= mean && mean < otherMean + tolerance)) {
                         result = false;
                         break;
                     }
-                }else{
+                } else {
                     result = false;
                     break;
                 }
             }
-            
-        }else{
-            result =false;
+
+        } else {
+            result = false;
         }
-        
-        return result;        
+
+        return result;
     }
-    
-    public String toStringAttributes(String fieldSeparator){
-        
+
+    public String toStringAttributes(String fieldSeparator) {
+
         StringBuilder stb = new StringBuilder();
-        for(String key: attributes.keySet()){
+        for (String key : attributes.keySet()) {
             stb.append(key).append(" ").append(attributes.get(key)).append(fieldSeparator);
         }
-        return stb.substring(0, stb.length()-1);
+        return stb.substring(0, stb.length() - 1);
     }
 
 }

@@ -87,7 +87,7 @@ public class KNNFormatStorage {
         }
 
         return knnRadioMap;
-    }
+    }       
 
     public void print(File outputFile, List<KNNFloorPoint> knnFloorPoints, String fieldSeparator) {
         try {

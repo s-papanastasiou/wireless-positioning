@@ -87,6 +87,28 @@ public class AvgValue implements Serializable {
         if(value < min)
             min = value;
     }
+    
+    /**
+     * New value to be added for storage.
+     *
+     * @param value
+     */
+    public void add(final AvgValue value) {
+        total += value.total;
+        for(Double val: value.values)
+            values.add(val);
+        
+        mean = total / values.size();
+        
+        variance = calcMeanDiff() / values.size();
+        stdDev = Math.sqrt(variance); //Square root of the total mean differences divided by the number of values
+        
+        if(value.max > max)
+            max = value.max;
+        
+        if(value.min < min)
+            min = value.min;
+    }
 
     /**
      * Total sum of all the values stored.

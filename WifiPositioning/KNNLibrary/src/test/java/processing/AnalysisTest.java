@@ -19,6 +19,7 @@ import filehandling.RoomInfoLoader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import junit.framework.TestCase;
 
@@ -70,14 +71,18 @@ public class AnalysisTest extends TestCase {
     public void testPrintMergedRSSINonUniques_3args() {
         System.out.println("printRSSIMergedNonUniques");        
                 
+        //Tolerance range
         Analysis instance = new Analysis();
         Boolean isBSSIDMerged = true;
         Double lowerBound = 0.0;
         Double upperBound = 10.0;
         Double step = 0.5;
         List<KNNFloorPoint> knnFloorList = KNNRSSI.compileList(rssiDataList, isBSSIDMerged);
+        
+        //Create sub folder
         File outputFolder = new File(outputPath, "Merged");
         outputFolder.mkdir();
+        
         instance.printNonUniques(outputFolder, "RSSIMergedNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, lowerBound, upperBound, step);
         
     }
@@ -85,29 +90,95 @@ public class AnalysisTest extends TestCase {
     public void testPrintUnmergedRSSINonUniques() {
         System.out.println("printRSSIUnmergedNonUniques");        
                 
+        //Tolerance range
         Analysis instance = new Analysis();
         Boolean isBSSIDMerged = false;
-        Double lowerBound = 0.0;
-        Double upperBound = 10.0;
-        Double step = 0.5;
+        Double rssiLowerBound = 0.0;
+        Double rssiUpperBound = 10.0;
+        Double rssiStep = 0.5;
         List<KNNFloorPoint> knnFloorList = KNNRSSI.compileList(rssiDataList, isBSSIDMerged);
+        
+        //Create sub folder
         File outputFolder = new File(outputPath, "Unmerged");
         outputFolder.mkdir();
-        instance.printNonUniques(outputFolder, "RSSIUnmergedNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, lowerBound, upperBound, step);
+        
+        instance.printNonUniques(outputFolder, "RSSIUnmergedNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, rssiLowerBound, rssiUpperBound, rssiStep);
         
     }
     
     public void testPrintGeomagneticNonUniques() {
         System.out.println("printGeomagneticNonUniques");        
-                
+               
+        //Tolerance range
         Analysis instance = new Analysis();        
         Double geoLowerBound = 0.0;
-        Double geoUpperBound = 1.01;
+        Double geoUpperBound = 1.0;
         Double geoStep = 0.01;
         List<KNNFloorPoint> knnFloorList = KNNGeomagnetic.compileList(geomagneticDataList);
+        
+        //Create sub folder
         File outputFolder = new File(outputPath, "Geomagnetic");
         outputFolder.mkdir();
+        
         instance.printNonUniques(outputFolder, "GeomagneticNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, 0.0, 0.0, 0.0, geoLowerBound, geoUpperBound, geoStep);
+        
+    }
+    
+    public void testPrintCombinedUnmergedNonUniques() {
+        System.out.println("printCombinedUnmergedNonUniques");        
+                
+        //Tolerance RSSI range
+        Analysis instance = new Analysis();          
+        Boolean isBSSIDMerged = false;
+        Double rssiLowerBound = 0.0;
+        Double rssiUpperBound = 10.0;
+        Double rssiStep = 0.5;
+        HashMap<String, KNNFloorPoint> rssiKNNFloorMap = KNNRSSI.compile(rssiDataList, isBSSIDMerged);        
+        
+        //Tolerance Geomagnetic range
+        Double geoLowerBound = 0.0;
+        Double geoUpperBound = 1.0;
+        Double geoStep = 0.01;
+        HashMap<String, KNNFloorPoint> geoKNNFloorMap = KNNGeomagnetic.compile(geomagneticDataList);        
+        
+        //Combined data set
+        HashMap<String, KNNFloorPoint> knnFloorMap = KNNFloorPoint.merge(rssiKNNFloorMap, geoKNNFloorMap);
+        List<KNNFloorPoint> knnFloorList = new LinkedList<>(knnFloorMap.values());
+        
+        //Create sub folder
+        File outputFolder = new File(outputPath, "Combined - Unmerged");
+        outputFolder.mkdir();
+                
+        instance.printNonUniques(outputFolder, "CombinedUnmergedNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, rssiLowerBound, rssiUpperBound, rssiStep, geoLowerBound, geoUpperBound, geoStep);
+        
+    }
+    
+    public void testPrintCombinedMergedNonUniques() {
+        System.out.println("printCombinedMergedNonUniques");        
+                
+        //Tolerance RSSI range
+        Analysis instance = new Analysis();          
+        Boolean isBSSIDMerged = true;
+        Double rssiLowerBound = 0.0;
+        Double rssiUpperBound = 10.0;
+        Double rssiStep = 0.5;
+        HashMap<String, KNNFloorPoint> rssiKNNFloorMap = KNNRSSI.compile(rssiDataList, isBSSIDMerged);        
+        
+        //Tolerance Geomagnetic range
+        Double geoLowerBound = 0.0;
+        Double geoUpperBound = 1.0;
+        Double geoStep = 0.01;
+        HashMap<String, KNNFloorPoint> geoKNNFloorMap = KNNGeomagnetic.compile(geomagneticDataList);        
+        
+        //Combined data set
+        HashMap<String, KNNFloorPoint> knnFloorMap = KNNFloorPoint.merge(rssiKNNFloorMap, geoKNNFloorMap);
+        List<KNNFloorPoint> knnFloorList = new LinkedList<>(knnFloorMap.values());
+        
+        //Create sub folder
+        File outputFolder = new File(outputPath, "Combined - Merged");
+        outputFolder.mkdir();
+                
+        instance.printNonUniques(outputFolder, "CombinedMergedNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, rssiLowerBound, rssiUpperBound, rssiStep, geoLowerBound, geoUpperBound, geoStep);
         
     }
 

@@ -31,7 +31,8 @@ public class GeomagneticData extends Location {
     public static final String X_KEY = "X";
     public static final String Y_KEY = "Y";
     public static final String Z_KEY = "Z";
-    public static final String[] KEY_LIST = {X_KEY, Y_KEY, Z_KEY};    
+    private static final String[] KEY_ARRAY = {X_KEY, Y_KEY, Z_KEY};
+    public static final List<String> KEY_LIST = Arrays.asList(KEY_ARRAY);
 
     /**
      * Constructor

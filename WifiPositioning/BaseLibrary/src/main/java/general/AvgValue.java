@@ -50,6 +50,23 @@ public class AvgValue implements Serializable {
         max = value;
         min = value;
     }
+    
+    /**
+     * Copy constructor
+     * 
+     * @param original AvgValue to copy
+     */
+    public AvgValue(final AvgValue original){
+        total = original.total;
+        mean = original.mean;
+        stdDev = original.stdDev;
+        variance = original.variance;
+        max = original.max;
+        min = original.min;        
+        for(Double value: original.values){
+            values.add(value);
+        }
+    }
 
     /**
      * New value to be added for storage.

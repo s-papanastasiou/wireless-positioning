@@ -6,7 +6,9 @@ package datastorage;
 
 import general.TimeStamp;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -26,9 +28,10 @@ public class GeomagneticData extends Location {
     private static final String[] LOCAL_HEADINGS_END = {"X Value", "Y Value", "Z Value", "Accuracy"};
     public static final String[] HEADINGS = ArrayUtils.addAll(LOCAL_HEADINGS_START, ArrayUtils.addAll(Location.LOC_HEADINGS, LOCAL_HEADINGS_END));
 
-    public static final String X_Key = "X";
-    public static final String Y_Key = "Y";
-    public static final String Z_Key = "Z";
+    public static final String X_KEY = "X";
+    public static final String Y_KEY = "Y";
+    public static final String Z_KEY = "Z";
+    public static final String[] KEY_LIST = {X_KEY, Y_KEY, Z_KEY};    
 
     /**
      * Constructor
@@ -44,7 +47,7 @@ public class GeomagneticData extends Location {
         this.xValue = Double.parseDouble(parts[5]);
         this.yValue = Double.parseDouble(parts[6]);
         this.zValue = Double.parseDouble(parts[7]);
-        this.sensorAccuracy = Integer.parseInt(parts[8]);
+        this.sensorAccuracy = Integer.parseInt(parts[8]);        
     }
 
     /**

@@ -27,7 +27,7 @@ public class KNNPointResult {
         this.finalLocation = finalLocation;
         this.positionEstimates = positionEstimates;
         this.metreDistance = metreDistance;
-        this.executeSettings = executeSettings;
+        this.executeSettings = executeSettings;        
     }
 
     public Location getTrialLocation() {

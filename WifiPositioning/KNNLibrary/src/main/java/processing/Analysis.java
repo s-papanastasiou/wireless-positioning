@@ -185,7 +185,7 @@ public class Analysis {
             try (BufferedWriter dataWriter = new BufferedWriter(new FileWriter(outputFile, false))) {
 
                 StringBuilder stb = new StringBuilder();
-                stb.append("RSSI Tolerance").append(fieldSeparator).append("GEO Tolerance").append(fieldSeparator).append("Size").append(fieldSeparator).append("Max Count").append(fieldSeparator).append("Min Count").append(fieldSeparator).append("Mean Count").append(fieldSeparator).append("Std Dev Count").append(fieldSeparator).append("Variance Count").append(fieldSeparator).append("Total Count").append(System.getProperty("line.separator"));
+                stb.append("RSSI Tolerance").append(fieldSeparator).append("GEO Tolerance").append(fieldSeparator).append("Matches").append(fieldSeparator).append("Max Count").append(fieldSeparator).append("Min Count").append(fieldSeparator).append("Mean Count").append(fieldSeparator).append("Std Dev Count").append(fieldSeparator).append("Variance Count").append(fieldSeparator).append("Total Count").append(System.getProperty("line.separator"));
                 
                 TreeSet<String> keys = new TreeSet<>(summary.keySet());
                 for (String key : keys) {

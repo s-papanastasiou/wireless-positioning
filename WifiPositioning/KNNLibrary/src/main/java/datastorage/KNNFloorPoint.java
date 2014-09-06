@@ -179,7 +179,7 @@ public class KNNFloorPoint extends Location implements Serializable {
                 AvgValue avgValue = this.attributes.get(key);
                 avgValue.add(value);
             } else {
-                attributes.put(key, new AvgValue(value));
+                this.attributes.put(key, new AvgValue(value));
             }
         }
     }

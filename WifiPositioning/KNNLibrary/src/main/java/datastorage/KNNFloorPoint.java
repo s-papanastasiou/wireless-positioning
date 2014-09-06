@@ -26,7 +26,7 @@ public class KNNFloorPoint extends Location implements Serializable {
     public final static int NO_ORIENTATION = -1;
 
     /**
-     * KNNFloorPoint constructor
+     * Default constructor
      */
     public KNNFloorPoint() {
         super();
@@ -34,7 +34,7 @@ public class KNNFloorPoint extends Location implements Serializable {
     }
 
     /**
-     * KNNFloorPoint constructor
+     * Default constructor - location specified
      *
      * @param location Location of the floor point.
      */
@@ -44,7 +44,7 @@ public class KNNFloorPoint extends Location implements Serializable {
     }
 
     /**
-     *
+     * Constructor
      * @param key
      * @param value
      */
@@ -54,7 +54,13 @@ public class KNNFloorPoint extends Location implements Serializable {
         this.roomReference = super.getRoomRef();
     }
 
-    //constructor for adding rssi data
+    /**
+     * Constructor - location specified
+     * 
+     * @param location
+     * @param key
+     * @param value 
+     */
     public KNNFloorPoint(final Location location, final String key, final Double value) {
         super(location);
         this.attributes.put(key, new AvgValue(value));
@@ -67,21 +73,44 @@ public class KNNFloorPoint extends Location implements Serializable {
         this.roomReference = super.getRoomRef();
     }
     
-    //constructor for adding rssi data - allows room reference to be specifed
+    //
+    /**
+     * Constructor - location and room reference specified
+     * @param location
+     * @param key
+     * @param value
+     * @param roomReference 
+     */
     public KNNFloorPoint(final Location location, final String key, final Integer value, final String roomReference) {
         super(location);
         this.attributes.put(key, new AvgValue(value));
         this.roomReference = roomReference;
     }
-
-    //constructor for adding rssi data - allows room reference to be specifed
+    
+    /**
+     * Constructor for adding RSSI data - allows room reference to be specified
+     * @param location
+     * @param key
+     * @param value
+     * @param roomReference 
+     */
     public KNNFloorPoint(final Location location, final String key, final Double value, final String roomReference) {
         super(location);
         this.attributes.put(key, new AvgValue(value));
         this.roomReference = roomReference;
     }
-
-    //constructor for adding magnetic data
+    
+    /**
+     * Constructor - allows multiple values to be added
+     * 
+     * @param location
+     * @param keyX
+     * @param valueX
+     * @param keyY
+     * @param valueY
+     * @param keyW
+     * @param valueW 
+     */
     public KNNFloorPoint(final Location location, final String keyX, final Double valueX, final String keyY, final Double valueY, final String keyW, final Double valueW) {
         super(location);
         this.attributes.put(keyX, new AvgValue(valueX));
@@ -90,9 +119,20 @@ public class KNNFloorPoint extends Location implements Serializable {
         this.roomReference = super.getRoomRef();
     }
 
+    /**
+     * Copy constructor
+     * 
+     * @param floorPoint 
+     */
     public KNNFloorPoint(final KNNFloorPoint floorPoint) {
         super(floorPoint);
-        this.attributes = floorPoint.attributes;
+                
+        this.attributes = new HashMap<>();
+        for(String key: floorPoint.attributes.keySet()){
+            AvgValue value = new AvgValue(floorPoint.attributes.get(key));
+            this.attributes.put(key, value);
+        }
+        
         this.roomReference = floorPoint.roomReference;
     }
 

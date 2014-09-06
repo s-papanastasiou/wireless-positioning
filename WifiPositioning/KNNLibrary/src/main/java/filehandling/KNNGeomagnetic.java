@@ -92,14 +92,14 @@ public class KNNGeomagnetic {
             if (knnRadioMap.containsKey(magData.getRoomRef())) //Update the existing entry
             {
                 KNNFloorPoint entry = knnRadioMap.get(magData.getRoomRef());
-                entry.add(GeomagneticData.X_Key, magData.getxValue());
-                entry.add(GeomagneticData.Y_Key, magData.getyValue());
-                entry.add(GeomagneticData.Z_Key, magData.getzValue());
+                entry.add(GeomagneticData.X_KEY, magData.getxValue());
+                entry.add(GeomagneticData.Y_KEY, magData.getyValue());
+                entry.add(GeomagneticData.Z_KEY, magData.getzValue());
             } else //New entry created and added
             {
-                KNNFloorPoint entry = new KNNFloorPoint(magData, GeomagneticData.X_Key, magData.getxValue());
-                entry.add(GeomagneticData.Y_Key, magData.getyValue());
-                entry.add(GeomagneticData.Z_Key, magData.getzValue());
+                KNNFloorPoint entry = new KNNFloorPoint(magData, GeomagneticData.X_KEY, magData.getxValue());
+                entry.add(GeomagneticData.Y_KEY, magData.getyValue());
+                entry.add(GeomagneticData.Z_KEY, magData.getzValue());
                 knnRadioMap.put(magData.getRoomRef(), entry);
             }
         }
@@ -121,9 +121,9 @@ public class KNNGeomagnetic {
             for (KNNFloorPoint entry : knnList) {
                 if(entry.getRoomRef().equals(magData.getRoomRef()))
                 {
-                    entry.add(GeomagneticData.X_Key, magData.getxValue());
-                    entry.add(GeomagneticData.Y_Key, magData.getyValue());
-                    entry.add(GeomagneticData.Z_Key, magData.getzValue());
+                    entry.add(GeomagneticData.X_KEY, magData.getxValue());
+                    entry.add(GeomagneticData.Y_KEY, magData.getyValue());
+                    entry.add(GeomagneticData.Z_KEY, magData.getzValue());
                     isMatch = true;
                     break;
                 }                
@@ -131,9 +131,9 @@ public class KNNGeomagnetic {
             
             if(!isMatch)
             {     
-                KNNFloorPoint entry = new KNNFloorPoint(magData, GeomagneticData.X_Key, magData.getxValue());
-                entry.add(GeomagneticData.Y_Key, magData.getyValue());
-                entry.add(GeomagneticData.Z_Key, magData.getzValue());                                
+                KNNFloorPoint entry = new KNNFloorPoint(magData, GeomagneticData.X_KEY, magData.getxValue());
+                entry.add(GeomagneticData.Y_KEY, magData.getyValue());
+                entry.add(GeomagneticData.Z_KEY, magData.getzValue());                                
                 knnList.add(entry);
             }            
         }

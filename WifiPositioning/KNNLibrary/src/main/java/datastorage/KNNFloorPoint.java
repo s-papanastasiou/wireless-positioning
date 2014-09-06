@@ -286,5 +286,37 @@ public class KNNFloorPoint extends Location implements Serializable {
         }
         return stb.substring(0, stb.length() - 1);
     }
+    
+    /**
+     * Merges two HashMaps of KNNFloorPoints together - deep copy
+     * 
+     * @param firstFloorPoints
+     * @param secondFloorPoints
+     * @return 
+     */
+    public static HashMap<String, KNNFloorPoint> merge(HashMap<String, KNNFloorPoint> firstFloorPoints, HashMap<String, KNNFloorPoint> secondFloorPoints){
+        
+        HashMap<String, KNNFloorPoint> mergedFloorPoints = new HashMap<>();
+        
+        for(String key: firstFloorPoints.keySet()){
+            KNNFloorPoint value = new KNNFloorPoint(firstFloorPoints.get(key));
+            mergedFloorPoints.put(key, value);
+        }
+        
+        for(String key: secondFloorPoints.keySet()){
+            
+            KNNFloorPoint value = secondFloorPoints.get(key);
+            
+            if(mergedFloorPoints.containsKey(key)){                
+                KNNFloorPoint mergedValue = mergedFloorPoints.get(key);                
+                mergedValue.add(value.getAttributes());
+            }else{
+                KNNFloorPoint newValue = new KNNFloorPoint(value);
+                mergedFloorPoints.put(key, newValue);
+            }
+        }
+        
+        return mergedFloorPoints;
+    }
 
 }

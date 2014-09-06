@@ -76,7 +76,9 @@ public class AnalysisTest extends TestCase {
         Double upperBound = 10.0;
         Double step = 0.5;
         List<KNNFloorPoint> knnFloorList = KNNRSSI.compileList(rssiDataList, isBSSIDMerged);
-        instance.printNonUniques(outputPath, "RSSIMergedNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, lowerBound, upperBound, step);
+        File outputFolder = new File(outputPath, "Merged");
+        outputFolder.mkdir();
+        instance.printNonUniques(outputFolder, "RSSIMergedNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, lowerBound, upperBound, step);
         
     }
     
@@ -89,7 +91,9 @@ public class AnalysisTest extends TestCase {
         Double upperBound = 10.0;
         Double step = 0.5;
         List<KNNFloorPoint> knnFloorList = KNNRSSI.compileList(rssiDataList, isBSSIDMerged);
-        instance.printNonUniques(outputPath, "RSSIUnmergedNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, lowerBound, upperBound, step);
+        File outputFolder = new File(outputPath, "Unmerged");
+        outputFolder.mkdir();
+        instance.printNonUniques(outputFolder, "RSSIUnmergedNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, lowerBound, upperBound, step);
         
     }
     
@@ -97,11 +101,13 @@ public class AnalysisTest extends TestCase {
         System.out.println("printGeomagneticNonUniques");        
                 
         Analysis instance = new Analysis();        
-        Double lowerBound = 0.0;
-        Double upperBound = 1.01;
-        Double step = 0.01;
+        Double geoLowerBound = 0.0;
+        Double geoUpperBound = 1.01;
+        Double geoStep = 0.01;
         List<KNNFloorPoint> knnFloorList = KNNGeomagnetic.compileList(geomagneticDataList);
-        instance.printNonUniques(outputPath, "GeomagneticNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, lowerBound, upperBound, step);
+        File outputFolder = new File(outputPath, "Geomagnetic");
+        outputFolder.mkdir();
+        instance.printNonUniques(outputFolder, "GeomagneticNonUniquesFingerprint", floorPlanFile, knnFloorList, roomInfo, dataSep, 0.0, 0.0, 0.0, geoLowerBound, geoUpperBound, geoStep);
         
     }
 

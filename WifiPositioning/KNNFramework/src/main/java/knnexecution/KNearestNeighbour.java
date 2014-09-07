@@ -135,7 +135,7 @@ public class KNearestNeighbour {
                                 KNNTrialResults trialResults = new KNNTrialResults(executeSettings);
                                 //iterate over each point in the trial
                                 for (KNNTrialPoint trialPoint : trialList) {
-                                    KNNPointResult result = execute(estimatesPath, floorPlanFile, trialPoint, offlineMap, roomInfo, executeSettings);
+                                    KNNPointResult result = execute(estimatesPath, floorPlanFile, trialPoint, offlineMap, roomInfo, executeSettings, trialSettings.isPrintImages);
                                     trialResults.addResult(result);
                                     trialPoints.add(result.getTrialLocation().getDrawPoint());
                                     finalPoints.add(result.getFinalLocation().getDrawPoint());
@@ -146,7 +146,9 @@ public class KNearestNeighbour {
                                 trialResults.printSummary(summaryWriter);
 
                                 //draw the trial route to the floor plan
-                                DisplayRoute.print(trialPath, filename, floorPlanFile, trialPoints, finalPoints);
+                                if (trialSettings.isPrintImages) {
+                                    DisplayRoute.print(trialPath, filename, floorPlanFile, trialPoints, finalPoints);
+                                }
 
                             } catch (IOException ex) {
                                 logger.error("Error writing trial {} to file: {}", filename, ex);
@@ -163,7 +165,7 @@ public class KNearestNeighbour {
     //perform positioning       
     //output columns - k value, distance measure, var limit, var count, location position, location co-ordinates, trial position, trial co-ordinates, co-ordinate distance, {estimate position, estimate co-ordinates, estimate value}         
     //draw the points and estimates on an image
-    private static KNNPointResult execute(File estimatesPath, File floorPlanFile, KNNFloorPoint trialLocation, HashMap<String, KNNFloorPoint> offlineMap, HashMap<String, RoomInfo> roomInfo, KNNExecuteSettings executeSettings) throws IOException {
+    private static KNNPointResult execute(File estimatesPath, File floorPlanFile, KNNFloorPoint trialLocation, HashMap<String, KNNFloorPoint> offlineMap, HashMap<String, RoomInfo> roomInfo, KNNExecuteSettings executeSettings, Boolean isPrintImages) throws IOException {
 
         //find the position estimates
         List<ResultLocation> positionEstimates = Positioning.estimate(trialLocation, offlineMap, executeSettings.distMeasure);
@@ -183,13 +185,14 @@ public class KNearestNeighbour {
         Location finalLocation = RoomInfo.searchPixelLocation(finalPoint, roomInfo);
         double metreDistance = finalLocation.distance(trialLocation);
 
-        //Draw the estimates and final point to the floor plan.        
-        BufferedImage floorPlanImage = DisplayPosition.render(floorPlanFile, finalLocation.getDrawPoint(), trialLocation, positionEstimates);
+        if (isPrintImages) {
+            //Draw the estimates and final point to the floor plan.        
+            BufferedImage floorPlanImage = DisplayPosition.render(floorPlanFile, finalLocation.getDrawPoint(), trialLocation, positionEstimates);
 
-        //Draw the image to file                     
-        File outputFile = new File(estimatesPath, executeSettings.filename(trialLocation, "estimates", ".png"));
-        ImageIO.write(floorPlanImage, "png", outputFile);
-
+            //Draw the image to file                     
+            File outputFile = new File(estimatesPath, executeSettings.filename(trialLocation, "estimates", ".png"));
+            ImageIO.write(floorPlanImage, "png", outputFile);
+        }
         return new KNNPointResult(trialLocation, finalLocation, positionEstimates, metreDistance, executeSettings);
     }
 

@@ -27,6 +27,7 @@ public class KNNTrialSettings {
     public final boolean isVariance;
     public final boolean isBSSIDMerged;
     public final boolean isOrientationMerged;
+    public final boolean isPrintImages;
 
     public KNNTrialSettings() {
         //Enter k value
@@ -60,6 +61,7 @@ public class KNNTrialSettings {
 
         this.isOrientationMerged = Menus.Choice("Do you want to merge the orientation?");
 
+        this.isPrintImages = Menus.Choice("Do you want to print the floorplan images?");
     }
 
     public static KNNTrialSettings commandSetup(String[] args) {
@@ -104,9 +106,10 @@ public class KNNTrialSettings {
         this.isVariance = false;
         this.isBSSIDMerged = false;
         this.isOrientationMerged = false;
+        this.isPrintImages = false;
     }
 
-    public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption) {
+    public KNNTrialSettings(int kLowerValue, int kUpperValue, boolean isPrintImages, int distOption) {
         this.kLowerValue = kLowerValue;
         this.kUpperValue = kUpperValue;
         this.distOption = checkDistanceOption(distOption);
@@ -118,9 +121,25 @@ public class KNNTrialSettings {
         this.isVariance = false;
         this.isBSSIDMerged = false;
         this.isOrientationMerged = false;
+        this.isPrintImages = isPrintImages;
     }
     
-    public KNNTrialSettings(int kLowerValue, int kUpperValue, boolean isBSSIDMerged) {
+    public KNNTrialSettings(int kValue, boolean isBSSIDMerged, boolean isPrintImages) {
+        this.kLowerValue = kValue;
+        this.kUpperValue = kValue;
+        this.distOption = ALL_DIST_OPTIONS;
+        this.varLowerLimit = 0;
+        this.varUpperLimit = 1;
+        this.varLimitStep = 2;
+        this.varLowerCount = 0;
+        this.varUpperCount = 0;
+        this.isVariance = false;
+        this.isBSSIDMerged = isBSSIDMerged;
+        this.isOrientationMerged = false;
+        this.isPrintImages = isPrintImages;
+    }
+    
+    public KNNTrialSettings(int kLowerValue, int kUpperValue, boolean isBSSIDMerged, boolean isPrintImages) {
         this.kLowerValue = kLowerValue;
         this.kUpperValue = kUpperValue;
         this.distOption = ALL_DIST_OPTIONS;
@@ -132,6 +151,7 @@ public class KNNTrialSettings {
         this.isVariance = false;
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = false;
+        this.isPrintImages = isPrintImages;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, boolean isBSSIDMerged) {
@@ -146,6 +166,7 @@ public class KNNTrialSettings {
         this.isVariance = false;
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = false;
+        this.isPrintImages = false;
     }
 
     public KNNTrialSettings(int kValue, int distOption, double varLimit, int varCount) {
@@ -160,6 +181,7 @@ public class KNNTrialSettings {
         this.isVariance = true;
         this.isBSSIDMerged = false;
         this.isOrientationMerged = false;
+        this.isPrintImages = false;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount) {
@@ -174,6 +196,7 @@ public class KNNTrialSettings {
         this.isVariance = true;
         this.isBSSIDMerged = false;
         this.isOrientationMerged = false;
+        this.isPrintImages = false;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount, boolean isBSSIDMerged) {
@@ -188,6 +211,7 @@ public class KNNTrialSettings {
         this.isVariance = true;
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = false;
+        this.isPrintImages = false;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount, boolean isBSSIDMerged, boolean isOrientationMerged) {
@@ -202,6 +226,7 @@ public class KNNTrialSettings {
         this.isVariance = true;
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = isOrientationMerged;
+        this.isPrintImages = false;
     }
 
     public static String[] getDistanceOptions() {

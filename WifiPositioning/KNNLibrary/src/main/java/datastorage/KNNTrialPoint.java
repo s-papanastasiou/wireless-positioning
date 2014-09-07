@@ -19,6 +19,11 @@ public class KNNTrialPoint extends KNNFloorPoint{
         this.timestamp = timestamp;        
     }
     
+    public KNNTrialPoint(final long timestamp, final Location location, final String keyX, final Double valueX, final String keyY, final Double valueY, final String keyW, final Double valueW) {
+        super(location, keyX, valueX, keyY, valueY, keyW, valueW);
+        this.timestamp = timestamp;
+    }
+    
     public long getTimestamp(){
         return timestamp;
     }

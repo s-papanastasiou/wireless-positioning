@@ -108,9 +108,17 @@ public class KNNRSSI {
 
         return compile(dataList, isBSSIDMerged, false);
     }
+    
+    public static HashMap<String, KNNFloorPoint> compile(final List<RSSIData> dataList, final List<String> filterBSSIDs, final Boolean isBSSIDMerged) {
+
+        return compile(dataList, filterBSSIDs, isBSSIDMerged, false);
+    }
 
     public static HashMap<String, KNNFloorPoint> compile(final List<RSSIData> dataList, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {
-
+            return compile(dataList, new LinkedList<String>(), isBSSIDMerged, false);
+    }
+    
+    public static HashMap<String, KNNFloorPoint> compile(final List<RSSIData> dataList, final List<String> filterBSSIDs, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {    
         HashMap<String, KNNFloorPoint> knnRadioMap = new HashMap();
 
         //logger.info("Compiling RSSI location data....");
@@ -125,6 +133,11 @@ public class KNNRSSI {
 
             String bssid = rssiData.getBSSID().substring(beginIndex, endIndex);  //Copy out the BSSID based on whether merging or not.                
 
+            if(!filterBSSIDs.isEmpty()){
+                if(!filterBSSIDs.contains(bssid))
+                    break;
+            }
+            
             String roomRef;
             if (isOrientationMerged) //Change the room ref based on whether compressing orientations together     
             {

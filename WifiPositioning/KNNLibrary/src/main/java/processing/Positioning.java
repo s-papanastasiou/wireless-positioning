@@ -25,7 +25,7 @@ import java.util.Set;
  *
  * @author Greg Albiston
  */
-public class Positioning {      
+public class Positioning {
 
     public static Point locate(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> offlineMap, final DistanceMeasure measure, int kLimit, boolean isBiggerBetter) {
         List<ResultLocation> results = estimate(trialPoint, offlineMap, measure);
@@ -52,13 +52,18 @@ public class Positioning {
             results.add(result);
         }
 
-        //Sort the completed estimations from all BSSIDs into ascending order
+        //Sort the completed estimations into ascending order
         Collections.sort(results, new Comparator<ResultLocation>() {
             @Override
             public int compare(final ResultLocation object1, final ResultLocation object2) {
                 return object1.compareTo(object2);
             }
         });
+        
+        //For probablistic bigger is better.
+        if (measure == DistanceMeasure.Probabilistic) {
+            Collections.reverse(results);
+        }
 
         return results;
     }
@@ -86,7 +91,7 @@ public class Positioning {
             ResultLocation result = resultLocations.get(counter);
 
             KNNFloorPoint estimation = offlineMap.get(result.getRoomRef());
-                                
+
             if (varianceCheck(trialPoint.getAttributes(), estimation.getAttributes(), varLimit, varCount)) {
                 shortList.add(resultLocations.get(counter));
             }
@@ -95,7 +100,6 @@ public class Positioning {
         }
 
         //paper says to return original list if less than varCount values - not logical
-
         return shortList;
     }
 
@@ -103,7 +107,7 @@ public class Positioning {
 
         final double RSSI_MAX = 100f;
         boolean isWithinVariance = true;
-        
+
         Set<String> trialKeys = trialAttributes.keySet();
 
         int count = 0;
@@ -132,7 +136,7 @@ public class Positioning {
     private static ResultLocation calcDistance(final KNNFloorPoint trialPoint, final KNNFloorPoint floorPoint, final DistanceMeasure measure) {
 
         HashMap<String, AvgValue> trialAccessPoints = trialPoint.getAttributes();
-        HashMap<String, AvgValue> floorAccessPoints = floorPoint.getAttributes();        
+        HashMap<String, AvgValue> floorAccessPoints = floorPoint.getAttributes();
 
         double distance;
 
@@ -148,7 +152,7 @@ public class Positioning {
                 break;
             case Chebyshev:
                 distance = Chebyshev.distance(trialAccessPoints, floorAccessPoints);
-                break;                
+                break;
             case Probabilistic:
                 distance = Probabilistic.distance(trialAccessPoints, floorAccessPoints);
                 break;
@@ -158,6 +162,6 @@ public class Positioning {
 
         }
         return new ResultLocation(floorPoint, distance, floorPoint.getRoomRef());
-    }    
-   
+    }
+
 }

@@ -6,9 +6,12 @@
 
 package knnexecution;
 
+import datastorage.GeomagneticData;
 import datastorage.KNNFloorPoint;
 import datastorage.KNNTrialPoint;
 import datastorage.RSSIData;
+import filehandling.GeomagneticLoader;
+import filehandling.KNNGeomagnetic;
 import filehandling.KNNRSSI;
 import filehandling.RSSILoader;
 import java.io.File;
@@ -69,18 +72,133 @@ public class KNNTrial1 extends TestCase {
         File trialFolder = new File(outputPath, "Unmerged");
         trialFolder.mkdir();
         for(int i=lowerTrialPaths; i<=upperTrialPaths; i++){
-            String trialName = rssiPathFile + i;
-            logger.info(trialName);
-            File rssiTrialFile = new File(pathTrials, trialName + extension);
+            String rssiTrialName = rssiPathFile + i;
+            logger.info(rssiTrialName);
+            File rssiTrialFile = new File(pathTrials, rssiTrialName + extension);
             List<RSSIData> rssiTrialList = RSSILoader.load(rssiTrialFile, dataSep, roomInfo);
             List<KNNTrialPoint> rssiKNNTrialList = KNNRSSI.compileTrialList(rssiTrialList, isBSSIDMerged, Boolean.FALSE);
             
-            File trialOutputPath = new File(trialFolder, trialName);
+            File trialOutputPath = new File(trialFolder, rssiTrialName);
             trialOutputPath.mkdir();
             
             KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged);        
             KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator);
         }
+    }
+    
+    public void testRSSIMerged() {
+        logger.info("RSSI Merged");
+        
+        Boolean isBSSIDMerged = true;
+        
+        HashMap<String, KNNFloorPoint> offlineMap = KNNRSSI.compile(TrialDefaults.rssiDataList, isBSSIDMerged);
+        File trialFolder = new File(outputPath, "Merged");
+        trialFolder.mkdir();
+        for(int i=lowerTrialPaths; i<=upperTrialPaths; i++){
+            String rssiTrialName = rssiPathFile + i;
+            logger.info(rssiTrialName);
+            File rssiTrialFile = new File(pathTrials, rssiTrialName + extension);
+            List<RSSIData> rssiTrialList = RSSILoader.load(rssiTrialFile, dataSep, roomInfo);
+            List<KNNTrialPoint> rssiKNNTrialList = KNNRSSI.compileTrialList(rssiTrialList, isBSSIDMerged, Boolean.FALSE);
+            
+            File trialOutputPath = new File(trialFolder, rssiTrialName);
+            trialOutputPath.mkdir();
+            
+            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged);        
+            KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator);
+        }
+    }
+    
+    public void testGeomagnetic() {
+        logger.info("Geomagnetic");
+                
+        
+        HashMap<String, KNNFloorPoint> offlineMap = KNNGeomagnetic.compile(TrialDefaults.geomagneticDataList);
+        File trialFolder = new File(outputPath, "Geomagnetic");
+        trialFolder.mkdir();
+        for(int i=lowerTrialPaths; i<=upperTrialPaths; i++){
+            String geoTrialName = geoPathFile + i;
+            logger.info(geoTrialName);
+            File geoTrialFile = new File(pathTrials, geoTrialName + extension);
+            List<GeomagneticData> geoTrialList = GeomagneticLoader.load(geoTrialFile, dataSep, roomInfo);
+            List<KNNTrialPoint> geoKNNTrialList = KNNGeomagnetic.compileTrialList(geoTrialList);
+            
+            File trialOutputPath = new File(trialFolder, geoTrialName);
+            trialOutputPath.mkdir();
+            
+            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue);        
+            KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, geoKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator);
+        }
+    }
+    
+    public void testCombinedMerged() {
+        logger.info("CombinedMerged");
+                
+        Boolean isBSSIDMerged = true;
+        
+        HashMap<String, KNNFloorPoint> geoOfflineMap = KNNGeomagnetic.compile(TrialDefaults.geomagneticDataList);
+        HashMap<String, KNNFloorPoint> rssiOfflineMap = KNNRSSI.compile(TrialDefaults.rssiDataList, isBSSIDMerged);
+        HashMap<String, KNNFloorPoint> offlineMap = KNNFloorPoint.merge(rssiOfflineMap, geoOfflineMap);
+        
+        File trialFolder = new File(outputPath, "CombinedMerged");
+        trialFolder.mkdir();
+        for(int i=lowerTrialPaths; i<=upperTrialPaths; i++){
+            String rssiTrialName = rssiPathFile + i;
+            logger.info(rssiTrialName);
+            File rssiTrialFile = new File(pathTrials, rssiTrialName + extension);
+            List<RSSIData> rssiTrialList = RSSILoader.load(rssiTrialFile, dataSep, roomInfo);
+            List<KNNTrialPoint> rssiKNNTrialList = KNNRSSI.compileTrialList(rssiTrialList, isBSSIDMerged, Boolean.FALSE);
+            
+            String geoTrialName = geoPathFile + i;
+            logger.info(geoTrialName);
+            File geoTrialFile = new File(pathTrials, geoTrialName + extension);
+            List<GeomagneticData> geoTrialList = GeomagneticLoader.load(geoTrialFile, dataSep, roomInfo);
+            List<KNNTrialPoint> geoKNNTrialList = KNNGeomagnetic.compileTrialList(geoTrialList);
+            
+            List<KNNTrialPoint> knnTrialList = KNNTrialPoint.merge(rssiKNNTrialList, geoKNNTrialList);
+            
+            File trialOutputPath = new File(trialFolder, "CombinedMerged" + i);
+            trialOutputPath.mkdir();
+            
+            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged);        
+            KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator);
+        }
+                
+    }
+    
+    public void testCombinedUnmerged() {
+        logger.info("CombinedUnmerged");
+                
+        Boolean isBSSIDMerged = false;
+        
+        HashMap<String, KNNFloorPoint> geoOfflineMap = KNNGeomagnetic.compile(TrialDefaults.geomagneticDataList);
+        HashMap<String, KNNFloorPoint> rssiOfflineMap = KNNRSSI.compile(TrialDefaults.rssiDataList, isBSSIDMerged);
+        HashMap<String, KNNFloorPoint> offlineMap = KNNFloorPoint.merge(rssiOfflineMap, geoOfflineMap);
+        
+        File trialFolder = new File(outputPath, "CombinedUnmerged");
+        trialFolder.mkdir();
+        for(int i=lowerTrialPaths; i<=upperTrialPaths; i++){
+            String rssiTrialName = rssiPathFile + i;
+            logger.info(rssiTrialName);
+            File rssiTrialFile = new File(pathTrials, rssiTrialName + extension);
+            List<RSSIData> rssiTrialList = RSSILoader.load(rssiTrialFile, dataSep, roomInfo);
+            List<KNNTrialPoint> rssiKNNTrialList = KNNRSSI.compileTrialList(rssiTrialList, isBSSIDMerged, Boolean.FALSE);
+            
+            String geoTrialName = geoPathFile + i;
+            logger.info(geoTrialName);
+            File geoTrialFile = new File(pathTrials, geoTrialName + extension);
+            List<GeomagneticData> geoTrialList = GeomagneticLoader.load(geoTrialFile, dataSep, roomInfo);
+            List<KNNTrialPoint> geoKNNTrialList = KNNGeomagnetic.compileTrialList(geoTrialList);
+            
+            List<KNNTrialPoint> knnTrialList = KNNTrialPoint.merge(rssiKNNTrialList, geoKNNTrialList);
+            
+            File trialOutputPath = new File(trialFolder, "CombinedUnmerged" + i);
+            trialOutputPath.mkdir();
+            
+            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged);        
+            KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator);
+        }
+                
     }
    
 }

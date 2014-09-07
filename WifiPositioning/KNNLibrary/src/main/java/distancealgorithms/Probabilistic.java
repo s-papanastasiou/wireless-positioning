@@ -95,7 +95,7 @@ public class Probabilistic {
     //Distance equations based on http://www.statsoft.com/textbook/k-nearest-neighbors/
     public static double distance( final HashMap<String, AvgValue> trialAttributes, final HashMap<String, AvgValue> offlineAttributes) {
                 
-        final double NO_MATCH = 0.0001;
+        final double NO_MATCH = 0.01;
         final double sqrPI = Math.sqrt(2 * Math.PI);    
         double distance=1.0f;
         

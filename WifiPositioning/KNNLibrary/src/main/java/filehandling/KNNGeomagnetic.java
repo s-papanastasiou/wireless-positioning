@@ -6,6 +6,7 @@ package filehandling;
 
 import datastorage.GeomagneticData;
 import datastorage.KNNFloorPoint;
+import datastorage.KNNTrialPoint;
 import datastorage.RoomInfo;
 import java.io.File;
 import java.util.ArrayList;
@@ -87,20 +88,20 @@ public class KNNGeomagnetic {
         HashMap<String, KNNFloorPoint> knnRadioMap = new HashMap();
 
         logger.info("Compiling Magnetic location data....");
-        for (GeomagneticData magData : dataList) {
+        for (GeomagneticData geoData : dataList) {
 
-            if (knnRadioMap.containsKey(magData.getRoomRef())) //Update the existing entry
+            if (knnRadioMap.containsKey(geoData.getRoomRef())) //Update the existing entry
             {
-                KNNFloorPoint entry = knnRadioMap.get(magData.getRoomRef());
-                entry.add(GeomagneticData.X_KEY, magData.getxValue());
-                entry.add(GeomagneticData.Y_KEY, magData.getyValue());
-                entry.add(GeomagneticData.Z_KEY, magData.getzValue());
+                KNNFloorPoint entry = knnRadioMap.get(geoData.getRoomRef());
+                entry.add(GeomagneticData.X_KEY, geoData.getxValue());
+                entry.add(GeomagneticData.Y_KEY, geoData.getyValue());
+                entry.add(GeomagneticData.Z_KEY, geoData.getzValue());
             } else //New entry created and added
             {
-                KNNFloorPoint entry = new KNNFloorPoint(magData, GeomagneticData.X_KEY, magData.getxValue());
-                entry.add(GeomagneticData.Y_KEY, magData.getyValue());
-                entry.add(GeomagneticData.Z_KEY, magData.getzValue());
-                knnRadioMap.put(magData.getRoomRef(), entry);
+                KNNFloorPoint entry = new KNNFloorPoint(geoData, GeomagneticData.X_KEY, geoData.getxValue());
+                entry.add(GeomagneticData.Y_KEY, geoData.getyValue());
+                entry.add(GeomagneticData.Z_KEY, geoData.getzValue());
+                knnRadioMap.put(geoData.getRoomRef(), entry);
             }
         }
         logger.info("Location compilation complete");
@@ -114,16 +115,16 @@ public class KNNGeomagnetic {
         logger.info("Compiling Magnetic location data list....");
                
         
-        for (GeomagneticData magData : dataList) {
+        for (GeomagneticData geoData : dataList) {
 
             Boolean isMatch = false;
             
             for (KNNFloorPoint entry : knnList) {
-                if(entry.getRoomRef().equals(magData.getRoomRef()))
+                if(entry.getRoomRef().equals(geoData.getRoomRef()))
                 {
-                    entry.add(GeomagneticData.X_KEY, magData.getxValue());
-                    entry.add(GeomagneticData.Y_KEY, magData.getyValue());
-                    entry.add(GeomagneticData.Z_KEY, magData.getzValue());
+                    entry.add(GeomagneticData.X_KEY, geoData.getxValue());
+                    entry.add(GeomagneticData.Y_KEY, geoData.getyValue());
+                    entry.add(GeomagneticData.Z_KEY, geoData.getzValue());
                     isMatch = true;
                     break;
                 }                
@@ -131,13 +132,51 @@ public class KNNGeomagnetic {
             
             if(!isMatch)
             {     
-                KNNFloorPoint entry = new KNNFloorPoint(magData, GeomagneticData.X_KEY, magData.getxValue());
-                entry.add(GeomagneticData.Y_KEY, magData.getyValue());
-                entry.add(GeomagneticData.Z_KEY, magData.getzValue());                                
+                KNNFloorPoint entry = new KNNFloorPoint(geoData, GeomagneticData.X_KEY, geoData.getxValue());
+                entry.add(GeomagneticData.Y_KEY, geoData.getyValue());
+                entry.add(GeomagneticData.Z_KEY, geoData.getzValue());                                
                 knnList.add(entry);
             }            
         }
         logger.info("Location compilation complete");
+        return knnList;
+    }
+    
+    /**
+     * Stores the timestamp as well as the floor point so that only readings at the same time are stored together. 
+     * Used for generating lists of trial points.    
+     * 
+     * @param dataList    
+     * @return 
+     */
+    public static List<KNNTrialPoint> compileTrialList(final List<GeomagneticData> dataList) {
+
+        List<KNNTrialPoint> knnList = new ArrayList();
+       
+
+        for (GeomagneticData geoData : dataList) {
+
+            Boolean isMatch = false;
+                        
+
+            //Check against timestamp and room ref of floor point for matches
+            long timestamp = geoData.getTimestamp();
+            String roomRef = geoData.getRoomRef();
+            for (KNNTrialPoint entry : knnList) {
+                if (entry.equals(timestamp, roomRef)) {
+                    entry.add(GeomagneticData.X_KEY, geoData.getxValue());
+                    entry.add(GeomagneticData.Y_KEY, geoData.getyValue());
+                    entry.add(GeomagneticData.Z_KEY, geoData.getzValue());                    
+                    isMatch = true;
+                    break;
+                }
+            }
+
+            if (!isMatch) {
+                knnList.add(new KNNTrialPoint(timestamp, geoData, GeomagneticData.X_KEY, geoData.getxValue(), GeomagneticData.Y_KEY, geoData.getyValue(), GeomagneticData.Z_KEY, geoData.getzValue()));
+            }
+        }
+        
         return knnList;
     }
     

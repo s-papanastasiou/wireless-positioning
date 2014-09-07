@@ -10,6 +10,7 @@ import datastorage.RSSIData;
 import datastorage.KNNTrialPoint;
 import datastorage.RoomInfo;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -208,10 +209,18 @@ public class KNNRSSI {
         return knnList;
     }
 
-    //Stores the timestamp as well as the floor point so that only readings at the same time are stored together. Used for generating lists of trial points.
+    /**
+     * Stores the timestamp as well as the floor point so that only readings at the same time are stored together. 
+     * Used for generating lists of trial points.    
+     * 
+     * @param dataList
+     * @param isBSSIDMerged
+     * @param isOrientationMerged
+     * @return 
+     */
     public static List<KNNTrialPoint> compileTrialList(final List<RSSIData> dataList, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {
 
-        List<KNNTrialPoint> knnList = new LinkedList();
+        List<KNNTrialPoint> knnList = new ArrayList();
 
         //logger.info("Compiling RSSI trial location data list....");
         int beginIndex = 0;

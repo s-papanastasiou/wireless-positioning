@@ -208,4 +208,23 @@ public class AvgValue implements Serializable {
     public String toString() {
         return String.format("%s %s %s", mean, values.size(), stdDev);
     }
+    
+    /**
+     * String representation of the average value for all components.
+     *
+     * @param fieldSeparator
+     * @return
+     */
+    public String toString(String fieldSeparator){
+        return mean + fieldSeparator + stdDev + fieldSeparator + variance + fieldSeparator + total + fieldSeparator + values.size() + fieldSeparator + max + fieldSeparator + min;
+    }
+    
+    /**
+     * Header for average value.
+     * @param fieldSeparator
+     * @return 
+     */
+    public static String header(String fieldSeparator){        
+        return "Mean" + fieldSeparator + "Std Dev" + fieldSeparator + "Variance" + fieldSeparator + "Total" + fieldSeparator + "Count" + fieldSeparator + "Max" + fieldSeparator + "Min";
+    } 
 }

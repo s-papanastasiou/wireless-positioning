@@ -53,7 +53,14 @@ public class KNNPointResult {
     public String print(String fieldSeparator){
         StringBuilder stb = new StringBuilder();
         
+        //trial location, trial co-ordinates       
+        stb.append(trialLocation.toString(fieldSeparator)).append(fieldSeparator).append(trialLocation.getDrawPoint().toString(fieldSeparator)).append(fieldSeparator);       
+        //k value, distance measure, var limit, var count
+        stb.append(executeSettings.toString(fieldSeparator)).append(fieldSeparator);
+           
+        //final location, final co-ordinates   
         stb.append(finalLocation.toString(fieldSeparator)).append(fieldSeparator).append(finalLocation.getDrawPoint().toString(fieldSeparator)).append(fieldSeparator);
+        //distance from final to trial, number of position estimates
         stb.append(metreDistance).append(fieldSeparator).append(positionEstimates.size());
 
         //output all the estimates - no estimates then no output
@@ -62,12 +69,7 @@ public class KNNPointResult {
             stb.append(fieldSeparator).append(positionEstimate.toString(fieldSeparator)).append(fieldSeparator).append(positionEstimate.getDrawPoint().toString(fieldSeparator));
             stb.append(fieldSeparator).append(positionEstimate.getResult()).append(fieldSeparator).append(trialLocation.distance(positionEstimate));
         }
-        
-        //trial location, trial co-ordinates       
-        stb.append(fieldSeparator).append(trialLocation.toString(fieldSeparator)).append(fieldSeparator).append(trialLocation.getDrawPoint().toString(fieldSeparator)).append(fieldSeparator);
-
-        //k value, distance measure, var limit, var count
-        stb.append(executeSettings.print(fieldSeparator)).append(fieldSeparator);
+                       
         //start next line
         stb.append(System.lineSeparator());
         

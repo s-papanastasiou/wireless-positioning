@@ -36,12 +36,12 @@ import visualinfo.DisplayRoute;
  * @author Greg Albiston
  */
 public class KNearestNeighbour {
-    
+
     private final static String FILE_ROOT = "results-table";
     private final static String FILE_EXTENSION = ".csv";
     private final static String ROUTE_ROOT = "route";
     private static final String K_NEAREST_NEIGHBOUR_FOLDER = "KNearestNeighbour";
-    
+
     private static final Logger logger = LoggerFactory.getLogger(KNearestNeighbour.class);
 
     public static void command(File workingPath, Settings settings, String[] args) {
@@ -64,12 +64,12 @@ public class KNearestNeighbour {
         File knnPath = new File(workingPath, K_NEAREST_NEIGHBOUR_FOLDER);
         knnPath.mkdir();
 
-        System.out.println("K Nearest Neighbour Algorithm Testing");
+        logger.info("K Nearest Neighbour Algorithm Testing");
 
         KNNTrialSettings knnSettings = new KNNTrialSettings();
 
         //compile to KNN format
-        System.out.println("Radio map");
+        logger.info("Radio map");
         HashMap<String, KNNFloorPoint> radioMap = KNNRSSI.compile(settings.getRadioMapList(), knnSettings.isBSSIDMerged, knnSettings.isOrientationMerged);
 
         //store the compiled data question
@@ -78,105 +78,110 @@ public class KNearestNeighbour {
             KNNFormatStorage.store(knnFile, radioMap);
         }
 
-        System.out.println("Trial data");
+        logger.info("Trial data");
         List<KNNTrialPoint> trialList = KNNRSSI.compileTrialList(settings.getTrialList(), knnSettings.isBSSIDMerged, knnSettings.isOrientationMerged);
 
         runTrials(knnSettings, knnPath, radioMap, trialList, settings.getRoomInfo(), settings.getFloorPlan(), ",");
     }
 
-    public static void runTrials(KNNTrialSettings trialSettings, File workingPath, HashMap<String, KNNFloorPoint> radioMap, List<KNNTrialPoint> trialList, HashMap<String, RoomInfo> roomInfo, File floorPlanFile, String fieldSeparator) {
+    public static void runTrials(KNNTrialSettings trialSettings, File workingPath, HashMap<String, KNNFloorPoint> offlineMap, List<KNNTrialPoint> trialList, HashMap<String, RoomInfo> roomInfo, File floorPlanFile, String fieldSeparator) {
 
-        for (int k = trialSettings.kLowerValue; k <= trialSettings.kUpperValue; k++) {      //Each K value
-            for (DistanceMeasure distMeasure : trialSettings.getDistanceMeasure()) {      //Each Distance measure
-                for (double varLimit = trialSettings.varLowerLimit; varLimit <= trialSettings.varUpperLimit; varLimit += trialSettings.varLimitStep) {    //Each variance limit
-                    for (int varCount = trialSettings.varLowerCount; varCount <= trialSettings.varUpperCount; varCount++) {       //Each variance count
+        File summaryFile = new File(workingPath, "Trial Summary.csv");
+        try (BufferedWriter summaryWriter = new BufferedWriter(new FileWriter(summaryFile))) {
+            KNNTrialResults.printSummaryHeading(summaryWriter, fieldSeparator, trialSettings.isVariance);
+            for (int k = trialSettings.kLowerValue; k <= trialSettings.kUpperValue; k++) {      //Each K value
+                for (DistanceMeasure distMeasure : trialSettings.getDistanceMeasure()) {      //Each Distance measure
+                    for (double varLimit = trialSettings.varLowerLimit; varLimit <= trialSettings.varUpperLimit; varLimit += trialSettings.varLimitStep) {    //Each variance limit
+                        for (int varCount = trialSettings.varLowerCount; varCount <= trialSettings.varUpperCount; varCount++) {       //Each variance count
 
-                        //Setup the arrays to store the points for drawing
-                        List<Point> trialPoints = new ArrayList<>();
-                        List<Point> finalPoints = new ArrayList<>();
+                            //Setup the arrays to store the points for drawing
+                            List<Point> trialPoints = new ArrayList<>();
+                            List<Point> finalPoints = new ArrayList<>();
 
-                        //Setup the sub-folders and filenames
-                        File trialPath;
-                        File estimatesPath;
-                        File resultsFile;
-                        String filename;
+                            //Setup the sub-folders and filenames
+                            File trialPath;
+                            File estimatesPath;
+                            File resultsFile;
+                            String filename;
 
-                        if (trialSettings.isVariance) {
-                            System.out.println(String.format("Trial: %s-%s-%s-%s", k, distMeasure, varLimit, varCount));
-                            trialPath = new File(workingPath, String.format("%s-%s-%s-%s", k, distMeasure, varLimit, varCount));
-                            estimatesPath = new File(trialPath, "estimates");
-                            resultsFile = new File(trialPath, String.format("%s-%s-%s-%s-%s%s", FILE_ROOT, k, distMeasure, varLimit, varCount, FILE_EXTENSION));
-                            filename = String.format("%s-%s-%s-%s-%s", ROUTE_ROOT, k, distMeasure, varLimit, varCount);
-                        } else {
-                            System.out.println(String.format("Trial: %s-%s", k, distMeasure));
-                            trialPath = new File(workingPath, String.format("%s-%s", k, distMeasure));
-                            estimatesPath = new File(trialPath, "estimates");
-                            resultsFile = new File(trialPath, String.format("%s-%s-%s%s", FILE_ROOT, k, distMeasure, FILE_EXTENSION));
-                            filename = String.format("%s-%s-%s", ROUTE_ROOT, k, distMeasure);
-                        }
-
-                        trialPath.mkdir();
-                        estimatesPath.mkdir();
-
-                        //Open the output file for the results
-                        try (BufferedWriter writer = new BufferedWriter(new FileWriter(resultsFile))) {
-                            
-
-                            KNNTrialResults trialResults = new KNNTrialResults(k, trialSettings.isVariance, fieldSeparator);
-                            //store the settings for this execution of the algorithm                                
-                            KNNExecuteSettings executeSettings;
                             if (trialSettings.isVariance) {
-                                executeSettings = new KNNExecuteSettings(k, distMeasure, varLimit, varCount);
+                                //logger.info(String.format("Trial: %s-%s-%s-%s", k, distMeasure, varLimit, varCount));
+                                trialPath = new File(workingPath, String.format("%s-%s-%s-%s", k, distMeasure, varLimit, varCount));
+                                estimatesPath = new File(trialPath, "estimates");
+                                resultsFile = new File(trialPath, String.format("%s-%s-%s-%s-%s%s", FILE_ROOT, k, distMeasure, varLimit, varCount, FILE_EXTENSION));
+                                filename = String.format("%s-%s-%s-%s-%s", ROUTE_ROOT, k, distMeasure, varLimit, varCount);
                             } else {
-                                executeSettings = new KNNExecuteSettings(k, distMeasure);
+                                //logger.info(String.format("Trial: %s-%s", k, distMeasure));
+                                trialPath = new File(workingPath, String.format("%s-%s", k, distMeasure));
+                                estimatesPath = new File(trialPath, "estimates");
+                                resultsFile = new File(trialPath, String.format("%s-%s-%s%s", FILE_ROOT, k, distMeasure, FILE_EXTENSION));
+                                filename = String.format("%s-%s-%s", ROUTE_ROOT, k, distMeasure);
                             }
 
-                            //iterate over each point in the trial
-                            for (KNNTrialPoint trialPoint : trialList) {
-                                KNNPointResult result = execute(estimatesPath, floorPlanFile, trialPoint, radioMap, roomInfo, executeSettings);
-                                trialResults.addResult(result);
-                                trialPoints.add(result.getTrialLocation().getDrawPoint());
-                                finalPoints.add(result.getFinalLocation().getDrawPoint());
+                            trialPath.mkdir();
+                            estimatesPath.mkdir();
+
+                            //Open the output file for the results
+                            try (BufferedWriter writer = new BufferedWriter(new FileWriter(resultsFile))) {
+
+                                //store the settings for this execution of the algorithm                                
+                                KNNExecuteSettings executeSettings;
+                                if (trialSettings.isVariance) {
+                                    executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator, varLimit, varCount);
+                                } else {
+                                    executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator);
+                                }
+
+                                KNNTrialResults trialResults = new KNNTrialResults(executeSettings);
+                                //iterate over each point in the trial
+                                for (KNNTrialPoint trialPoint : trialList) {
+                                    KNNPointResult result = execute(estimatesPath, floorPlanFile, trialPoint, offlineMap, roomInfo, executeSettings);
+                                    trialResults.addResult(result);
+                                    trialPoints.add(result.getTrialLocation().getDrawPoint());
+                                    finalPoints.add(result.getFinalLocation().getDrawPoint());
+                                }
+
+                                //Write the results to file.
+                                trialResults.printResults(writer);
+                                trialResults.printSummary(summaryWriter);
+
+                                //draw the trial route to the floor plan
+                                DisplayRoute.print(trialPath, filename, floorPlanFile, trialPoints, finalPoints);
+
+                            } catch (IOException ex) {
+                                logger.error("Error writing trial {} to file: {}", filename, ex);
                             }
-
-                            //Write the results to file.
-                            trialResults.print(writer);
-                            
-                            //draw the trial route to the floor plan
-                            DisplayRoute.print(trialPath, filename, floorPlanFile, trialPoints, finalPoints);
-
-                        } catch (IOException ex) {
-                            logger.error("Error writing trial {} to file: {}", filename, ex);
                         }
                     }
                 }
             }
+        } catch (IOException ex) {
+            logger.error("Error writing trial {} to file: {}", summaryFile, ex);
         }
     }
-
-   
 
     //perform positioning       
     //output columns - k value, distance measure, var limit, var count, location position, location co-ordinates, trial position, trial co-ordinates, co-ordinate distance, {estimate position, estimate co-ordinates, estimate value}         
     //draw the points and estimates on an image
-    private static KNNPointResult execute(File estimatesPath, File floorPlanFile, KNNFloorPoint trialLocation, HashMap<String, KNNFloorPoint> knnRadioMap, HashMap<String, RoomInfo> roomInfo, KNNExecuteSettings executeSettings) throws IOException {
+    private static KNNPointResult execute(File estimatesPath, File floorPlanFile, KNNFloorPoint trialLocation, HashMap<String, KNNFloorPoint> offlineMap, HashMap<String, RoomInfo> roomInfo, KNNExecuteSettings executeSettings) throws IOException {
 
         //find the position estimates
-        List<ResultLocation> positionEstimates = Positioning.estimate(trialLocation, knnRadioMap, executeSettings.distMeasure);
+        List<ResultLocation> positionEstimates = Positioning.estimate(trialLocation, offlineMap, executeSettings.distMeasure);
 
         //Find the final position based on the k nearest values  
         if (executeSettings.isVariance) {
-            positionEstimates = Positioning.nearestVarianceEstimates(trialLocation, positionEstimates, executeSettings.kValue, executeSettings.varLimit, executeSettings.varCount, knnRadioMap);
+            positionEstimates = Positioning.nearestVarianceEstimates(trialLocation, positionEstimates, executeSettings.kValue, executeSettings.varLimit, executeSettings.varCount, offlineMap);
         } else {
             positionEstimates = Positioning.nearestEstimates(positionEstimates, executeSettings.kValue);
-        }       
+        }
 
         //calculate the co-ordinates of the final point and distance to the trial point       
         //Find the position based on the centre of mass of the estimates.        
         //final location, final co-ordinates, distance between trial and final, actual K (number of estimates included in the positioning - could be less than k value for variance filtering)
-        Location finalLocation = RoomInfo.searchPixelLocation(Locate.findWeightedCentre(positionEstimates, false), roomInfo);
+        boolean isBiggerBetter = executeSettings.distMeasure == DistanceMeasure.Probabilistic;
+        Point finalPoint = Locate.findWeightedCentre(positionEstimates, isBiggerBetter);
+        Location finalLocation = RoomInfo.searchPixelLocation(finalPoint, roomInfo);
         double metreDistance = finalLocation.distance(trialLocation);
-                
 
         //Draw the estimates and final point to the floor plan.        
         BufferedImage floorPlanImage = DisplayPosition.render(floorPlanFile, finalLocation.getDrawPoint(), trialLocation, positionEstimates);
@@ -185,7 +190,7 @@ public class KNearestNeighbour {
         File outputFile = new File(estimatesPath, executeSettings.filename(trialLocation, "estimates", ".png"));
         ImageIO.write(floorPlanImage, "png", outputFile);
 
-        return new KNNPointResult(trialLocation, finalLocation, positionEstimates, metreDistance, executeSettings);        
+        return new KNNPointResult(trialLocation, finalLocation, positionEstimates, metreDistance, executeSettings);
     }
 
     public static String help() {

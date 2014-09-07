@@ -18,28 +18,30 @@ public class KNNExecuteSettings {
     public double varLimit = 0;
     public int varCount = 0;
     public boolean isVariance = false;
+    public String fieldSeparator;
 
-    public KNNExecuteSettings(int kValue, DistanceMeasure distMeasure) {
+    public KNNExecuteSettings(int kValue, DistanceMeasure distMeasure, String fieldSeparator) {
         this.kValue = kValue;
         this.distMeasure = distMeasure;
+        this.fieldSeparator = fieldSeparator;
     }
 
-    public KNNExecuteSettings(int kValue, DistanceMeasure distMeasure, double varLimit, int varCount) {
+    public KNNExecuteSettings(int kValue, DistanceMeasure distMeasure, String fieldSeparator, double varLimit, int varCount) {
         this.kValue = kValue;
         this.distMeasure = distMeasure;
         this.varLimit = varLimit;
         this.varCount = varCount;
         this.isVariance = true;
+        this.fieldSeparator = fieldSeparator;
     }
 
-    public String print(String separator) {
-        String message;
+    public String toString(String fieldSeparator) {
+        
+        String message = kValue + fieldSeparator + distMeasure;
         if (isVariance) {
-            message = kValue + separator + distMeasure + separator + varLimit + separator + varCount;
-        } else {
-            message = kValue + separator + distMeasure;
+            message += fieldSeparator + varLimit + fieldSeparator + varCount;
         }
-
+        
         return message;
     }
 
@@ -53,5 +55,20 @@ public class KNNExecuteSettings {
         }
 
         return filename;
+    }
+    
+    public String header(){
+        return header(fieldSeparator, isVariance);
+    }
+    
+    public static String header(String fieldSeparator, boolean isVariance){
+        StringBuilder stb = new StringBuilder();
+        stb.append("K Value").append(fieldSeparator).append("Distance Measure");
+
+        if (isVariance) {
+            stb.append(fieldSeparator).append("Variance Limit").append(fieldSeparator).append("Variance Count");
+        }
+        
+        return stb.toString();
     }
 }

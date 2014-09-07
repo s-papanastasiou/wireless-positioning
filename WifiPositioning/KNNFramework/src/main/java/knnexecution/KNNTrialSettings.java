@@ -15,44 +15,51 @@ import processing.DistanceMeasure;
  */
 public class KNNTrialSettings {
 
-    public int kLowerValue;
-    public int kUpperValue;
+    public final int ALL_DIST_OPTIONS = 0;
+    public final int kLowerValue;
+    public final int kUpperValue;
     private final int distOption;
-    public double varLowerLimit = 0;
-    public double varUpperLimit = 1;
-    public double varLimitStep = 2;
-    public int varLowerCount = 0;
-    public int varUpperCount = 0;
-    public boolean isVariance = false;
-    public boolean isBSSIDMerged = false;
-    public boolean isOrientationMerged = false;
+    public final double varLowerLimit;
+    public final double varUpperLimit;
+    public final double varLimitStep;
+    public final int varLowerCount;
+    public final int varUpperCount;
+    public final boolean isVariance;
+    public final boolean isBSSIDMerged;
+    public final boolean isOrientationMerged;
 
     public KNNTrialSettings() {
         //Enter k value
-        kLowerValue = Menus.Value("Enter the integer LOWER k value: ", 1);
-        kUpperValue = Menus.Value("Enter the integer UPPER k value: ", kLowerValue);
+        this.kLowerValue = Menus.Value("Enter the integer LOWER k value: ", 1);
+        this.kUpperValue = Menus.Value("Enter the integer UPPER k value: ", kLowerValue);
 
         System.out.println("Selected the distance measure type to be used:");
-        distOption = Menus.Options(getDistanceOptions());
+        this.distOption = Menus.Options(getDistanceOptions());
 
         //Do you want to use variance
         if (Menus.Choice("Do you want to use the variance alternative?")) {
-            isVariance = true;
+            this.isVariance = true;
             //enter variance limit
-            varLowerLimit = Menus.Value("Enter the decimal LOWER variance limit (tolerable difference in dbms): ", 0.0f);
-            varUpperLimit = Menus.Value("Enter the decimal UPPER variance limit (tolerable difference in dbms): ", varLowerLimit);
-            varLimitStep = Menus.Value("Enter the decimal step change between each test of variance limit: ", 0.01f);
+            this.varLowerLimit = Menus.Value("Enter the decimal LOWER variance limit (tolerable difference in dbms): ", 0.0f);
+            this.varUpperLimit = Menus.Value("Enter the decimal UPPER variance limit (tolerable difference in dbms): ", varLowerLimit);
+            this.varLimitStep = Menus.Value("Enter the decimal step change between each test of variance limit: ", 0.01f);
 
             //enter variance count
-            varLowerCount = Menus.Value("Enter the integer LOWER maximum number of access points at each location that can exceed the variance limit: ", 0);
-            varUpperCount = Menus.Value("Enter the integer UPPER maximum number of access points at each location that can exceed the variance limit: ", varLowerCount);
+            this.varLowerCount = Menus.Value("Enter the integer LOWER maximum number of access points at each location that can exceed the variance limit: ", 0);
+            this.varUpperCount = Menus.Value("Enter the integer UPPER maximum number of access points at each location that can exceed the variance limit: ", varLowerCount);
+        } else {
+            this.isVariance = false;
+            this.varLowerLimit = 0;
+            this.varUpperLimit = 1;
+            this.varLimitStep = 2;
+            this.varLowerCount = 0;
+            this.varUpperCount = 0;
         }
-        
-        if(Menus.Choice("Do you want to merge BSSIDs?"))
-            isBSSIDMerged = true;
-        
-        if(Menus.Choice("Do you want to merge the orientation?"))
-            isOrientationMerged = true;
+
+        this.isBSSIDMerged = Menus.Choice("Do you want to merge BSSIDs?");
+
+        this.isOrientationMerged = Menus.Choice("Do you want to merge the orientation?");
+
     }
 
     public static KNNTrialSettings commandSetup(String[] args) {
@@ -89,12 +96,56 @@ public class KNNTrialSettings {
         this.kLowerValue = kValue;
         this.kUpperValue = kValue;
         this.distOption = checkDistanceOption(distOption);
+        this.varLowerLimit = 0;
+        this.varUpperLimit = 1;
+        this.varLimitStep = 2;
+        this.varLowerCount = 0;
+        this.varUpperCount = 0;
+        this.isVariance = false;
+        this.isBSSIDMerged = false;
+        this.isOrientationMerged = false;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption) {
         this.kLowerValue = kLowerValue;
         this.kUpperValue = kUpperValue;
         this.distOption = checkDistanceOption(distOption);
+        this.varLowerLimit = 0;
+        this.varUpperLimit = 1;
+        this.varLimitStep = 2;
+        this.varLowerCount = 0;
+        this.varUpperCount = 0;
+        this.isVariance = false;
+        this.isBSSIDMerged = false;
+        this.isOrientationMerged = false;
+    }
+    
+    public KNNTrialSettings(int kLowerValue, int kUpperValue, boolean isBSSIDMerged) {
+        this.kLowerValue = kLowerValue;
+        this.kUpperValue = kUpperValue;
+        this.distOption = ALL_DIST_OPTIONS;
+        this.varLowerLimit = 0;
+        this.varUpperLimit = 1;
+        this.varLimitStep = 2;
+        this.varLowerCount = 0;
+        this.varUpperCount = 0;
+        this.isVariance = false;
+        this.isBSSIDMerged = isBSSIDMerged;
+        this.isOrientationMerged = false;
+    }
+
+    public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, boolean isBSSIDMerged) {
+        this.kLowerValue = kLowerValue;
+        this.kUpperValue = kUpperValue;
+        this.distOption = checkDistanceOption(distOption);
+        this.varLowerLimit = 0;
+        this.varUpperLimit = 1;
+        this.varLimitStep = 2;
+        this.varLowerCount = 0;
+        this.varUpperCount = 0;
+        this.isVariance = false;
+        this.isBSSIDMerged = isBSSIDMerged;
+        this.isOrientationMerged = false;
     }
 
     public KNNTrialSettings(int kValue, int distOption, double varLimit, int varCount) {
@@ -107,6 +158,8 @@ public class KNNTrialSettings {
         this.varLowerCount = varCount;
         this.varUpperCount = varCount;
         this.isVariance = true;
+        this.isBSSIDMerged = false;
+        this.isOrientationMerged = false;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount) {
@@ -119,8 +172,10 @@ public class KNNTrialSettings {
         this.varLowerCount = varLowerCount;
         this.varUpperCount = varUpperCount;
         this.isVariance = true;
+        this.isBSSIDMerged = false;
+        this.isOrientationMerged = false;
     }
-    
+
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount, boolean isBSSIDMerged) {
         this.kLowerValue = kLowerValue;
         this.kUpperValue = kUpperValue;
@@ -132,8 +187,9 @@ public class KNNTrialSettings {
         this.varUpperCount = varUpperCount;
         this.isVariance = true;
         this.isBSSIDMerged = isBSSIDMerged;
+        this.isOrientationMerged = false;
     }
-    
+
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount, boolean isBSSIDMerged, boolean isOrientationMerged) {
         this.kLowerValue = kLowerValue;
         this.kUpperValue = kUpperValue;

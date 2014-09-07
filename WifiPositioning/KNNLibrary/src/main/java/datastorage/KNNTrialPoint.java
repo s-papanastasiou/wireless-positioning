@@ -6,6 +6,9 @@
 
 package datastorage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author SST3ALBISG
@@ -24,6 +27,16 @@ public class KNNTrialPoint extends KNNFloorPoint{
         this.timestamp = timestamp;
     }
     
+    /**
+     * Copy constructor
+     * 
+     * @param trialPoint 
+     */
+    public KNNTrialPoint (KNNTrialPoint trialPoint){
+        super(trialPoint);
+        this.timestamp = trialPoint.timestamp;        
+    }
+    
     public long getTimestamp(){
         return timestamp;
     }
@@ -35,5 +48,39 @@ public class KNNTrialPoint extends KNNFloorPoint{
             isMatch = super.getRoomRef().equals(roomRef);            
         }
         return isMatch;
+    }
+    
+    /**
+     * Merges two HashMaps of KNNFloorPoints together - deep copy
+     *
+     * @param firstTrialPoints
+     * @param secondTrialPoints
+     * @return
+     */
+    public static List<KNNTrialPoint> merge(List<KNNTrialPoint> firstTrialPoints, List<KNNTrialPoint> secondTrialPoints) {
+        
+        List<KNNTrialPoint> mergedTrialPoints = new ArrayList<>();
+        for(KNNTrialPoint point: firstTrialPoints){
+            mergedTrialPoints.add(new KNNTrialPoint(point));
+        }           
+        
+        for (KNNTrialPoint point: secondTrialPoints) {                        
+            
+            boolean isNoMatch = true;
+            for (KNNTrialPoint mergedTrialPoint : mergedTrialPoints) {
+                KNNFloorPoint mergedPoint = mergedTrialPoint;
+                if(mergedPoint.equals(point)){
+                    mergedPoint.add(point.getAttributes());
+                    isNoMatch = false;
+                    break;
+                }
+            }
+            
+            if(isNoMatch){                
+                mergedTrialPoints.add(point);
+            }
+        }
+        
+        return mergedTrialPoints;
     }
 }

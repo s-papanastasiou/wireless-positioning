@@ -15,7 +15,7 @@ import general.AvgValue;
 public class Manhatten {
     public static double distance(final HashMap<String, AvgValue> trialAttributes, final HashMap<String, AvgValue> offlineAttributes) {
         
-        final double NO_MATCH = 1000;
+        final double NO_MATCH = 100;
                
         double distance=0.0f;
         

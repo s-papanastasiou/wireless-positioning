@@ -17,7 +17,7 @@ import general.AvgValue;
 public class Chebyshev {
     public static double distance(final HashMap<String, AvgValue> trialAttributes, final HashMap<String, AvgValue> offlineAttributes) {
         
-        final double NO_MATCH = 1000;
+        final double NO_MATCH = 100;
                        
         SortedSet<Double> distances = new TreeSet<>();
         Set<String> keys = trialAttributes.keySet();
@@ -33,11 +33,8 @@ public class Chebyshev {
             }
             else{ //poor distance given. otherwise points would be rewards for lacking data detected by the scan point.
                 distances.add(NO_MATCH);   //very harsh as one missing point will result in a max score              
-            }                           
-        }       
-        
-        //if(distances.isEmpty())
-        //    distances.add(NO_BSSID_MATCH);
+            }
+        }
         
         return distances.last();
     }

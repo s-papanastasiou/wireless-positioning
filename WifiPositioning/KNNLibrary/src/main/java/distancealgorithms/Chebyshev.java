@@ -15,24 +15,24 @@ import general.AvgValue;
  * @author Greg Albiston
  */
 public class Chebyshev {
-    public static double distance(final HashMap<String, AvgValue> scanAccessPoints, final HashMap<String, AvgValue> floorAccessPoints) {
+    public static double distance(final HashMap<String, AvgValue> trialAttributes, final HashMap<String, AvgValue> offlineAttributes) {
         
-        final double NO_BSSID_MATCH = 100;
+        final double NO_MATCH = 1000;
                        
         SortedSet<Double> distances = new TreeSet<>();
-        Set<String> scanBSSIDs = scanAccessPoints.keySet();
+        Set<String> keys = trialAttributes.keySet();
         
-        for(String scanBSSID: scanBSSIDs)
+        for(String key: keys)
         {
-            if(floorAccessPoints.containsKey(scanBSSID))
+            if(offlineAttributes.containsKey(key))
             {
-                AvgValue testValue = scanAccessPoints.get(scanBSSID);
-                AvgValue floorValue = floorAccessPoints.get(scanBSSID);
-                distances.add(Math.abs(testValue.getMean()-floorValue.getMean()));
+                AvgValue trialValue = trialAttributes.get(key);
+                AvgValue offlineValue = offlineAttributes.get(key);
+                distances.add(Math.abs(trialValue.getMean()-offlineValue.getMean()));
                 
             }
             else{ //poor distance given. otherwise points would be rewards for lacking data detected by the scan point.
-                distances.add(NO_BSSID_MATCH);   //very harsh as one missing point will result in a max score              
+                distances.add(NO_MATCH);   //very harsh as one missing point will result in a max score              
             }                           
         }       
         

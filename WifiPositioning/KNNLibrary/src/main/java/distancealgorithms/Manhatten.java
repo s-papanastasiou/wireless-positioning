@@ -13,24 +13,24 @@ import general.AvgValue;
  * @author Greg Albiston
  */
 public class Manhatten {
-    public static double distance(final HashMap<String, AvgValue> scanAccessPoints, final HashMap<String, AvgValue> floorAccessPoints) {
+    public static double distance(final HashMap<String, AvgValue> trialAttributes, final HashMap<String, AvgValue> offlineAttributes) {
         
-        final double NO_BSSID_MATCH = 100;
+        final double NO_MATCH = 1000;
                
         double distance=0.0f;
         
-        Set<String> scanBSSIDs = scanAccessPoints.keySet();
+        Set<String> keys = trialAttributes.keySet();
         
-        for(String scanBSSID: scanBSSIDs)
+        for(String key: keys)
         {
-            if(floorAccessPoints.containsKey(scanBSSID))
+            if(offlineAttributes.containsKey(key))
             {
-                AvgValue testValue = scanAccessPoints.get(scanBSSID);
-                AvgValue floorValue = floorAccessPoints.get(scanBSSID);
-                distance+=Math.abs(testValue.getMean()-floorValue.getMean());
+                AvgValue trialValue = trialAttributes.get(key);
+                AvgValue offlineValue = offlineAttributes.get(key);
+                distance+=Math.abs(trialValue.getMean()-offlineValue.getMean());
                 
             }else{ //poor distance given. otherwise points would be rewards for lacking data detected by the scan point.
-                distance+=NO_BSSID_MATCH;
+                distance+=NO_MATCH;
             }                            
         }             
         

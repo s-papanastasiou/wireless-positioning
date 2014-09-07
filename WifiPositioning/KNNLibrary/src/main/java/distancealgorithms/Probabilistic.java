@@ -91,4 +91,36 @@ public class Probabilistic {
 
         return p;
     }
+    
+    //Distance equations based on http://www.statsoft.com/textbook/k-nearest-neighbors/
+    public static double distance( final HashMap<String, AvgValue> trialAttributes, final HashMap<String, AvgValue> offlineAttributes) {
+                
+        final double NO_MATCH = 0.0001;
+        final double sqrPI = Math.sqrt(2 * Math.PI);    
+        double distance=1.0f;
+        
+        Set<String> keys = trialAttributes.keySet();
+        
+        for(String key: keys)
+        {
+            if(offlineAttributes.containsKey(key))
+            {
+                AvgValue offline = offlineAttributes.get(key);
+                AvgValue trial = trialAttributes.get(key);
+                if ((offline.getMean() != 0) && (offline.getVariance() > 0)) {
+                    double c = 1 / (offline.getStdDev() * sqrPI);
+                    double d = (trial.getMean() - offline.getMean());
+                    double powD = Math.pow(d, 2);
+                    double e = Math.exp(-powD / (2 * offline.getVariance()));
+                    distance *= (c * e);
+                }
+                
+            }else{ //poor distance given. otherwise points would be rewards for lacking data detected by the scan point.
+                distance*=NO_MATCH;
+            }                            
+        }        
+        distance = Math.sqrt(distance);                
+        
+        return distance;
+    }
 }

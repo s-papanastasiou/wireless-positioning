@@ -14,24 +14,24 @@ import general.AvgValue;
  */
 public class Euclidian {
     //Distance equations based on http://www.statsoft.com/textbook/k-nearest-neighbors/
-    public static double distance( final HashMap<String, AvgValue> scanAccessPoints, final HashMap<String, AvgValue> floorAccessPoints) {
+    public static double distance( final HashMap<String, AvgValue> trailAttributes, final HashMap<String, AvgValue> offlineAtrributes) {
                 
-        final double NO_BSSID_MATCH = Math.pow(100,2);
+        final double NO_MATCH = Math.pow(100,2);
                
         double distance=0.0f;
         
-        Set<String> scanBSSIDs = scanAccessPoints.keySet();
+        Set<String> keys = trailAttributes.keySet();
         
-        for(String scanBSSID: scanBSSIDs)
+        for(String key: keys)
         {
-            if(floorAccessPoints.containsKey(scanBSSID))
+            if(offlineAtrributes.containsKey(key))
             {
-                AvgValue testValue = scanAccessPoints.get(scanBSSID);
-                AvgValue floorValue = floorAccessPoints.get(scanBSSID);
-                distance+=Math.pow(testValue.getMean()-floorValue.getMean(),2);
+                AvgValue trialValue = trailAttributes.get(key);
+                AvgValue offlineValue = offlineAtrributes.get(key);
+                distance+=Math.pow(trialValue.getMean()-offlineValue.getMean(),2);
                 
             }else{ //poor distance given. otherwise points would be rewards for lacking data detected by the scan point.
-                distance+=NO_BSSID_MATCH;
+                distance+=NO_MATCH;
             }                            
         }        
         distance = Math.sqrt(distance);                

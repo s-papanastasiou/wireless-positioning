@@ -4,21 +4,22 @@
  */
 package processing;
 
-import datastorage.ResultLocation;
-import general.Point;
 import datastorage.KNNFloorPoint;
+import datastorage.ResultLocation;
+import distancealgorithms.Chebyshev;
+import distancealgorithms.Euclidian;
+import distancealgorithms.EuclidianSquared;
+import distancealgorithms.Manhatten;
+import distancealgorithms.Probabilistic;
+import general.AvgValue;
+import general.Locate;
+import general.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import general.AvgValue;
-import distancealgorithms.Chebyshev;
-import distancealgorithms.Euclidian;
-import distancealgorithms.EuclidianSquared;
-import distancealgorithms.Manhatten;
-import general.Locate;
 
 /**
  *
@@ -147,6 +148,9 @@ public class Positioning {
                 break;
             case Chebyshev:
                 distance = Chebyshev.distance(trialAccessPoints, floorAccessPoints);
+                break;                
+            case Probabilistic:
+                distance = Probabilistic.distance(trialAccessPoints, floorAccessPoints);
                 break;
 
             default:

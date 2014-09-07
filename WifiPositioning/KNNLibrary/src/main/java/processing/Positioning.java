@@ -26,27 +26,27 @@ import general.Locate;
  */
 public class Positioning {      
 
-    public static Point locate(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> knnRadioMap, final DistanceMeasure measure, int kLimit, boolean isBiggerBetter) {
-        List<ResultLocation> results = estimate(trialPoint, knnRadioMap, measure);
+    public static Point locate(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> offlineMap, final DistanceMeasure measure, int kLimit, boolean isBiggerBetter) {
+        List<ResultLocation> results = estimate(trialPoint, offlineMap, measure);
         results = nearestEstimates(results, kLimit);
 
         return Locate.findWeightedCentre(results, isBiggerBetter);
     }
 
-    public static Point locateVariance(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> knnRadioMap, final DistanceMeasure measure, int kLimit, double varLimit, int varCount, boolean isBiggerBetter) {
-        List<ResultLocation> results = estimate(trialPoint, knnRadioMap, measure);
-        results = nearestVarianceEstimates(trialPoint, results, kLimit, varLimit, varCount, knnRadioMap);
+    public static Point locateVariance(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> offlineMap, final DistanceMeasure measure, int kLimit, double varLimit, int varCount, boolean isBiggerBetter) {
+        List<ResultLocation> results = estimate(trialPoint, offlineMap, measure);
+        results = nearestVarianceEstimates(trialPoint, results, kLimit, varLimit, varCount, offlineMap);
 
         return Locate.findWeightedCentre(results, isBiggerBetter);
     }
 
-    public static List<ResultLocation> estimate(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> knnRadioMap, final DistanceMeasure measure) {
+    public static List<ResultLocation> estimate(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> offlineMap, final DistanceMeasure measure) {
         List<ResultLocation> results = new ArrayList<>();
 
         //Loop over each floor point in the radio map 
-        Set<String> keys = knnRadioMap.keySet();
+        Set<String> keys = offlineMap.keySet();
         for (String key : keys) {
-            KNNFloorPoint floorPoint = knnRadioMap.get(key);
+            KNNFloorPoint floorPoint = offlineMap.get(key);
             ResultLocation result = calcDistance(trialPoint, floorPoint, measure);
             results.add(result);
         }
@@ -74,7 +74,7 @@ public class Positioning {
         return shortList;
     }
 
-    public static List<ResultLocation> nearestVarianceEstimates(final KNNFloorPoint trialPoint, List<ResultLocation> resultLocations, int kLimit, double varLimit, int varCount, final HashMap<String, KNNFloorPoint> knnRadioMap) {
+    public static List<ResultLocation> nearestVarianceEstimates(final KNNFloorPoint trialPoint, List<ResultLocation> resultLocations, int kLimit, double varLimit, int varCount, final HashMap<String, KNNFloorPoint> offlineMap) {
         //Print out the k nearest estimates or all if less than k
         //int kValue = kLimit > positionEstimates.size() ? positionEstimates.size() : kLimit;
 
@@ -84,7 +84,7 @@ public class Positioning {
         while (shortList.size() < kLimit && counter < resultLocations.size()) {      //continue till have the kValue or unitl whole list interated over - differen to paper which only does the first kLimit of checks
             ResultLocation result = resultLocations.get(counter);
 
-            KNNFloorPoint estimation = knnRadioMap.get(result.getRoomRef());
+            KNNFloorPoint estimation = offlineMap.get(result.getRoomRef());
                                 
             if (varianceCheck(trialPoint.getAttributes(), estimation.getAttributes(), varLimit, varCount)) {
                 shortList.add(resultLocations.get(counter));

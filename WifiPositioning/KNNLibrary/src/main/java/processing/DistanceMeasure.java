@@ -9,5 +9,5 @@ package processing;
  * @author Greg Albiston
  */
 public enum DistanceMeasure {
-    Euclidian, EuclidianSquared, Manhatten, Chebyshev, Probabilistic
+    Euclidian, EuclidianSquared, Manhattan, Chebyshev, Probabilistic
 }

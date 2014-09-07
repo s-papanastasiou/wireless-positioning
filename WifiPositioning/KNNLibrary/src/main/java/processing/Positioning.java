@@ -9,7 +9,7 @@ import datastorage.ResultLocation;
 import distancealgorithms.Chebyshev;
 import distancealgorithms.Euclidian;
 import distancealgorithms.EuclidianSquared;
-import distancealgorithms.Manhatten;
+import distancealgorithms.Manhattan;
 import distancealgorithms.Probabilistic;
 import general.AvgValue;
 import general.Locate;
@@ -147,8 +147,8 @@ public class Positioning {
             case EuclidianSquared:
                 distance = EuclidianSquared.distance(trialAccessPoints, floorAccessPoints);
                 break;
-            case Manhatten:
-                distance = Manhatten.distance(trialAccessPoints, floorAccessPoints);
+            case Manhattan:
+                distance = Manhattan.distance(trialAccessPoints, floorAccessPoints);
                 break;
             case Chebyshev:
                 distance = Chebyshev.distance(trialAccessPoints, floorAccessPoints);

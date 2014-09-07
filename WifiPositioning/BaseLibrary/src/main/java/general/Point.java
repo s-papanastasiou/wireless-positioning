@@ -133,6 +133,16 @@ public class Point {
 
     /**
      * String representation of the object.
+     *     
+     * @return
+     */
+    @Override
+    public String toString() {
+        return x + "," + y;
+    }
+    
+    /**
+     * String representation of the object.
      *
      * @param fieldSeparator Field separator used in the string.
      * @return
@@ -151,4 +161,29 @@ public class Point {
     public Point drawPoint(double xPixels, double yPixels) {
         return new Point(x * xPixels, y * yPixels);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + (int) (Double.doubleToLongBits(this.x) ^ (Double.doubleToLongBits(this.x) >>> 32));
+        hash = 67 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Point other = (Point) obj;
+        if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
+            return false;
+        }
+        return Double.doubleToLongBits(this.y) == Double.doubleToLongBits(other.y);
+    }
+    
+    
 }

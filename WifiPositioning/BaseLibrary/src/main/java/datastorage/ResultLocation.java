@@ -15,6 +15,18 @@ public class ResultLocation extends Location implements Comparable<ResultLocatio
     private final String roomReference;
 
     /**
+     * Constructor.
+     *
+     * @param location Location of the result.
+     * @param result Value of the result.
+     */
+    public ResultLocation(Location location, double result) {
+        super(location);
+        this.result = result;
+        this.roomReference = location.getRoomRef();
+    }
+    
+    /**
      * Constructor Room reference allows the retention of the full room
      * reference for subclasses of Location.
      *
@@ -63,8 +75,8 @@ public class ResultLocation extends Location implements Comparable<ResultLocatio
                 outcome = 1;
             } else if (this.result < resLocation.result) {
                 outcome = -1;
-            } else if (roomReference.equals(resLocation.roomReference)) {
-                outcome = 0;
+            } else {
+                outcome = roomReference.compareTo(resLocation.roomReference);                 
             }
 
         } else {

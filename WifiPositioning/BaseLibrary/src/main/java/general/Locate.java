@@ -18,31 +18,47 @@ import java.util.Set;
  */
 public class Locate {
 
-    public final static int ERROR_VALUE = -1;
-
+    public static final int ERROR_VALUE = -1;
+    public static final double ZERO_WEIGHT = 0.0001f; //nominal none zero value to prevent problems in inverse normalisation            
+        
     /**
      * Finds the weighted centre of mass based on each pixel point and it's own
      * weight.
      *
-     * @param positions List of positions to find centre.     
+     * @param positions List of positions to find centre.
      * @param isBiggerBetter True, if weight values further from zero are more
      * desirable.
      * @return
      */
     public static Point findWeightedCentre(final List<ResultLocation> positions, boolean isBiggerBetter) {
 
+                
         Point result = new Point();
 
         if (!positions.isEmpty()) {
 
-            final double zeroWeight = 0.0001f; //nominal none zero value to prevent problems in inverse normalisation
             double x = 0;
             double y = 0;
             double totalWeight = 0;  //to normalise the values
-            double startWeight = 0;   //used when inversely normalising - equivalent to 1 by end
+                                   
+            if (isBiggerBetter) {
 
-            if (!isBiggerBetter) {
+                for (ResultLocation position : positions) {
+
+                    Point pos = position.getDrawPoint();
+
+                    double weight;
+
+                    weight = position.getResult();
+                    x += pos.getX() * weight;
+                    y += pos.getY() * weight;
+                    totalWeight += weight;
+
+                }
+
+            } else {
                 //inversely normalise by finding the weight of all the items
+                double startWeight = 0;   //equivalent to 1 by end
 
                 for (ResultLocation position : positions) {
                     double weight = position.getResult();
@@ -51,31 +67,29 @@ public class Locate {
                     //therefore adjust zero's to a nominal none zero value
                     //also for k=2 and one is zero weight then it would be equivalent to a k=1 test
                     if (weight == 0) {
-                        startWeight += zeroWeight;
+                        startWeight += ZERO_WEIGHT;
                     } else {
                         startWeight += weight;
                     }
                 }
-            }
+                
+                //Special condition when there is only a single point.
+                if(positions.size()==1){
+                    startWeight *=2;
+                }
+                
+                for (ResultLocation position : positions) {
 
-            for (ResultLocation position : positions) {
+                    Point pos = position.getDrawPoint();
 
-                Point pos = position.getDrawPoint();
-
-                double weight;
-
-                if (isBiggerBetter) {
-                    weight = position.getResult();
-                    x += pos.getX() * weight;
-                    y += pos.getY() * weight;
-                    totalWeight += weight;
-
-                } else {
-
+                    double weight;
                     if (position.getResult() == 0) {
-                        weight = startWeight - zeroWeight;
+                        //weight = startWeight - zeroWeight;
+                        weight = startWeight - ZERO_WEIGHT;
                     } else {
-                        weight = startWeight - position.getResult();  //subtract the current weight
+                        //weight = startWeight - position.getResult();  //subtract the current weight
+                        double res = position.getResult();
+                        weight = startWeight - res;
                     }
 
                     x += pos.getX() * weight;
@@ -87,6 +101,7 @@ public class Locate {
             //normalise the values by dividing by the total weight in the set
             result.setX(x / totalWeight);
             result.setY(y / totalWeight);
+            
 
         } else {
             result.setX(ERROR_VALUE);
@@ -95,12 +110,12 @@ public class Locate {
 
         return result;
     }
-    
+
     /**
      * Finds the unweighted centre of mass based on each point. Points in the
      * same place will apply weighting.
      *
-     * @param positions List of positions to find centre.     
+     * @param positions List of positions to find centre.
      * @return
      */
     public static Point findUnweightedCentre(final List<? extends Location> positions) {
@@ -155,6 +170,6 @@ public class Locate {
             bestLocation = estimatedLocation;
         }
         return bestLocation;
-    }        
+    }
 
 }

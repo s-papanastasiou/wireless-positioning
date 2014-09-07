@@ -18,7 +18,7 @@ import org.apache.commons.lang3.ArrayUtils;
  */
 public class GeomagneticData extends Location {
 
-    private final String timestamp;
+    private final long timestamp;
     private final double xValue;
     private final double yValue;
     private final double zValue;
@@ -44,7 +44,7 @@ public class GeomagneticData extends Location {
      */
     public GeomagneticData(final String[] parts, final HashMap<String, RoomInfo> roomInfo) throws ParseException {                            
         super(RoomInfo.createLocation(parts[1], Integer.parseInt(parts[2]), Integer.parseInt(parts[3]), Integer.parseInt(parts[4]), roomInfo));
-        this.timestamp = parts[0];
+        this.timestamp = TimeStamp.convertDateTime(parts[0]);
         this.xValue = Double.parseDouble(parts[5]);
         this.yValue = Double.parseDouble(parts[6]);
         this.zValue = Double.parseDouble(parts[7]);
@@ -64,7 +64,7 @@ public class GeomagneticData extends Location {
      */
     public GeomagneticData(long timestamp, Location location, double xValue, double yValue, double zValue, int sensorAccuracy) {
         super(location);
-        this.timestamp = TimeStamp.formatDateTime(timestamp);
+        this.timestamp = timestamp;
         this.xValue = xValue;
         this.yValue = yValue;
         this.zValue = zValue;
@@ -76,7 +76,7 @@ public class GeomagneticData extends Location {
      *
      * @return
      */
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 

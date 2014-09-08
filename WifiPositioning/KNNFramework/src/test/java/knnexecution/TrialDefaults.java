@@ -37,6 +37,7 @@ public class TrialDefaults {
     public static final File rssiDataFile = new File(workingPath, rssiData);
     public static final List<RSSIData> rssiDataList = RSSILoader.load(rssiDataFile, dataSep, roomInfo);
     public static final String geomagneticData = "GeomagneticSurveyData.csv";
+    //public static final String geomagneticData = "GeomagneticSurveyData - No Y.csv";
     public static final File geomagneticDataFile = new File(workingPath, geomagneticData);
     public static final List<GeomagneticData> geomagneticDataList = GeomagneticLoader.load(geomagneticDataFile, dataSep, roomInfo);
         

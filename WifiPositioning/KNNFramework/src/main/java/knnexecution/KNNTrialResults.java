@@ -17,13 +17,15 @@ import java.util.List;
  */
 public class KNNTrialResults {
 
-    private final KNNExecuteSettings executeSettings;
+    public final KNNExecuteSettings executeSettings;
+    private final String trialName;
     private final List<KNNPointResult> results = new ArrayList<>();
-    private final String fieldSeparator;
+    public final String fieldSeparator;
     private final String header;
 
-    public KNNTrialResults(KNNExecuteSettings executeSettings) {
+    public KNNTrialResults(KNNExecuteSettings executeSettings, String trialName) {
         this.executeSettings = executeSettings;
+        this.trialName = trialName;
         this.fieldSeparator = executeSettings.fieldSeparator;
 
         this.header = setHeading();
@@ -67,7 +69,7 @@ public class KNNTrialResults {
 
     public static void printSummaryHeading(BufferedWriter writer, String fieldSeparator, Boolean isVariance) throws IOException {
         StringBuilder stb = new StringBuilder();
-        stb.append(KNNExecuteSettings.header(fieldSeparator, isVariance)).append(fieldSeparator);
+        stb.append("Trial Name").append(fieldSeparator).append(KNNExecuteSettings.header(fieldSeparator, isVariance)).append(fieldSeparator);
         stb.append(AvgValue.header(fieldSeparator));
         stb.append(System.lineSeparator());
         writer.write(stb.toString());
@@ -80,6 +82,7 @@ public class KNNTrialResults {
             value.add(result.getMetreDistance());
         }
         StringBuilder stb = new StringBuilder();
+        stb.append(trialName).append(fieldSeparator);
         stb.append(executeSettings.toString(fieldSeparator)).append(fieldSeparator).append(value.toString(fieldSeparator));
         stb.append(System.lineSeparator());
         

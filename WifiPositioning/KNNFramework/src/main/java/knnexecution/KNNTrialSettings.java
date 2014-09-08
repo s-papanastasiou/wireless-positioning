@@ -27,7 +27,7 @@ public class KNNTrialSettings {
     public final boolean isVariance;
     public final boolean isBSSIDMerged;
     public final boolean isOrientationMerged;
-    public final boolean isPrintImages;
+    public final boolean isEstimateImages;
 
     public KNNTrialSettings() {
         //Enter k value
@@ -61,7 +61,7 @@ public class KNNTrialSettings {
 
         this.isOrientationMerged = Menus.Choice("Do you want to merge the orientation?");
 
-        this.isPrintImages = Menus.Choice("Do you want to print the floorplan images?");
+        this.isEstimateImages = Menus.Choice("Do you want to print the floorplan images?");
     }
 
     public static KNNTrialSettings commandSetup(String[] args) {
@@ -106,7 +106,7 @@ public class KNNTrialSettings {
         this.isVariance = false;
         this.isBSSIDMerged = false;
         this.isOrientationMerged = false;
-        this.isPrintImages = false;
+        this.isEstimateImages = false;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, boolean isPrintImages, int distOption) {
@@ -121,7 +121,7 @@ public class KNNTrialSettings {
         this.isVariance = false;
         this.isBSSIDMerged = false;
         this.isOrientationMerged = false;
-        this.isPrintImages = isPrintImages;
+        this.isEstimateImages = isPrintImages;
     }
     
     public KNNTrialSettings(int kValue, boolean isBSSIDMerged, boolean isPrintImages) {
@@ -136,7 +136,7 @@ public class KNNTrialSettings {
         this.isVariance = false;
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = false;
-        this.isPrintImages = isPrintImages;
+        this.isEstimateImages = isPrintImages;
     }
     
     public KNNTrialSettings(int kLowerValue, int kUpperValue, boolean isBSSIDMerged, boolean isPrintImages) {
@@ -151,7 +151,7 @@ public class KNNTrialSettings {
         this.isVariance = false;
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = false;
-        this.isPrintImages = isPrintImages;
+        this.isEstimateImages = isPrintImages;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, boolean isBSSIDMerged) {
@@ -166,7 +166,7 @@ public class KNNTrialSettings {
         this.isVariance = false;
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = false;
-        this.isPrintImages = false;
+        this.isEstimateImages = false;
     }
 
     public KNNTrialSettings(int kValue, int distOption, double varLimit, int varCount) {
@@ -181,7 +181,7 @@ public class KNNTrialSettings {
         this.isVariance = true;
         this.isBSSIDMerged = false;
         this.isOrientationMerged = false;
-        this.isPrintImages = false;
+        this.isEstimateImages = false;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount) {
@@ -196,7 +196,7 @@ public class KNNTrialSettings {
         this.isVariance = true;
         this.isBSSIDMerged = false;
         this.isOrientationMerged = false;
-        this.isPrintImages = false;
+        this.isEstimateImages = false;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount, boolean isBSSIDMerged) {
@@ -211,7 +211,7 @@ public class KNNTrialSettings {
         this.isVariance = true;
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = false;
-        this.isPrintImages = false;
+        this.isEstimateImages = false;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount, boolean isBSSIDMerged, boolean isOrientationMerged) {
@@ -226,7 +226,7 @@ public class KNNTrialSettings {
         this.isVariance = true;
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = isOrientationMerged;
-        this.isPrintImages = false;
+        this.isEstimateImages = false;
     }
 
     public static String[] getDistanceOptions() {

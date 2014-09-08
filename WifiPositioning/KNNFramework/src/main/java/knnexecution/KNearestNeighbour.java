@@ -55,7 +55,7 @@ public class KNearestNeighbour {
         HashMap<String, KNNFloorPoint> radioMap = KNNRSSI.compile(settings.getRadioMapList(), knnSettings.isBSSIDMerged, knnSettings.isOrientationMerged);
         List<KNNTrialPoint> trialList = KNNRSSI.compileTrialList(settings.getTrialList(), knnSettings.isBSSIDMerged, knnSettings.isOrientationMerged);
 
-        runTrials(knnSettings, knnPath, radioMap, trialList, settings.getRoomInfo(), settings.getFloorPlan(), ",");
+        runTrials(knnSettings, knnPath, radioMap, trialList, settings.getRoomInfo(), settings.getFloorPlan(), ",", "Trial");
     }
 
     public static void start(File workingPath, Settings settings) {
@@ -81,12 +81,13 @@ public class KNearestNeighbour {
         logger.info("Trial data");
         List<KNNTrialPoint> trialList = KNNRSSI.compileTrialList(settings.getTrialList(), knnSettings.isBSSIDMerged, knnSettings.isOrientationMerged);
 
-        runTrials(knnSettings, knnPath, radioMap, trialList, settings.getRoomInfo(), settings.getFloorPlan(), ",");
+        runTrials(knnSettings, knnPath, radioMap, trialList, settings.getRoomInfo(), settings.getFloorPlan(), ",", "Trial");
     }
 
-    public static void runTrials(KNNTrialSettings trialSettings, File workingPath, HashMap<String, KNNFloorPoint> offlineMap, List<KNNTrialPoint> trialList, HashMap<String, RoomInfo> roomInfo, File floorPlanFile, String fieldSeparator) {
+    public static List<KNNTrialResults> runTrials(KNNTrialSettings trialSettings, File workingPath, HashMap<String, KNNFloorPoint> offlineMap, List<KNNTrialPoint> trialList, HashMap<String, RoomInfo> roomInfo, File floorPlanFile, String fieldSeparator, String trialName) {
 
-        File summaryFile = new File(workingPath, "Trial Summary.csv");
+        List<KNNTrialResults> allTrialResults = new ArrayList<>();
+        File summaryFile = new File(workingPath, "Trial Summary-" + trialName + ".csv");
         try (BufferedWriter summaryWriter = new BufferedWriter(new FileWriter(summaryFile))) {
             KNNTrialResults.printSummaryHeading(summaryWriter, fieldSeparator, trialSettings.isVariance);
             for (int k = trialSettings.kLowerValue; k <= trialSettings.kUpperValue; k++) {      //Each K value
@@ -132,10 +133,10 @@ public class KNearestNeighbour {
                                     executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator);
                                 }
 
-                                KNNTrialResults trialResults = new KNNTrialResults(executeSettings);
+                                KNNTrialResults trialResults = new KNNTrialResults(executeSettings, trialName);
                                 //iterate over each point in the trial
                                 for (KNNTrialPoint trialPoint : trialList) {
-                                    KNNPointResult result = execute(estimatesPath, floorPlanFile, trialPoint, offlineMap, roomInfo, executeSettings, trialSettings.isPrintImages);
+                                    KNNPointResult result = execute(estimatesPath, floorPlanFile, trialPoint, offlineMap, roomInfo, executeSettings, trialSettings.isEstimateImages);
                                     trialResults.addResult(result);
                                     trialPoints.add(result.getTrialLocation().getDrawPoint());
                                     finalPoints.add(result.getFinalLocation().getDrawPoint());
@@ -144,11 +145,11 @@ public class KNearestNeighbour {
                                 //Write the results to file.
                                 trialResults.printResults(writer);
                                 trialResults.printSummary(summaryWriter);
-
+                                allTrialResults.add(trialResults);
                                 //draw the trial route to the floor plan
-                                if (trialSettings.isPrintImages) {
-                                    DisplayRoute.print(trialPath, filename, floorPlanFile, trialPoints, finalPoints);
-                                }
+                                //if (trialSettings.isPrintImages) {
+                                DisplayRoute.print(trialPath, filename, floorPlanFile, trialPoints, finalPoints);
+                                //}
 
                             } catch (IOException ex) {
                                 logger.error("Error writing trial {} to file: {}", filename, ex);
@@ -160,12 +161,13 @@ public class KNearestNeighbour {
         } catch (IOException ex) {
             logger.error("Error writing trial {} to file: {}", summaryFile, ex);
         }
+        return allTrialResults;
     }
 
     //perform positioning       
     //output columns - k value, distance measure, var limit, var count, location position, location co-ordinates, trial position, trial co-ordinates, co-ordinate distance, {estimate position, estimate co-ordinates, estimate value}         
     //draw the points and estimates on an image
-    private static KNNPointResult execute(File estimatesPath, File floorPlanFile, KNNFloorPoint trialLocation, HashMap<String, KNNFloorPoint> offlineMap, HashMap<String, RoomInfo> roomInfo, KNNExecuteSettings executeSettings, Boolean isPrintImages) throws IOException {
+    private static KNNPointResult execute(File estimatesPath, File floorPlanFile, KNNFloorPoint trialLocation, HashMap<String, KNNFloorPoint> offlineMap, HashMap<String, RoomInfo> roomInfo, KNNExecuteSettings executeSettings, Boolean isEstimateImages) throws IOException {
 
         //find the position estimates
         List<ResultLocation> positionEstimates = Positioning.estimate(trialLocation, offlineMap, executeSettings.distMeasure);
@@ -185,7 +187,7 @@ public class KNearestNeighbour {
         Location finalLocation = RoomInfo.searchPixelLocation(finalPoint, roomInfo);
         double metreDistance = finalLocation.distance(trialLocation);
 
-        if (isPrintImages) {
+        if (isEstimateImages) {
             //Draw the estimates and final point to the floor plan.        
             BufferedImage floorPlanImage = DisplayPosition.render(floorPlanFile, finalLocation.getDrawPoint(), trialLocation, positionEstimates);
 

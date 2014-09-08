@@ -14,7 +14,7 @@
                                                                  android:entryValues="@array/k_limit_values"
                                                                  android:defaultValue="5" android:summary="%s"/>
 
-        <SwitchPreference android:key="filter_ssid" android:defaultValue="false" android:title="@string/filter_ssid"/>
+        <SwitchPreference android:key="filter_bssid" android:defaultValue="false" android:title="@string/filter_bssid"/>
         <SwitchPreference android:key="data_type" android:title="@string/data_type" android:switchTextOn="@string/rssi"
                           android:switchTextOff="@string/magnetic" android:defaultValue="true"/>
 

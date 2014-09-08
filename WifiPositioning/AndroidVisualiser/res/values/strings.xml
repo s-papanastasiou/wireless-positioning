@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">AndroidVisualiser</string>
+    <string name="app_name">Android Visualiser</string>
     <string name="dist_measure">Measure:</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
@@ -41,7 +41,7 @@
     <string name="show_estimates">Show Estimates:</string>
     <string name="show_grid">Show Grid:</string>
     <string name="show_log">Show Log:</string>
-    <string name="filter_ssid">Filter SSID:</string>
+    <string name="filter_bssid">Filter BSSID:</string>
 
 
     <string name="colour_final">Final Point Colour:</string>

@@ -82,10 +82,10 @@ public class SettingsController implements SharedPreferences.OnSharedPreferenceC
 
 
         //find the current colour settings for points
-        String colour = preferences.getString(COLOUR_FINAL, "Blue");
+        String colour = preferences.getString(COLOUR_FINAL, "Red");
         colourFinal = Color.parseColor(colour.toLowerCase());
 
-        colour = preferences.getString(COLOUR_FINAL, "Red");
+        colour = preferences.getString(COLOUR_FINAL, "Blue");
         colourScan = Color.parseColor(colour.toLowerCase());
 
         colour = preferences.getString(COLOUR_FINAL, "Magenta");
@@ -128,10 +128,10 @@ public class SettingsController implements SharedPreferences.OnSharedPreferenceC
             case COLOUR_FINAL:
             case COLOUR_SCAN:
             case COLOUR_ESTIMATES:
-                String colour = sharedPreferences.getString(COLOUR_FINAL, "Blue");
+                String colour = sharedPreferences.getString(COLOUR_FINAL, "Red");
                 colourFinal = Color.parseColor(colour.toLowerCase());
 
-                colour = sharedPreferences.getString(COLOUR_SCAN, "Red");
+                colour = sharedPreferences.getString(COLOUR_SCAN, "Blue");
                 colourScan = Color.parseColor(colour.toLowerCase());
 
                 colour = sharedPreferences.getString(COLOUR_ESTIMATES, "Magenta");

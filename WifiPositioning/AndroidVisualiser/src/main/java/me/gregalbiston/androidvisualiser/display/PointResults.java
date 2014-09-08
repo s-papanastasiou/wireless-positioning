@@ -1,9 +1,6 @@
 package me.gregalbiston.androidvisualiser.display;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
+import android.graphics.*;
 import datastorage.Location;
 import general.Point;
 import java.util.ArrayList;
@@ -115,6 +112,7 @@ public class PointResults {
     private void drawPoints(Canvas canvas, List<Point> points, Paint paint) {
         for (int counter = 0; counter < points.size() - 1; counter++) {
             Point cPoint = points.get(counter);   //current point
+
             RectF rect = new RectF(cPoint.getXfl() - SIZE, cPoint.getYfl() - SIZE, cPoint.getXfl() + SIZE, cPoint.getYfl() + SIZE);
             canvas.drawRect(rect, paint);
         }

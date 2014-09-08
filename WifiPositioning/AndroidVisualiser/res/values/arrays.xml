@@ -3,7 +3,7 @@
     <string-array name="distance_measures_entries">
         <item>Euclidean</item>
         <item>EuclideanSquared</item>
-        <item>Manhatten</item>
+        <item>Manhattan</item>
         <item>Chebyshev</item>
     </string-array>
 

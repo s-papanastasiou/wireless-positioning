@@ -59,9 +59,9 @@
         <module>ParticleFilterFramework</module>
         <module>AndroidParticleFilter</module>
         <module>KNNFramework</module>
-        <module>AndroidKNN</module>
         <module>AndroidDetector</module>
         <module>ParticleFilterLibrary</module>
+        <module>AndroidVisualiser</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

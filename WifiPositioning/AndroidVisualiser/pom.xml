@@ -7,10 +7,10 @@
         <version>1.0</version>
     </parent>
     <groupId>me.gregalbiston</groupId>
-    <artifactId>AndroidKNN</artifactId>
+    <artifactId>AndroidVisualiser</artifactId>
     <version>1.0</version>
     <packaging>apk</packaging>
-    <name>AndroidKNN</name>
+    <name>AndroidVisualiser</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

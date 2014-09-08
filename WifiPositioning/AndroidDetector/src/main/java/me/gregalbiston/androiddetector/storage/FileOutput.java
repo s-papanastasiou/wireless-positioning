@@ -111,7 +111,7 @@ public class FileOutput {
 
     public void setOrientation(String orientation_arg) {
         //Test that the orientation value is a valid integer before storing
-        try {
+        try {            
             Integer.parseInt(orientation_arg);
             orientation = orientation_arg;
         } catch (NumberFormatException e) {

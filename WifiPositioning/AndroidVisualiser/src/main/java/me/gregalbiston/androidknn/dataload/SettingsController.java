@@ -75,7 +75,7 @@ public class SettingsController implements SharedPreferences.OnSharedPreferenceC
         varCount = Integer.parseInt(preferences.getString(VAR_COUNT, "5"));
         varLimit = Double.parseDouble(preferences.getString(VAR_LIMIT, "1.0"));
 
-        String distString = preferences.getString(DIST_MEASURE, DistanceMeasure.Manhatten.toString());
+        String distString = preferences.getString(DIST_MEASURE, DistanceMeasure.Manhattan.toString());
         int distIndex = Integer.parseInt(distString);
         DistanceMeasure[] distValues = DistanceMeasure.values();
         distMeasure = distValues[distIndex];
@@ -145,7 +145,7 @@ public class SettingsController implements SharedPreferences.OnSharedPreferenceC
                 isFilterBSSID = sharedPreferences.getBoolean(FILTER_BSSID, false);
                 break;
             case DIST_MEASURE:
-                String distString = sharedPreferences.getString(DIST_MEASURE, DistanceMeasure.Manhatten.toString());
+                String distString = sharedPreferences.getString(DIST_MEASURE, DistanceMeasure.Manhattan.toString());
                 int distIndex = Integer.parseInt(distString);
                 DistanceMeasure[] distValues = DistanceMeasure.values();
                 distMeasure = distValues[distIndex];

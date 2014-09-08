@@ -89,7 +89,7 @@ public class GeomagneticScanner {
 
         float values[] = event.values;
 
-        return new KNNFloorPoint(location, GeomagneticData.X_Key, values[0], GeomagneticData.Y_Key, values[1], GeomagneticData.Z_Key, values[2]);
+        return new KNNFloorPoint(location, GeomagneticData.X_KEY, (double)values[0], GeomagneticData.Y_KEY, (double)values[1], GeomagneticData.Z_KEY, (double)values[2]);
     }
 
 }

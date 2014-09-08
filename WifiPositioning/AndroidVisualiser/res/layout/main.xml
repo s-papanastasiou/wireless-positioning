@@ -8,7 +8,7 @@
             android:layout_height="fill_parent">
         <view android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              class="com.example.KNNVisualiser.Display.FloorView" android:id="@+id/view"/>
+              class="me.gregalbiston.androidvisualiser.display.FloorView" android:id="@+id/view"/>
         <TextView
                 android:layout_width="466dp"
                 android:layout_height="222dp"

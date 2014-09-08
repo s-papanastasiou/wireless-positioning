@@ -3,12 +3,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory android:title="@string/settings_knn">
-        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="dist_measure"
+        <me.gregalbiston.androidvisualiser.display.SummaryListPreference android:key="dist_measure"
                                                                  android:title="@string/dist_measure"
                                                                  android:entries="@array/distance_measures_entries"
                                                                  android:entryValues="@array/distance_measures_values"
                                                                  android:defaultValue="0" android:summary="%s"/>
-        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="k_limit" android:title="@string/k_limit"
+        <me.gregalbiston.androidvisualiser.display.SummaryListPreference android:key="k_limit" android:title="@string/k_limit"
                                                                  android:numeric="integer"
                                                                  android:entries="@array/k_limit_values"
                                                                  android:entryValues="@array/k_limit_values"
@@ -27,7 +27,7 @@
         <SwitchPreference android:key="show_grid" android:defaultValue="false" android:title="@string/show_grid"
                           android:switchTextOn="On"
                           android:switchTextOff="Off"/>
-        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="colour_grid"
+        <me.gregalbiston.androidvisualiser.display.SummaryListPreference android:key="colour_grid"
                                                                  android:title="@string/colour_grid"
                                                                  android:entries="@array/colours_entries"
                                                                  android:entryValues="@array/colours_entries"
@@ -41,17 +41,17 @@
         <SwitchPreference android:key="show_estimates" android:defaultValue="false"
                           android:title="@string/show_estimates" android:switchTextOn="On"
                           android:switchTextOff="Off"/>
-        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="colour_final"
+        <me.gregalbiston.androidvisualiser.display.SummaryListPreference android:key="colour_final"
                                                                  android:title="@string/colour_final"
                                                                  android:entries="@array/colours_entries"
                                                                  android:entryValues="@array/colours_entries"
                                                                  android:defaultValue="Blue" android:summary="%s"/>
-        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="colour_scan"
+        <me.gregalbiston.androidvisualiser.display.SummaryListPreference android:key="colour_scan"
                                                                  android:title="@string/colour_scan"
                                                                  android:entries="@array/colours_entries"
                                                                  android:entryValues="@array/colours_entries"
                                                                  android:defaultValue="Red" android:summary="%s"/>
-        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="colour_estimates"
+        <me.gregalbiston.androidvisualiser.display.SummaryListPreference android:key="colour_estimates"
                                                                  android:title="@string/colour_estimates"
                                                                  android:entries="@array/colours_entries"
                                                                  android:entryValues="@array/colours_entries"
@@ -62,13 +62,13 @@
     <PreferenceCategory android:title="@string/settings_variance_filter">
         <SwitchPreference android:key="use_variance" android:defaultValue="false" android:switchTextOn="On"
                           android:switchTextOff="Off" android:title="@string/use_variance"/>
-        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="var_count"
+        <me.gregalbiston.androidvisualiser.display.SummaryListPreference android:key="var_count"
                                                                  android:title="@string/var_count"
                                                                  android:numeric="integer"
                                                                  android:entries="@array/var_count_values"
                                                                  android:entryValues="@array/var_count_values"
                                                                  android:defaultValue="5" android:summary="%s"/>
-        <com.example.KNNVisualiser.Display.SummaryListPreference android:key="var_limit"
+        <me.gregalbiston.androidvisualiser.display.SummaryListPreference android:key="var_limit"
                                                                  android:title="@string/var_limit"
                                                                  android:numeric="decimal"
                                                                  android:entries="@array/var_limit_values"

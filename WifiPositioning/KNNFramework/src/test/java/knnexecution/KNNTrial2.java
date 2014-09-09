@@ -79,20 +79,24 @@ public class KNNTrial2 extends TestCase {
             Double c = maxSize*percent;
             List<String> unmergedFilter = FilterBSSID.generateByLocationCount(TrialDefaults.rssiDataList, c.intValue(), Boolean.FALSE);
             unmergedBSSIDFilters.add(unmergedFilter);
-            File unmerged = new File(filterFolder, "Unmerged Filter - " + percent*100 +"%");
+            File unmerged = new File(filterFolder, "Unmerged Filter - " + percent*100 +"%.txt");
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(unmerged, false))) {
-                for(String filter: unmergedFilter)
+                for(String filter: unmergedFilter){
                     writer.write(filter);
+                    writer.write(System.lineSeparator());
+                }
             } catch (IOException ex) {
                 logger.info("{}", ex.getMessage());
             }
 
             List<String> mergedFilter = FilterBSSID.generateByLocationCount(TrialDefaults.rssiDataList, c.intValue(), Boolean.TRUE);
             mergedBSSIDFilters.add(mergedFilter);
-            File merged = new File(filterFolder, "Merged Filter - " + percent*100 +"%");
+            File merged = new File(filterFolder, "Merged Filter - " + percent*100 +"%.txt");
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(merged, false))) {
-                for(String filter: mergedFilter)
+                for(String filter: mergedFilter){
                     writer.write(filter);
+                    writer.write(System.lineSeparator());
+                }
             } catch (IOException ex) {
                 logger.info("{}", ex.getMessage());
             }

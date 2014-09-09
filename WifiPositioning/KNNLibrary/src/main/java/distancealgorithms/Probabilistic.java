@@ -100,7 +100,7 @@ public class Probabilistic {
      */
     public static double distance(final HashMap<String, AvgValue> trialAttributes, final HashMap<String, AvgValue> offlineAttributes) {
 
-        final double NO_MATCH = Math.exp(-100);
+        final double NO_MATCH = Math.exp(-100); //Very small none zero value to avoid zero divide by n.
         final double sqrPI = Math.sqrt(2 * Math.PI);
         double probTotal = 0.0;
 

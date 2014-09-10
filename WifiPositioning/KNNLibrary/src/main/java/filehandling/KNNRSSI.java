@@ -135,7 +135,7 @@ public class KNNRSSI {
 
             if(!filterBSSIDs.isEmpty()){
                 if(!filterBSSIDs.contains(bssid))
-                    break;
+                    continue;
             }
             
             String roomRef;

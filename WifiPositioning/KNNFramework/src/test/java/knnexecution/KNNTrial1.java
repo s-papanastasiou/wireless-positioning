@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Weighted centre trials
+ * Inverted centre trials
  * @author Gerg
  */
 public class KNNTrial1 extends TestCase {

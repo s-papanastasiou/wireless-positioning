@@ -51,8 +51,8 @@ public class LocateTest extends TestCase {
         positions.add(new ResultLocation(C, 10));
         
         boolean isBiggerBetter = false;
-        Point result = Locate.findWeightedCentre(positions, isBiggerBetter);
-        Point expResult = new Point(284.375, 284.375);
+        ResultPoint result = Locate.findWeightedCentre(positions, isBiggerBetter);
+        ResultPoint expResult = new ResultPoint(new Point(284.375, 284.375),new Point(284.375, 284.375));
         logger.info("Result: {} Exp: {}", result.toString(),expResult.toString());
         assertEquals(result, expResult);
         
@@ -74,8 +74,9 @@ public class LocateTest extends TestCase {
         positions.add(new ResultLocation(C, 0.5));
         
         boolean isBiggerBetter = false;
-        Point result = Locate.findWeightedCentre(positions, isBiggerBetter);
-        Point expResult = new Point(287.5015623046724, 287.5015623046724);
+        ResultPoint result = Locate.findWeightedCentre(positions, isBiggerBetter);
+        ResultPoint expResult = new ResultPoint(new Point(287.5015623046724, 287.5015623046724),new Point(287.5015623046724, 287.5015623046724));
+        
         logger.info("Result: {} Exp: {}", result.toString(),expResult.toString());
         assertEquals(result, expResult);
         
@@ -91,8 +92,9 @@ public class LocateTest extends TestCase {
         positions.add(new ResultLocation(A, 0.3));
                 
         boolean isBiggerBetter = false;
-        Point result = Locate.findWeightedCentre(positions, isBiggerBetter);
-        Point expResult = new Point(200, 200);
+        ResultPoint result = Locate.findWeightedCentre(positions, isBiggerBetter);
+        ResultPoint expResult = new ResultPoint(new Point(200, 200), new Point(200, 200));
+        
         logger.info("Result: {} Exp: {}", result.toString(),expResult.toString());
         assertEquals(result, expResult);
         
@@ -114,8 +116,9 @@ public class LocateTest extends TestCase {
         positions.add(new ResultLocation(C, 10));
         
         boolean isBiggerBetter = true;
-        Point result = Locate.findWeightedCentre(positions, isBiggerBetter);
-        Point expResult = new Point(331.25, 331.25);
+        ResultPoint result = Locate.findWeightedCentre(positions, isBiggerBetter);
+        ResultPoint expResult = new ResultPoint(new Point(331.25, 331.25),new Point(331.25, 331.25));
+       
         logger.info("Result: {} Exp: {}", result.toString(),expResult.toString());
         assertEquals(result, expResult);        
     }
@@ -136,8 +139,9 @@ public class LocateTest extends TestCase {
         positions.add(new ResultLocation(C, 0.5));
         
         boolean isBiggerBetter = true;
-        Point result = Locate.findWeightedCentre(positions, isBiggerBetter);
-        Point expResult = new Point(325, 325);
+        ResultPoint result = Locate.findWeightedCentre(positions, isBiggerBetter);
+        ResultPoint expResult = new ResultPoint(new Point(325, 325),new Point(325, 325));
+        
         logger.info("Result: {} Exp: {}", result.toString(),expResult.toString());
         assertEquals(result, expResult);        
     }
@@ -152,8 +156,9 @@ public class LocateTest extends TestCase {
         positions.add(new ResultLocation(A, 0.3));              
         
         boolean isBiggerBetter = true;
-        Point result = Locate.findWeightedCentre(positions, isBiggerBetter);
-        Point expResult = new Point(200, 200);
+        ResultPoint result = Locate.findWeightedCentre(positions, isBiggerBetter);
+        ResultPoint expResult = new ResultPoint(new Point(200, 200),new Point(200, 200));
+        
         logger.info("Result: {} Exp: {}", result.toString(),expResult.toString());
         assertEquals(result, expResult);        
     }

@@ -5,6 +5,8 @@
  */
 package knnexecution;
 
+import accesspointvariant.APData;
+import accesspointvariant.APFormat;
 import datastorage.GeomagneticData;
 import datastorage.KNNFloorPoint;
 import datastorage.KNNTrialPoint;
@@ -57,14 +59,15 @@ public class KNNTrial2 extends TestCase {
 
     public KNNTrial2(String testName) {
         super(testName);
-        outputPath.mkdir();
-        
-        buildFilters();
+                       
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        logger.info("Setup called");
+        outputPath.mkdir();
+        buildFilters();
     }
 
     @Override
@@ -76,40 +79,43 @@ public class KNNTrial2 extends TestCase {
         File filterFolder = new File(outputPath, "Filters");
         filterFolder.mkdir();
         
+        List<APData> unmergdApDataList = APFormat.compileList(TrialDefaults.rssiDataList,  Boolean.FALSE,  Boolean.TRUE);
+        List<APData> mergedAPDataList = APFormat.compileList(TrialDefaults.rssiDataList,  Boolean.TRUE,  Boolean.TRUE);
+        
         for (Double percent : locationPercents) {
             
+            logger.info("Build Filter - " + percent + "%");
             Double c = maxSize*percent;
-            List<String> unmergedFilter = FilterBSSID.generateByLocationCount(TrialDefaults.rssiDataList, c.intValue(), Boolean.FALSE);
+            
+            List<String> unmergedFilter = FilterBSSID.generateByLocationCount(unmergdApDataList, c.intValue());
             unmergedBSSIDFilters.add(unmergedFilter);
             File unmerged = new File(filterFolder, "Unmerged Filter - " + percent*100 +"%.txt");
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(unmerged, false))) {
-                for(String filter: unmergedFilter){
-                    writer.write(filter);
-                    writer.write(System.lineSeparator());
-                }
-            } catch (IOException ex) {
-                logger.info("{}", ex.getMessage());
-            }
-
-            List<String> mergedFilter = FilterBSSID.generateByLocationCount(TrialDefaults.rssiDataList, c.intValue(), Boolean.TRUE);
+            writeFilterToFile(unmerged, unmergedFilter);
+            
+            List<String> mergedFilter = FilterBSSID.generateByLocationCount(mergedAPDataList, c.intValue());            
             mergedBSSIDFilters.add(mergedFilter);
             File merged = new File(filterFolder, "Merged Filter - " + percent*100 +"%.txt");
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(merged, false))) {
-                for(String filter: mergedFilter){
+            writeFilterToFile(merged, mergedFilter);
+        }
+    }
+    
+    private static void writeFilterToFile(File outputFile, List<String> filters){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile, false))) {
+                for(String filter: filters){
                     writer.write(filter);
                     writer.write(System.lineSeparator());
                 }
             } catch (IOException ex) {
                 logger.info("{}", ex.getMessage());
             }
-        }
     }
     
     /**
      * Test of runTrials method, of class KNearestNeighbour.
      */
+    
     public void testRSSIUnmerged() {
-        String trialPrefix = "Combined Unmerged";
+        String trialPrefix = "Unmerged";
         logger.info(trialPrefix);
 
         Boolean isBSSIDMerged = false;
@@ -140,7 +146,8 @@ public class KNNTrial2 extends TestCase {
                 trialOutputPath.mkdir();
 
                 KNNTrialSettings trialSettings = new KNNTrialSettings(kValue, isBSSIDMerged, isEstimateImages);
-                List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i + "-" + f);
+                String trialName = trialPrefix + "-T" + i + "-" + percent + "%";
+                List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialName);
                 allTrialResults.addAll(trialResults);
             }
         }
@@ -177,7 +184,8 @@ public class KNNTrial2 extends TestCase {
                 trialOutputPath.mkdir();
 
                 KNNTrialSettings trialSettings = new KNNTrialSettings(kValue, isBSSIDMerged, isEstimateImages);
-                List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i + "-" + f);
+                String trialName = trialPrefix + "-T" + i + "-" + percent + "%";
+                List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialName);
                 allTrialResults.addAll(trialResults);
             }
         }
@@ -226,7 +234,8 @@ public class KNNTrial2 extends TestCase {
                 trialOutputPath.mkdir();
 
                 KNNTrialSettings trialSettings = new KNNTrialSettings(kValue, isBSSIDMerged, isEstimateImages);
-                List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i + "-" + f);
+                String trialName = trialPrefix + "-T" + i + "-" + percent + "%";
+                List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialName);
                 allTrialResults.addAll(trialResults);
             }
         }
@@ -273,7 +282,8 @@ public class KNNTrial2 extends TestCase {
                 trialOutputPath.mkdir();
 
                 KNNTrialSettings trialSettings = new KNNTrialSettings(kValue, isBSSIDMerged, isEstimateImages);
-                List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i + "-" + f);
+                String trialName = trialPrefix + "-T" + i + "-" + percent + "%";
+                List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialName);
                 allTrialResults.addAll(trialResults);
             }
 

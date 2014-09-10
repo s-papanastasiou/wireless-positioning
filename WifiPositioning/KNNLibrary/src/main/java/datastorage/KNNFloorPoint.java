@@ -251,7 +251,19 @@ public class KNNFloorPoint extends Location implements Serializable {
         }
         
         return result;
-    }    
+    }   
+    
+    public double findAvgVariance(){
+        
+        double variance = 0.0;
+        for(AvgValue value: attributes.values()){
+            variance += value.getVariance();
+        }
+        if(variance>0){
+            variance /= attributes.size();
+        }
+        return variance;
+    }
     
     public Boolean matchingAttributes(KNNFloorPoint other, Double rssiTolerance, Double geoTolerance) {
         Boolean result;
@@ -339,6 +351,6 @@ public class KNNFloorPoint extends Location implements Serializable {
         }
         
         return mergedFloorPoints;
-    }
+    }       
     
 }

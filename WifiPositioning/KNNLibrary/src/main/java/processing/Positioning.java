@@ -161,7 +161,10 @@ public class Positioning {
                 throw new AssertionError("Positioning:DistMeasure " + measure);
 
         }
-        return new ResultLocation(floorPoint, distance, floorPoint.getRoomRef());
+                
+        return new ResultLocation(floorPoint, distance, floorPoint.getRoomRef(), floorPoint.findAvgVariance());
     }
+    
+    
 
 }

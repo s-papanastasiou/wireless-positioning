@@ -13,7 +13,8 @@ import distancealgorithms.Manhattan;
 import distancealgorithms.Probabilistic;
 import general.AvgValue;
 import general.Locate;
-import general.Point;
+import general.LocateStyle;
+import general.ResultPoint;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,18 +28,20 @@ import java.util.Set;
  */
 public class Positioning {
 
-    public static Point locate(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> offlineMap, final DistanceMeasure measure, int kLimit, boolean isBiggerBetter) {
+    public static ResultPoint locate(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> offlineMap, final DistanceMeasure measure, int kLimit, LocateStyle locateStyle) {
         List<ResultLocation> results = estimate(trialPoint, offlineMap, measure);
         results = nearestEstimates(results, kLimit);
 
-        return Locate.findWeightedCentre(results, isBiggerBetter);
+        boolean isBiggerBetter = measure == DistanceMeasure.Probabilistic;
+        return Locate.findCentre(results, isBiggerBetter, locateStyle);
     }
 
-    public static Point locateVariance(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> offlineMap, final DistanceMeasure measure, int kLimit, double varLimit, int varCount, boolean isBiggerBetter) {
+    public static ResultPoint locateVariance(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> offlineMap, final DistanceMeasure measure, int kLimit, double varLimit, int varCount, LocateStyle locateStyle) {
         List<ResultLocation> results = estimate(trialPoint, offlineMap, measure);
         results = nearestVarianceEstimates(trialPoint, results, kLimit, varLimit, varCount, offlineMap);
 
-        return Locate.findWeightedCentre(results, isBiggerBetter);
+        boolean isBiggerBetter = measure == DistanceMeasure.Probabilistic;
+        return Locate.findCentre(results, isBiggerBetter, locateStyle);
     }
 
     public static List<ResultLocation> estimate(final KNNFloorPoint trialPoint, final HashMap<String, KNNFloorPoint> offlineMap, final DistanceMeasure measure) {

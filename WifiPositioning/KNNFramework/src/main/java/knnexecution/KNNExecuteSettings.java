@@ -5,6 +5,7 @@
 package knnexecution;
 
 import datastorage.Location;
+import general.LocateStyle;
 import processing.DistanceMeasure;
 
 /**
@@ -18,7 +19,7 @@ public class KNNExecuteSettings {
     public double varLimit = 0;
     public int varCount = 0;
     public boolean isVariance = false;
-    public boolean isWeightedCentre = true;    
+    public LocateStyle locateStyle = LocateStyle.INVERTED;    
     public String fieldSeparator;
 
     public KNNExecuteSettings(int kValue, DistanceMeasure distMeasure, String fieldSeparator) {
@@ -27,11 +28,11 @@ public class KNNExecuteSettings {
         this.fieldSeparator = fieldSeparator;
     }
     
-    public KNNExecuteSettings(int kValue, DistanceMeasure distMeasure, String fieldSeparator, boolean isWeightedCentre) {
+    public KNNExecuteSettings(int kValue, DistanceMeasure distMeasure, String fieldSeparator, LocateStyle locateStyle) {
         this.kValue = kValue;
         this.distMeasure = distMeasure;
         this.fieldSeparator = fieldSeparator;
-        this.isWeightedCentre = isWeightedCentre;
+        this.locateStyle = locateStyle;
     }
 
     public KNNExecuteSettings(int kValue, DistanceMeasure distMeasure, String fieldSeparator, double varLimit, int varCount) {

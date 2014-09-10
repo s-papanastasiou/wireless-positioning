@@ -8,11 +8,12 @@ import datastorage.KNNFloorPoint;
 import datastorage.KNNTrialPoint;
 import datastorage.Location;
 import datastorage.ResultLocation;
+import datastorage.RoomInfo;
 import filehandling.KNNFormatStorage;
 import filehandling.KNNRSSI;
-import datastorage.RoomInfo;
 import general.Locate;
 import general.Point;
+import general.ResultPoint;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -129,7 +130,7 @@ public class KNearestNeighbour {
                             if (trialSettings.isVariance) {
                                 executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator, varLimit, varCount);
                             } else {
-                                executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator, trialSettings.isWeightedCentre);
+                                executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator, trialSettings.locateStyle);
                             }
 
                             KNNTrialResults trialResults = new KNNTrialResults(executeSettings, trialName);
@@ -190,8 +191,9 @@ public class KNearestNeighbour {
         //Find the position based on the centre of mass of the estimates.        
         //final location, final co-ordinates, distance between trial and final, actual K (number of estimates included in the positioning - could be less than k value for variance filtering)
         boolean isBiggerBetter = executeSettings.distMeasure == DistanceMeasure.Probabilistic;
-        Point finalPoint = Locate.findCentre(positionEstimates, isBiggerBetter, executeSettings.isWeightedCentre);
-        Location finalLocation = RoomInfo.searchPixelLocation(finalPoint, roomInfo);
+        ResultPoint finalPoint = Locate.findCentre(positionEstimates, isBiggerBetter, executeSettings.locateStyle);
+        Location finalLocation = RoomInfo.searchGlobalLocation(finalPoint, roomInfo);        
+        
         double metreDistance = finalLocation.distance(trialLocation);
 
         if (isEstimateImages) {

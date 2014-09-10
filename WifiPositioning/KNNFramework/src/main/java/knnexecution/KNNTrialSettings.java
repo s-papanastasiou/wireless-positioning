@@ -4,6 +4,7 @@
  */
 package knnexecution;
 
+import general.LocateStyle;
 import java.util.ArrayList;
 import java.util.List;
 import knnframework.Menus;
@@ -28,7 +29,7 @@ public class KNNTrialSettings {
     public final boolean isBSSIDMerged;
     public final boolean isOrientationMerged;
     public final boolean isEstimateImages;
-    public final boolean isWeightedCentre;
+    public final LocateStyle locateStyle;
 
     public KNNTrialSettings() {
         //Enter k value
@@ -64,7 +65,16 @@ public class KNNTrialSettings {
 
         this.isEstimateImages = Menus.Choice("Do you want to print the floorplan images?");
         
-        this.isWeightedCentre = Menus.Choice("Do you want to use centre of mass?");
+        
+         if(Menus.Choice("Do you want to use centre of mass?")){
+             if(Menus.Choice("Do you want to use inverted weighting?")){
+                 this.locateStyle = LocateStyle.INVERTED;
+             }else{
+                 this.locateStyle = LocateStyle.WEIGHTED;
+             }
+         }else{
+             this.locateStyle = LocateStyle.UNWEIGHTED;
+         }
     }
 
     public static KNNTrialSettings commandSetup(String[] args) {
@@ -110,7 +120,7 @@ public class KNNTrialSettings {
         this.isBSSIDMerged = false;
         this.isOrientationMerged = false;
         this.isEstimateImages = false;
-        this.isWeightedCentre = true;
+        this.locateStyle = LocateStyle.INVERTED;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, boolean isPrintImages, int distOption) {
@@ -126,7 +136,7 @@ public class KNNTrialSettings {
         this.isBSSIDMerged = false;
         this.isOrientationMerged = false;
         this.isEstimateImages = isPrintImages;
-        this.isWeightedCentre = true;
+       this.locateStyle = LocateStyle.INVERTED;
     }
     
     public KNNTrialSettings(int kValue, boolean isBSSIDMerged, boolean isPrintImages) {
@@ -142,7 +152,7 @@ public class KNNTrialSettings {
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = false;
         this.isEstimateImages = isPrintImages;
-        this.isWeightedCentre = true;
+       this.locateStyle = LocateStyle.INVERTED;
     }
     
     public KNNTrialSettings(int kLowerValue, int kUpperValue, boolean isBSSIDMerged, boolean isPrintImages) {
@@ -158,10 +168,10 @@ public class KNNTrialSettings {
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = false;
         this.isEstimateImages = isPrintImages;
-        this.isWeightedCentre = true;
+        this.locateStyle = LocateStyle.INVERTED;
     }
     
-    public KNNTrialSettings(int kLowerValue, int kUpperValue, boolean isBSSIDMerged, boolean isPrintImages, boolean isWeightedCentre) {
+    public KNNTrialSettings(int kLowerValue, int kUpperValue, boolean isBSSIDMerged, boolean isPrintImages,LocateStyle locateStyle) {
         this.kLowerValue = kLowerValue;
         this.kUpperValue = kUpperValue;
         this.distOption = ALL_DIST_OPTIONS;
@@ -174,7 +184,7 @@ public class KNNTrialSettings {
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = false;
         this.isEstimateImages = isPrintImages;
-        this.isWeightedCentre = isWeightedCentre;
+        this.locateStyle = locateStyle;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, boolean isBSSIDMerged) {
@@ -190,7 +200,7 @@ public class KNNTrialSettings {
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = false;
         this.isEstimateImages = false;
-        this.isWeightedCentre = true;
+        this.locateStyle = LocateStyle.INVERTED;
     }
 
     public KNNTrialSettings(int kValue, int distOption, double varLimit, int varCount) {
@@ -206,7 +216,7 @@ public class KNNTrialSettings {
         this.isBSSIDMerged = false;
         this.isOrientationMerged = false;
         this.isEstimateImages = false;
-        this.isWeightedCentre = true;
+        this.locateStyle = LocateStyle.INVERTED;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount) {
@@ -222,7 +232,7 @@ public class KNNTrialSettings {
         this.isBSSIDMerged = false;
         this.isOrientationMerged = false;
         this.isEstimateImages = false;
-        this.isWeightedCentre = true;
+        this.locateStyle = LocateStyle.INVERTED;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount, boolean isBSSIDMerged) {
@@ -238,7 +248,7 @@ public class KNNTrialSettings {
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = false;
         this.isEstimateImages = false;
-        this.isWeightedCentre = true;
+        this.locateStyle = LocateStyle.INVERTED;
     }
 
     public KNNTrialSettings(int kLowerValue, int kUpperValue, int distOption, double varLowerLimit, double varUpperLimit, double varLimitStep, int varLowerCount, int varUpperCount, boolean isBSSIDMerged, boolean isOrientationMerged) {
@@ -254,7 +264,7 @@ public class KNNTrialSettings {
         this.isBSSIDMerged = isBSSIDMerged;
         this.isOrientationMerged = isOrientationMerged;
         this.isEstimateImages = false;
-        this.isWeightedCentre = true;
+        this.locateStyle = LocateStyle.INVERTED;
     }
 
     public static String[] getDistanceOptions() {

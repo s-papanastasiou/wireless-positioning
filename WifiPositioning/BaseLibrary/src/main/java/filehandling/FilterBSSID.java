@@ -70,7 +70,7 @@ public class FilterBSSID {
         List<APData> apDataList = APFormat.compileList(rssiDataList, isBSSIDMerged, true);
         
         for(APData apData: apDataList){
-            if(apData.getItemCount()>=minSampleCount){
+            if(apData.getItemCount()>=minSampleCount){                
                 filterBSSIDs.add(apData.getBSSID());
             }
         }
@@ -91,7 +91,25 @@ public class FilterBSSID {
         List<APData> apDataList = APFormat.compileList(rssiDataList, isBSSIDMerged, true);
         
         for(APData apData: apDataList){
-            if(apData.getLocations().size()>=minLocationCount){
+            if(apData.getLocations().size()>=minLocationCount){                
+                filterBSSIDs.add(apData.getBSSID());
+            }
+        }
+        return filterBSSIDs;
+    }
+    /**
+     * Generate a list of BSSIDs to use for filtering data on loading.
+     * 
+     * @param apDataList List of Ap Data points.     
+     * @param minLocationCount Minimum number of RSSI data items to be included on the BSSID list.     
+     * @return 
+     */
+    public static List<String> generateByLocationCount(List<APData> apDataList, Integer minLocationCount){
+        
+        List<String> filterBSSIDs = new ArrayList<>();        
+        
+        for(APData apData: apDataList){
+            if(apData.getLocations().size()>=minLocationCount){                
                 filterBSSIDs.add(apData.getBSSID());
             }
         }

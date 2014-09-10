@@ -129,7 +129,7 @@ public class KNearestNeighbour {
                             if (trialSettings.isVariance) {
                                 executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator, varLimit, varCount);
                             } else {
-                                executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator);
+                                executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator, trialSettings.isWeightedCentre);
                             }
 
                             KNNTrialResults trialResults = new KNNTrialResults(executeSettings, trialName);
@@ -190,7 +190,7 @@ public class KNearestNeighbour {
         //Find the position based on the centre of mass of the estimates.        
         //final location, final co-ordinates, distance between trial and final, actual K (number of estimates included in the positioning - could be less than k value for variance filtering)
         boolean isBiggerBetter = executeSettings.distMeasure == DistanceMeasure.Probabilistic;
-        Point finalPoint = Locate.findWeightedCentre(positionEstimates, isBiggerBetter);
+        Point finalPoint = Locate.findCentre(positionEstimates, isBiggerBetter, executeSettings.isWeightedCentre);
         Location finalLocation = RoomInfo.searchPixelLocation(finalPoint, roomInfo);
         double metreDistance = finalLocation.distance(trialLocation);
 

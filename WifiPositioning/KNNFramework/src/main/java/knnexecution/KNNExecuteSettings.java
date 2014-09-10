@@ -18,12 +18,20 @@ public class KNNExecuteSettings {
     public double varLimit = 0;
     public int varCount = 0;
     public boolean isVariance = false;
+    public boolean isWeightedCentre = true;    
     public String fieldSeparator;
 
     public KNNExecuteSettings(int kValue, DistanceMeasure distMeasure, String fieldSeparator) {
         this.kValue = kValue;
         this.distMeasure = distMeasure;
         this.fieldSeparator = fieldSeparator;
+    }
+    
+    public KNNExecuteSettings(int kValue, DistanceMeasure distMeasure, String fieldSeparator, boolean isWeightedCentre) {
+        this.kValue = kValue;
+        this.distMeasure = distMeasure;
+        this.fieldSeparator = fieldSeparator;
+        this.isWeightedCentre = isWeightedCentre;
     }
 
     public KNNExecuteSettings(int kValue, DistanceMeasure distMeasure, String fieldSeparator, double varLimit, int varCount) {

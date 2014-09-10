@@ -41,6 +41,7 @@ public class KNNTrial2 extends TestCase {
     private static final String rssiPathFile = "TrialPathRSSI-";
     private static final String geoPathFile = "TrialPathGeo-";
     private static final String extension = ".csv";
+    private static final String allResultsExtension = "-AllResults.csv";
 
     private static final Integer kValue = 5;
 
@@ -74,6 +75,7 @@ public class KNNTrial2 extends TestCase {
     private void buildFilters(){
         File filterFolder = new File(outputPath, "Filters");
         filterFolder.mkdir();
+        
         for (Double percent : locationPercents) {
             
             Double c = maxSize*percent;
@@ -114,6 +116,7 @@ public class KNNTrial2 extends TestCase {
 
         File trialFolder = new File(outputPath, trialPrefix);
         trialFolder.mkdir();
+        List<KNNTrialResults> allTrialResults = new ArrayList<>();
 
         for (int f = 0; f < locationPercents.length; f++) {
             List<String> filter = unmergedBSSIDFilters.get(f);
@@ -137,9 +140,11 @@ public class KNNTrial2 extends TestCase {
                 trialOutputPath.mkdir();
 
                 KNNTrialSettings trialSettings = new KNNTrialSettings(kValue, isBSSIDMerged, isEstimateImages);
-                KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i + "-" + f);
+                List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i + "-" + f);
+                allTrialResults.addAll(trialResults);
             }
         }
+        KNNTrialResults.printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allResultsExtension));
     }
 
     public void testRSSIMerged() {
@@ -150,6 +155,7 @@ public class KNNTrial2 extends TestCase {
 
         File trialFolder = new File(outputPath, trialPrefix);
         trialFolder.mkdir();
+        List<KNNTrialResults> allTrialResults = new ArrayList<>();
 
         for (int f = 0; f < locationPercents.length; f++) {
             List<String> filter = mergedBSSIDFilters.get(f);
@@ -171,9 +177,11 @@ public class KNNTrial2 extends TestCase {
                 trialOutputPath.mkdir();
 
                 KNNTrialSettings trialSettings = new KNNTrialSettings(kValue, isBSSIDMerged, isEstimateImages);
-                KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i + "-" + f);
+                List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i + "-" + f);
+                allTrialResults.addAll(trialResults);
             }
         }
+        KNNTrialResults.printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allResultsExtension));
     }
 
     public void testCombinedMerged() {
@@ -186,7 +194,8 @@ public class KNNTrial2 extends TestCase {
 
         File trialFolder = new File(outputPath, trialPrefix);
         trialFolder.mkdir();
-
+        List<KNNTrialResults> allTrialResults = new ArrayList<>();
+        
         for (int f = 0; f < locationPercents.length; f++) {
             List<String> filter = mergedBSSIDFilters.get(f);
             HashMap<String, KNNFloorPoint> rssiOfflineMap = KNNRSSI.compile(TrialDefaults.rssiDataList, filter, isBSSIDMerged);
@@ -196,6 +205,7 @@ public class KNNTrial2 extends TestCase {
             double percent = locationPercents[f] * 100;
             File trialFilterFolder = new File(trialFolder, "Filter-" + percent + "%");
             trialFilterFolder.mkdir();
+            
             
             for (int i = lowerTrialPaths; i <= upperTrialPaths; i++) {
                 String rssiTrialName = rssiPathFile + i;
@@ -216,9 +226,11 @@ public class KNNTrial2 extends TestCase {
                 trialOutputPath.mkdir();
 
                 KNNTrialSettings trialSettings = new KNNTrialSettings(kValue, isBSSIDMerged, isEstimateImages);
-                KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i + "-" + f);
+                List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i + "-" + f);
+                allTrialResults.addAll(trialResults);
             }
         }
+        KNNTrialResults.printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allResultsExtension));
     }
 
     public void testCombinedUnmerged() {
@@ -231,6 +243,7 @@ public class KNNTrial2 extends TestCase {
 
         File trialFolder = new File(outputPath, trialPrefix);
         trialFolder.mkdir();
+        List<KNNTrialResults> allTrialResults = new ArrayList<>();
 
         for (int f = 0; f < locationPercents.length; f++) {
             List<String> filter = unmergedBSSIDFilters.get(f);
@@ -260,10 +273,12 @@ public class KNNTrial2 extends TestCase {
                 trialOutputPath.mkdir();
 
                 KNNTrialSettings trialSettings = new KNNTrialSettings(kValue, isBSSIDMerged, isEstimateImages);
-                KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i + "-" + f);
+                List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i + "-" + f);
+                allTrialResults.addAll(trialResults);
             }
 
         }
+        KNNTrialResults.printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allResultsExtension));
     }
 
 }

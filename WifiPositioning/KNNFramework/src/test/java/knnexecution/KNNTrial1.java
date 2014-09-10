@@ -13,10 +13,7 @@ import filehandling.GeomagneticLoader;
 import filehandling.KNNGeomagnetic;
 import filehandling.KNNRSSI;
 import filehandling.RSSILoader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +38,7 @@ public class KNNTrial1 extends TestCase {
     private static final String geoPathFile = "TrialPathGeo-";
     private static final String extension = ".csv";
     private static final String allSummaryExtension = "-AllSummary.csv";
+    private static final String allResultsExtension = "-AllResults.csv";    
 
     private static final boolean isEstimateImages = false;
 
@@ -64,29 +62,11 @@ public class KNNTrial1 extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
     }
-
-    private static void printAllResults(List<KNNTrialResults> allTrialResults, File allResultsSummary) {
-
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(allResultsSummary, false))) {
-
-            if (!allTrialResults.isEmpty()) {
-                KNNTrialResults first = allTrialResults.get(0);
-                KNNTrialResults.printSummaryHeading(writer, first.fieldSeparator, first.executeSettings.isVariance);
-                for (KNNTrialResults result : allTrialResults) {
-                    result.printSummary(writer);
-                }
-            }
-
-        } catch (IOException ex) {
-            logger.info("{}", ex.getMessage());
-        }
-
-    }
     
     /**
      * Test of runTrials method, of class KNearestNeighbour.
      */
-    /*
+    
     public void testRSSIUnmerged() {
         String trialPrefix = "RSSI Unmerged";
         logger.info(trialPrefix);
@@ -113,7 +93,8 @@ public class KNNTrial1 extends TestCase {
             allTrialResults.addAll(trialResults);
 
         }
-        printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allSummaryExtension));
+        KNNTrialResults.printAllSummaryResults(allTrialResults, new File(trialFolder, trialPrefix + allSummaryExtension));
+        KNNTrialResults.printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allResultsExtension));
     }
 
     public void testRSSIMerged() {
@@ -142,9 +123,10 @@ public class KNNTrial1 extends TestCase {
             allTrialResults.addAll(trialResults);
 
         }
-        printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allSummaryExtension));
+        KNNTrialResults.printAllSummaryResults(allTrialResults, new File(trialFolder, trialPrefix + allSummaryExtension));
+        KNNTrialResults.printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allResultsExtension));
     }
-*/
+
     public void testGeomagnetic() {
         String trialPrefix = "Geomagnetic";
         logger.info(trialPrefix);
@@ -166,12 +148,14 @@ public class KNNTrial1 extends TestCase {
 
             KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, false, isEstimateImages);
             List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, geoKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i);
-            allTrialResults.addAll(trialResults);
+            allTrialResults.addAll(trialResults);                        
 
         }
-        printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allSummaryExtension));
+        KNNTrialResults.printAllSummaryResults(allTrialResults, new File(trialFolder, trialPrefix + allSummaryExtension));
+        KNNTrialResults.printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allResultsExtension));
+        
     }
-/*
+
     public void testCombinedMerged() {
         String trialPrefix = "Combined Merged";
         logger.info(trialPrefix);
@@ -209,8 +193,8 @@ public class KNNTrial1 extends TestCase {
             allTrialResults.addAll(trialResults);
 
         }
-        printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allSummaryExtension));
-
+        KNNTrialResults.printAllSummaryResults(allTrialResults, new File(trialFolder, trialPrefix + allSummaryExtension));
+        KNNTrialResults.printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allResultsExtension));
     }
 
     public void testCombinedUnmerged() {
@@ -250,8 +234,9 @@ public class KNNTrial1 extends TestCase {
             allTrialResults.addAll(trialResults);
 
         }
-        printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allSummaryExtension));
+        KNNTrialResults.printAllSummaryResults(allTrialResults, new File(trialFolder, trialPrefix + allSummaryExtension));
+        KNNTrialResults.printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allResultsExtension));
     }
-*/    
+
 
 }

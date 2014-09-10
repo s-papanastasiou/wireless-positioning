@@ -186,6 +186,27 @@ public class RoomInfo {
         return createGlobalLocation(point, 0);
     } 
     
+    public Location createGlobalLocation(final ResultPoint resultPoint) {
+        
+        Point global = resultPoint.getGlobal();
+        int xRef = (int) (global.getX()- globalOffsetX);
+        int yRef = (int) (global.getY()- globalOffsetY);
+        int wRef = 0;
+        
+        //adjust for rooms not being able to be zero based.
+        if (isRoom) {
+            if (xRef == 0) {
+                xRef = 1;
+            }
+            if (yRef == 0) {
+                yRef = 1;
+            }
+        }
+                
+        return createLocation(xRef, yRef, wRef, resultPoint);
+        
+    } 
+    
     /**
      * Convert a global point into a location within the room.
      *
@@ -256,6 +277,14 @@ public class RoomInfo {
 
         return new Location(name, xRef, yRef, wRef, globalX, globalY, drawX, drawY);        
     }
+    
+    public Location createLocation(int xRef, int yRef, int wRef, ResultPoint resultPoint){
+        
+        Point global = resultPoint.getGlobal();
+        Point draw = resultPoint.getDraw();
+
+        return new Location(name, xRef, yRef, wRef, global.getX(), global.getY(), draw.getX(), draw.getY());        
+    }
 
     /**
      * Checks whether the supplied array contains the expected headings for
@@ -315,7 +344,7 @@ public class RoomInfo {
         List<RoomInfo> rooms = new LinkedList<>(roomInfo.values());
         for (RoomInfo room: rooms) {                 
             if (room.containsGlobal(globalPoint)) {
-                location = room.createGlobalLocation(globalPoint);
+                location = room.createGlobalLocation(resultPoint);
                 isNotMatched = false;
                 break;
             }

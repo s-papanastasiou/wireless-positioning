@@ -273,6 +273,34 @@ public class RoomInfo {
      * Finds the location that corresponds to the global point.
      * Always returns a location. If a known location cannot be found then global information is preserved but remainder is unknown.
      * 
+     * @param globalPoint Point to find.     
+     * @param roomInfo Information about the rooms on the floor.
+     * @return 
+     */
+    public static Location searchGlobalLocation(Point globalPoint, HashMap<String, RoomInfo> roomInfo) {
+                
+        Location location = new Location();
+        boolean isNotMatched = true;
+        
+        List<RoomInfo> rooms = new LinkedList<>(roomInfo.values());
+        for (RoomInfo room: rooms) {                 
+            if (room.containsGlobal(globalPoint)) {
+                location = room.createGlobalLocation(globalPoint);
+                isNotMatched = false;
+                break;
+            }
+        }
+
+        if(isNotMatched)
+            location = Location.createUnknownGlobalLocation(globalPoint.getX(), globalPoint.getY());
+        
+        return location;
+    }
+    
+    /**
+     * Finds the location that corresponds to the global point.
+     * Always returns a location. If a known location cannot be found then global information is preserved but remainder is unknown.
+     * 
      * @param resultPoint Point to find.     
      * @param roomInfo Information about the rooms on the floor.
      * @return 

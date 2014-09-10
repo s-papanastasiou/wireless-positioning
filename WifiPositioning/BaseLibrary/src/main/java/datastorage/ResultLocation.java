@@ -12,6 +12,7 @@ package datastorage;
 public class ResultLocation extends Location implements Comparable<ResultLocation> {
 
     private final double result;
+    private final double variance;
     private final String roomReference;
 
     /**
@@ -23,9 +24,24 @@ public class ResultLocation extends Location implements Comparable<ResultLocatio
     public ResultLocation(Location location, double result) {
         super(location);
         this.result = result;
+        this.variance = 0.0;
         this.roomReference = location.getRoomRef();
     }
-    
+
+    /**
+     * Constructor.
+     *
+     * @param location Location of the result.
+     * @param result Value of the result.
+     * @param variance Variance of the offline point.
+     */
+    public ResultLocation(Location location, double result, double variance) {
+        super(location);
+        this.result = result;
+        this.variance = variance;
+        this.roomReference = location.getRoomRef();
+    }
+
     /**
      * Constructor Room reference allows the retention of the full room
      * reference for subclasses of Location.
@@ -37,6 +53,23 @@ public class ResultLocation extends Location implements Comparable<ResultLocatio
     public ResultLocation(Location location, double result, String roomReference) {
         super(location);
         this.result = result;
+        this.variance = 0.0;
+        this.roomReference = roomReference;
+    }
+
+    /**
+     * Constructor Room reference allows the retention of the full room
+     * reference for subclasses of Location.
+     *
+     * @param location Location of the result.
+     * @param result Value of the result.
+     * @param roomReference Room reference for the result.
+     * @param variance Variance of the offline point.
+     */
+    public ResultLocation(Location location, double result, String roomReference, double variance) {
+        super(location);
+        this.result = result;
+        this.variance = variance;
         this.roomReference = roomReference;
     }
 
@@ -47,6 +80,15 @@ public class ResultLocation extends Location implements Comparable<ResultLocatio
      */
     public double getResult() {
         return result;
+    }
+
+    /**
+     * Get variance value.
+     *
+     * @return
+     */
+    public double getVariance() {
+        return variance;
     }
 
     /**
@@ -61,7 +103,7 @@ public class ResultLocation extends Location implements Comparable<ResultLocatio
 
     /**
      * Comparable implementation.
-     * 
+     *
      * @param resLocation Result location to compare against.
      * @return
      */
@@ -76,7 +118,13 @@ public class ResultLocation extends Location implements Comparable<ResultLocatio
             } else if (this.result < resLocation.result) {
                 outcome = -1;
             } else {
-                outcome = roomReference.compareTo(resLocation.roomReference);                 
+                if (this.variance > resLocation.variance) {
+                    outcome = 1;
+                } else if (this.variance < resLocation.variance) {
+                    outcome = -1;
+                } else {
+                    outcome = roomReference.compareTo(resLocation.roomReference);
+                }
             }
 
         } else {
@@ -88,12 +136,12 @@ public class ResultLocation extends Location implements Comparable<ResultLocatio
 
     /**
      * String representation of the result location.
-     * 
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {
-        return super.toString() + " " + roomReference + " " + result;
+        return super.toString() + " " + roomReference + " " + result + " " + variance;
     }
 
 }

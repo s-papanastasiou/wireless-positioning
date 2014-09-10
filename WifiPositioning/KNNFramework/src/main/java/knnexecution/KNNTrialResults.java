@@ -7,9 +7,13 @@ package knnexecution;
 
 import general.AvgValue;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -17,6 +21,8 @@ import java.util.List;
  */
 public class KNNTrialResults {
 
+    private static final Logger logger = LoggerFactory.getLogger(KNNTrialResults.class);
+    
     public final KNNExecuteSettings executeSettings;
     private final String trialName;
     private final List<KNNPointResult> results = new ArrayList<>();
@@ -55,6 +61,8 @@ public class KNNTrialResults {
         return stb.toString();
     }
 
+    
+    
     public void printResults(BufferedWriter writer) throws IOException {
 
         writer.write(header);
@@ -67,6 +75,16 @@ public class KNNTrialResults {
         writer.flush();
     }
 
+    public String getAllResultsHeader(){
+        return "Trial Name" + fieldSeparator +header;
+    }
+    
+    public void printAllResults(BufferedWriter writer) throws IOException{
+        for(KNNPointResult result: results){
+            writer.write(trialName + fieldSeparator + result.print(fieldSeparator));
+        }
+    }
+    
     public static void printSummaryHeading(BufferedWriter writer, String fieldSeparator, Boolean isVariance) throws IOException {
         StringBuilder stb = new StringBuilder();
         stb.append("Trial Name").append(fieldSeparator).append(KNNExecuteSettings.header(fieldSeparator, isVariance)).append(fieldSeparator);
@@ -89,6 +107,42 @@ public class KNNTrialResults {
         writer.write(stb.toString());
         //Flush the current set of results.
         writer.flush();
+    }
+    
+    public static void printAllSummaryResults(List<KNNTrialResults> allTrialResults, File allResultsSummary) {
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(allResultsSummary, false))) {
+
+            if (!allTrialResults.isEmpty()) {
+                KNNTrialResults first = allTrialResults.get(0);
+                KNNTrialResults.printSummaryHeading(writer, first.fieldSeparator, first.executeSettings.isVariance);
+                for (KNNTrialResults result : allTrialResults) {
+                    result.printSummary(writer);
+                }
+            }
+
+        } catch (IOException ex) {
+            logger.info("{}", ex.getMessage());
+        }
+
+    }
+    
+    public static void printAllResults(List<KNNTrialResults> allTrialResults, File allResults){
+        
+        //All results in one file        
+        try (BufferedWriter allWriter = new BufferedWriter(new FileWriter(allResults))) {
+            if (!allTrialResults.isEmpty()) {
+                KNNTrialResults firstTrialResults = allTrialResults.get(0);
+                allWriter.write(firstTrialResults.getAllResultsHeader());
+                for (KNNTrialResults trialResults : allTrialResults) {
+                    trialResults.printAllResults(allWriter);
+                }
+            }
+
+        } catch (IOException ex) {
+            logger.error("Error writing trial {} to file: {}", allResults, ex);
+        }
+        
     }
 
 }

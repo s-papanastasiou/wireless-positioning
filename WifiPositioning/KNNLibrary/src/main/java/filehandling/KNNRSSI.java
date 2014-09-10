@@ -108,17 +108,17 @@ public class KNNRSSI {
 
         return compile(dataList, isBSSIDMerged, false);
     }
-    
+
     public static HashMap<String, KNNFloorPoint> compile(final List<RSSIData> dataList, final List<String> filterBSSIDs, final Boolean isBSSIDMerged) {
 
         return compile(dataList, filterBSSIDs, isBSSIDMerged, false);
     }
 
     public static HashMap<String, KNNFloorPoint> compile(final List<RSSIData> dataList, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {
-            return compile(dataList, new LinkedList<String>(), isBSSIDMerged, false);
+        return compile(dataList, new LinkedList<String>(), isBSSIDMerged, false);
     }
-    
-    public static HashMap<String, KNNFloorPoint> compile(final List<RSSIData> dataList, final List<String> filterBSSIDs, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {    
+
+    public static HashMap<String, KNNFloorPoint> compile(final List<RSSIData> dataList, final List<String> filterBSSIDs, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {
         HashMap<String, KNNFloorPoint> knnRadioMap = new HashMap();
 
         //logger.info("Compiling RSSI location data....");
@@ -133,36 +133,40 @@ public class KNNRSSI {
 
             String bssid = rssiData.getBSSID().substring(beginIndex, endIndex);  //Copy out the BSSID based on whether merging or not.                
 
-            if(!filterBSSIDs.isEmpty()){
-                if(!filterBSSIDs.contains(bssid))
-                    continue;
-            }
-            
-            String roomRef;
-            if (isOrientationMerged) //Change the room ref based on whether compressing orientations together     
-            {
-                roomRef = Location.NoOrientationRoomRef(rssiData);
-            } else {
-                roomRef = rssiData.getRoomRef();
+            boolean isNotFiltered = true;
+            if (!filterBSSIDs.isEmpty()) {
+                if (!filterBSSIDs.contains(bssid)) {
+                    isNotFiltered = false;
+                }
             }
 
-            if (knnRadioMap.containsKey(roomRef)) //Update the existing entry
-            {
-                KNNFloorPoint entry = knnRadioMap.get(roomRef);
-                entry.add(bssid, rssiData.getRSSI());
-            } else //New entry created and added
-            {
-                Location location;
-                if (isOrientationMerged) //Change the location based on whether compressing orientations together
+            if (isNotFiltered) {
+                String roomRef;
+                if (isOrientationMerged) //Change the room ref based on whether compressing orientations together     
                 {
-                    location = Location.NoOrientationLocation(rssiData);
+                    roomRef = Location.NoOrientationRoomRef(rssiData);
                 } else {
-                    location = rssiData;
+                    roomRef = rssiData.getRoomRef();
                 }
 
-                //create a new floor point - override the room reference with that used as the key in the knnRadioMap.
-                KNNFloorPoint entry = new KNNFloorPoint(location, bssid, rssiData.getRSSI(), roomRef);
-                knnRadioMap.put(roomRef, entry);
+                if (knnRadioMap.containsKey(roomRef)) //Update the existing entry
+                {
+                    KNNFloorPoint entry = knnRadioMap.get(roomRef);
+                    entry.add(bssid, rssiData.getRSSI());
+                } else //New entry created and added
+                {
+                    Location location;
+                    if (isOrientationMerged) //Change the location based on whether compressing orientations together
+                    {
+                        location = Location.NoOrientationLocation(rssiData);
+                    } else {
+                        location = rssiData;
+                    }
+
+                    //create a new floor point - override the room reference with that used as the key in the knnRadioMap.
+                    KNNFloorPoint entry = new KNNFloorPoint(location, bssid, rssiData.getRSSI(), roomRef);
+                    knnRadioMap.put(roomRef, entry);
+                }
             }
         }
         //logger.info("Location compilation complete");
@@ -223,13 +227,14 @@ public class KNNRSSI {
     }
 
     /**
-     * Stores the timestamp as well as the floor point so that only readings at the same time are stored together. 
-     * Used for generating lists of trial points.    
-     * 
+     * Stores the timestamp as well as the floor point so that only readings at
+     * the same time are stored together. Used for generating lists of trial
+     * points.
+     *
      * @param dataList
      * @param isBSSIDMerged
      * @param isOrientationMerged
-     * @return 
+     * @return
      */
     public static List<KNNTrialPoint> compileTrialList(final List<RSSIData> dataList, final Boolean isBSSIDMerged, final Boolean isOrientationMerged) {
 

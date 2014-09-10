@@ -45,7 +45,8 @@ public class KNNTrial2 extends TestCase {
     private static final String extension = ".csv";
     private static final String allResultsExtension = "-AllResults.csv";
 
-    private static final Integer kValue = 5;
+    private static final Integer lowerKValue = 1;
+    private static final Integer upperKValue = 10;
 
     private static final Integer lowerTrialPaths = 1;
     private static final Integer upperTrialPaths = 13;
@@ -115,7 +116,7 @@ public class KNNTrial2 extends TestCase {
      */
     
     public void testRSSIUnmerged() {
-        String trialPrefix = "Unmerged";
+        String trialPrefix = "RSSI Unmerged";
         logger.info(trialPrefix);
 
         Boolean isBSSIDMerged = false;
@@ -145,7 +146,7 @@ public class KNNTrial2 extends TestCase {
                 File trialOutputPath = new File(trialFilterFolder, rssiTrialName);
                 trialOutputPath.mkdir();
 
-                KNNTrialSettings trialSettings = new KNNTrialSettings(kValue, isBSSIDMerged, isEstimateImages);
+                KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged, isEstimateImages);
                 String trialName = trialPrefix + "-T" + i + "-" + percent + "%";
                 List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialName);
                 allTrialResults.addAll(trialResults);
@@ -183,7 +184,7 @@ public class KNNTrial2 extends TestCase {
                 File trialOutputPath = new File(trialFilterFolder, rssiTrialName);
                 trialOutputPath.mkdir();
 
-                KNNTrialSettings trialSettings = new KNNTrialSettings(kValue, isBSSIDMerged, isEstimateImages);
+                KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged, isEstimateImages);
                 String trialName = trialPrefix + "-T" + i + "-" + percent + "%";
                 List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialName);
                 allTrialResults.addAll(trialResults);
@@ -192,6 +193,7 @@ public class KNNTrial2 extends TestCase {
         KNNTrialResults.printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allResultsExtension));
     }
 
+    /*
     public void testCombinedMerged() {
         String trialPrefix = "Combined Merged";
         logger.info(trialPrefix);
@@ -212,8 +214,7 @@ public class KNNTrial2 extends TestCase {
             //Need different folder
             double percent = locationPercents[f] * 100;
             File trialFilterFolder = new File(trialFolder, "Filter-" + percent + "%");
-            trialFilterFolder.mkdir();
-            
+            trialFilterFolder.mkdir();           
             
             for (int i = lowerTrialPaths; i <= upperTrialPaths; i++) {
                 String rssiTrialName = rssiPathFile + i;
@@ -233,7 +234,7 @@ public class KNNTrial2 extends TestCase {
                 File trialOutputPath = new File(trialFilterFolder, "CombinedMerged" + i);
                 trialOutputPath.mkdir();
 
-                KNNTrialSettings trialSettings = new KNNTrialSettings(kValue, isBSSIDMerged, isEstimateImages);
+                KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged, isEstimateImages);
                 String trialName = trialPrefix + "-T" + i + "-" + percent + "%";
                 List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialName);
                 allTrialResults.addAll(trialResults);
@@ -241,7 +242,8 @@ public class KNNTrial2 extends TestCase {
         }
         KNNTrialResults.printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allResultsExtension));
     }
-
+*/
+    /*
     public void testCombinedUnmerged() {
         String trialPrefix = "Combined Unmerged";
         logger.info(trialPrefix);
@@ -281,7 +283,7 @@ public class KNNTrial2 extends TestCase {
                 File trialOutputPath = new File(trialFilterFolder, "CombinedUnmerged" + i);
                 trialOutputPath.mkdir();
 
-                KNNTrialSettings trialSettings = new KNNTrialSettings(kValue, isBSSIDMerged, isEstimateImages);
+                KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged, isEstimateImages);
                 String trialName = trialPrefix + "-T" + i + "-" + percent + "%";
                 List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialName);
                 allTrialResults.addAll(trialResults);
@@ -290,5 +292,5 @@ public class KNNTrial2 extends TestCase {
         }
         KNNTrialResults.printAllResults(allTrialResults, new File(trialFolder, trialPrefix + allResultsExtension));
     }
-
+*/
 }

@@ -48,7 +48,7 @@ public class KNNPointResult {
 
     public KNNExecuteSettings getExecuteSettings() {
         return executeSettings;
-    }
+    }           
     
     public String print(String fieldSeparator){
         StringBuilder stb = new StringBuilder();

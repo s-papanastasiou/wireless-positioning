@@ -143,6 +143,15 @@ public class Locate {
         return result;
     }
 
+    public static Point findCentre(final List<ResultLocation> positions, boolean isBiggerBetter, boolean isWeightedCentre){
+        
+        if(isWeightedCentre){
+            return findWeightedCentre(positions, isBiggerBetter);
+        }else{
+            return findUnweightedCentre(positions);
+        }        
+    } 
+    
     /**
      * Forces an estimated position into the closest known (surveyed) position
      * in the provided offline map.

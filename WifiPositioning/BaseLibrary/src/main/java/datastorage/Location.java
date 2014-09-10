@@ -349,6 +349,24 @@ public class Location implements Serializable {
     }
     
     /**
+     * Creates a location with unknown information but preserves the supplied global values.
+     * @param globalX
+     * @param globalY
+     * @param drawX
+     * @param drawY
+     * @return 
+     */
+    public static Location createUnknownLocation(double globalX, double globalY, double drawX, double drawY){
+        Location location = new Location();
+        location.globalX = globalX;
+        location.globalY = globalY;
+        location.drawX = drawX;
+        location.drawY = drawY;
+        
+        return location;
+    }
+    
+    /**
      * Formatted heading to show the information relating to a location.
      *
      * @param fieldSeparator Separator used between each heading.

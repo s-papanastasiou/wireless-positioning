@@ -7,6 +7,7 @@ package datastorage;
 import general.Point;
 import general.Rectangle;
 import general.RectangleD;
+import general.ResultPoint;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -272,25 +273,28 @@ public class RoomInfo {
      * Finds the location that corresponds to the global point.
      * Always returns a location. If a known location cannot be found then global information is preserved but remainder is unknown.
      * 
-     * @param point Pixel point to find.
+     * @param resultPoint Point to find.     
      * @param roomInfo Information about the rooms on the floor.
      * @return 
      */
-    public static Location searchGlobalLocation(Point point, HashMap<String, RoomInfo> roomInfo) {
+    public static Location searchGlobalLocation(ResultPoint resultPoint, HashMap<String, RoomInfo> roomInfo) {
+        
+        Point globalPoint = resultPoint.getGlobal();
+        Point drawPoint = resultPoint.getDraw();
         Location location = new Location();
         boolean isNotMatched = true;
         
         List<RoomInfo> rooms = new LinkedList<>(roomInfo.values());
         for (RoomInfo room: rooms) {                 
-            if (room.containsGlobal(point)) {
-                location = room.createGlobalLocation(point);
+            if (room.containsGlobal(globalPoint)) {
+                location = room.createGlobalLocation(globalPoint);
                 isNotMatched = false;
                 break;
             }
         }
 
         if(isNotMatched)
-            location = Location.createUnknownGlobalLocation(point.getX(), point.getY());
+            location = Location.createUnknownLocation(globalPoint.getX(), globalPoint.getY(), drawPoint.getX(), drawPoint.getY());
         
         return location;
     }
@@ -299,25 +303,25 @@ public class RoomInfo {
      * Finds the location that corresponds to the pixel point.
      * Always returns a location. If a known location cannot be found then pixel information is preserved but remainder is unknown.
      * 
-     * @param point Pixel point to find.
+     * @param pixelPoint Pixel point to find.
      * @param roomInfo Information about the rooms on the floor.
      * @return 
      */
-    public static Location searchPixelLocation(Point point, HashMap<String, RoomInfo> roomInfo) {
+    public static Location searchPixelLocation(Point pixelPoint, HashMap<String, RoomInfo> roomInfo) {
         Location location = new Location();
         boolean isNotMatched = true;
         
         List<RoomInfo> rooms = new LinkedList<>(roomInfo.values());
         for (RoomInfo room: rooms) {                      
-            if (room.containsPixel(point)) {
-                location = room.createPixelLocation(point);
+            if (room.containsPixel(pixelPoint)) {
+                location = room.createPixelLocation(pixelPoint);
                 isNotMatched = false;
                 break;
             }
         }
         
         if(isNotMatched)
-            location = Location.createUnknownPixelLocation(point.getX(), point.getY());
+            location = Location.createUnknownPixelLocation(pixelPoint.getX(), pixelPoint.getY());
         
         return location;
     }

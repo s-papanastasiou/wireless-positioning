@@ -17,10 +17,10 @@ import java.util.Set;
  * @see http://mamikon.com/USArticles/EasyCentroids.pdf
  */
 public class Locate {
-
+    
     public static final int ERROR_VALUE = -1;
     public static final double ZERO_WEIGHT = 0.0001f; //nominal none zero value to prevent problems in inverse normalisation            
-        
+
     /**
      * Finds the weighted centre of mass based on each pixel point and it's own
      * weight.
@@ -30,28 +30,31 @@ public class Locate {
      * desirable.
      * @return
      */
-    public static Point findWeightedCentre(final List<ResultLocation> positions, boolean isBiggerBetter) {
-
-                
-        Point result = new Point();
+ 
+    public static ResultPoint findWeightedCentre(final List<ResultLocation> positions, boolean isBiggerBetter) {        
 
         if (!positions.isEmpty()) {
 
-            double x = 0;
-            double y = 0;
+            double xDraw = 0;
+            double yDraw = 0;
+            double xGlobal = 0;
+            double yGlobal = 0;
             double totalWeight = 0;  //to normalise the values
-                                   
+
             if (isBiggerBetter) {
 
                 for (ResultLocation position : positions) {
 
-                    Point pos = position.getDrawPoint();
+                    Point draw = position.getDrawPoint();
+                    Point global = position.getGlobalPoint();
 
                     double weight;
 
                     weight = position.getResult();
-                    x += pos.getX() * weight;
-                    y += pos.getY() * weight;
+                    xDraw += draw.getX() * weight;
+                    yDraw += draw.getY() * weight;
+                    xGlobal += global.getX() * weight;
+                    yGlobal += global.getY() * weight;
                     totalWeight += weight;
 
                 }
@@ -72,15 +75,16 @@ public class Locate {
                         startWeight += weight;
                     }
                 }
-                
+
                 //Special condition when there is only a single point.
-                if(positions.size()==1){
-                    startWeight *=2;
+                if (positions.size() == 1) {
+                    startWeight *= 2;
                 }
-                
+
                 for (ResultLocation position : positions) {
 
-                    Point pos = position.getDrawPoint();
+                    Point draw = position.getDrawPoint();
+                    Point global = position.getGlobalPoint();
 
                     double weight;
                     if (position.getResult() == 0) {
@@ -92,23 +96,61 @@ public class Locate {
                         weight = startWeight - res;
                     }
 
-                    x += pos.getX() * weight;
-                    y += pos.getY() * weight;
+                    xDraw += draw.getX() * weight;
+                    yDraw += draw.getY() * weight;
+                    xGlobal += global.getX() * weight;
+                    yGlobal += global.getY() * weight;
                     totalWeight += weight;
                 }
             }
 
             //normalise the values by dividing by the total weight in the set
-            result.setX(x / totalWeight);
-            result.setY(y / totalWeight);
-            
+            Point draw = new Point(xDraw / totalWeight, yDraw / totalWeight);
+            Point global = new Point(xGlobal / totalWeight, yGlobal / totalWeight);
 
+            return new ResultPoint(draw, global);
         } else {
-            result.setX(ERROR_VALUE);
-            result.setY(ERROR_VALUE);
+            return new ResultPoint(new Point(ERROR_VALUE, ERROR_VALUE), new Point(ERROR_VALUE, ERROR_VALUE));
         }
 
-        return result;
+    }
+
+    public static ResultPoint findInvertedWeightedCentre(final List<ResultLocation> positions, boolean isBiggerBetter) {
+
+        double xDraw = 0.0;
+        double yDraw = 0.0;
+        double xGlobal = 0.0;
+        double yGlobal = 0.0;
+        double totalWeight = 0.0;
+
+        for (ResultLocation pos : positions) {
+            double weight;
+
+            double result = pos.getResult();
+            Point draw = pos.getDrawPoint();
+            Point global = pos.getGlobalPoint();
+
+            if (result == 0.0) {
+                result = ZERO_WEIGHT;
+            }
+
+            if (isBiggerBetter) {
+                result = 1 - result;
+            }
+
+            weight = 1 / result;
+            xDraw += draw.getX() * weight;
+            yDraw += draw.getY() * weight;
+            
+            xGlobal += global.getX() * weight;
+            yGlobal += global.getY() * weight;
+
+            totalWeight += weight;
+        }
+        Point resDraw = new Point(xDraw / totalWeight, yDraw / totalWeight);
+        Point resGlobal = new Point(xGlobal / totalWeight, yGlobal / totalWeight);
+
+        return new ResultPoint(resDraw, resGlobal);
     }
 
     /**
@@ -118,40 +160,52 @@ public class Locate {
      * @param positions List of positions to find centre.
      * @return
      */
-    public static Point findUnweightedCentre(final List<? extends Location> positions) {
+    public static ResultPoint findUnweightedCentre(final List<? extends Location> positions) {
 
-        Point result = new Point();
-
+        Point resDraw;
+        Point resGlobal;
         if (!positions.isEmpty()) {
 
-            double x = 0;
-            double y = 0;
+            double xDraw = 0;
+            double yDraw = 0;
+
+            double xGlobal = 0;
+            double yGlobal = 0;
 
             for (Location position : positions) {
 
-                Point pos = position.getDrawPoint();
+                Point draw = position.getDrawPoint();
 
-                x += pos.getX();
-                y += pos.getY();
+                xDraw += draw.getX();
+                yDraw += draw.getY();
+
+                Point global = position.getGlobalPoint();
+
+                xGlobal += global.getX();
+                yGlobal += global.getY();
             }
-            result.setX(x / positions.size());
-            result.setY(y / positions.size());
+
+            resDraw = new Point(xDraw / positions.size(), yDraw / positions.size());
+            resGlobal = new Point(xGlobal / positions.size(), yGlobal / positions.size());
+            return new ResultPoint(resDraw, resGlobal);
         } else {
-            result.setX(-1);
-            result.setY(-1);
+            return new ResultPoint(new Point(ERROR_VALUE, ERROR_VALUE), new Point(ERROR_VALUE, ERROR_VALUE));
         }
-        return result;
+
     }
 
-    public static Point findCentre(final List<ResultLocation> positions, boolean isBiggerBetter, boolean isWeightedCentre){
-        
-        if(isWeightedCentre){
-            return findWeightedCentre(positions, isBiggerBetter);
-        }else{
-            return findUnweightedCentre(positions);
-        }        
-    } 
-    
+    public static ResultPoint findCentre(final List<ResultLocation> positions, boolean isBiggerBetter, LocateStyle locateStyle) {
+
+        switch(locateStyle){
+            case INVERTED:
+                return findWeightedCentre(positions, isBiggerBetter);
+            case UNWEIGHTED:
+                return findUnweightedCentre(positions);
+            default:
+                return findInvertedWeightedCentre(positions, isBiggerBetter);                
+        }               
+    }
+
     /**
      * Forces an estimated position into the closest known (surveyed) position
      * in the provided offline map.

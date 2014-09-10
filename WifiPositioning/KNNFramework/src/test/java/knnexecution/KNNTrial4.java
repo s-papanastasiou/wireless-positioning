@@ -25,14 +25,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Unweighted centre trials
+ * Weighted centre trials
  * @author Gerg
  */
-public class KNNTrial3 extends TestCase {
+public class KNNTrial4 extends TestCase {
 
-    private static final Logger logger = LoggerFactory.getLogger(KNNTrial3.class);
+    private static final Logger logger = LoggerFactory.getLogger(KNNTrial4.class);
 
-    private static final File outputPath = new File(TrialDefaults.workingPath, "Trial 3");
+    private static final File outputPath = new File(TrialDefaults.workingPath, "Trial 4");
 
     private static final File pathTrials = new File(TrialDefaults.workingPath, "Path Trials");
     private static final String rssiPathFile = "TrialPathRSSI-";
@@ -42,7 +42,7 @@ public class KNNTrial3 extends TestCase {
     private static final String allResultsExtension = "-AllResults.csv";    
 
     private static final boolean isEstimateImages = false;
-    private static final LocateStyle locateStyle = LocateStyle.UNWEIGHTED;
+    private static final LocateStyle locateStyle = LocateStyle.WEIGHTED;
 
     private static final Integer lowerKValue = 1;
     private static final Integer upperKValue = 20;
@@ -50,7 +50,7 @@ public class KNNTrial3 extends TestCase {
     private static final Integer lowerTrialPaths = 1;
     private static final Integer upperTrialPaths = 13;
 
-    public KNNTrial3(String testName) {
+    public KNNTrial4(String testName) {
         super(testName);
         outputPath.mkdir();
     }

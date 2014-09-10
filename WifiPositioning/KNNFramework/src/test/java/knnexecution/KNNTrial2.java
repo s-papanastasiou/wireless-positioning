@@ -46,7 +46,7 @@ public class KNNTrial2 extends TestCase {
     private static final String allResultsExtension = "-AllResults.csv";
 
     private static final Integer lowerKValue = 1;
-    private static final Integer upperKValue = 10;
+    private static final Integer upperKValue = 20;
 
     private static final Integer lowerTrialPaths = 1;
     private static final Integer upperTrialPaths = 13;

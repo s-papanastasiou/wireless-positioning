@@ -6,6 +6,8 @@
 
 package general;
 
+import java.util.Objects;
+
 /**
  *
  * @author Gerg
@@ -26,6 +28,32 @@ public class ResultPoint {
 
     public Point getGlobal() {
         return global;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + Objects.hashCode(this.draw);
+        hash = 59 * hash + Objects.hashCode(this.global);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ResultPoint other = (ResultPoint) obj;
+        if (!Objects.equals(this.draw, other.draw)) {
+            return false;
+        }
+        if (!Objects.equals(this.global, other.global)) {
+            return false;
+        }
+        return true;
     }
     
     

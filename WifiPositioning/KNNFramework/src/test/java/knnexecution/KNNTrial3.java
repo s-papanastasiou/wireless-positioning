@@ -24,14 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Weighted centre trials
+ * Unweighted centre trials
  * @author Gerg
  */
-public class KNNTrial1 extends TestCase {
+public class KNNTrial3 extends TestCase {
 
-    private static final Logger logger = LoggerFactory.getLogger(KNNTrial1.class);
+    private static final Logger logger = LoggerFactory.getLogger(KNNTrial3.class);
 
-    private static final File outputPath = new File(TrialDefaults.workingPath, "Trial 1");
+    private static final File outputPath = new File(TrialDefaults.workingPath, "Trial 3");
 
     private static final File pathTrials = new File(TrialDefaults.workingPath, "Path Trials");
     private static final String rssiPathFile = "TrialPathRSSI-";
@@ -41,6 +41,7 @@ public class KNNTrial1 extends TestCase {
     private static final String allResultsExtension = "-AllResults.csv";    
 
     private static final boolean isEstimateImages = false;
+    private static final boolean isWeightedCentre = false;
 
     private static final Integer lowerKValue = 1;
     private static final Integer upperKValue = 10;
@@ -48,7 +49,7 @@ public class KNNTrial1 extends TestCase {
     private static final Integer lowerTrialPaths = 1;
     private static final Integer upperTrialPaths = 13;
 
-    public KNNTrial1(String testName) {
+    public KNNTrial3(String testName) {
         super(testName);
         outputPath.mkdir();
     }
@@ -88,7 +89,7 @@ public class KNNTrial1 extends TestCase {
             File trialOutputPath = new File(trialFolder, rssiTrialName);
             trialOutputPath.mkdir();
 
-            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged, isEstimateImages);
+            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged, isEstimateImages, isWeightedCentre);
             List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i);
             allTrialResults.addAll(trialResults);
 
@@ -118,7 +119,7 @@ public class KNNTrial1 extends TestCase {
             File trialOutputPath = new File(trialFolder, rssiTrialName);
             trialOutputPath.mkdir();
 
-            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged, isEstimateImages);
+            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged, isEstimateImages, isWeightedCentre);
             List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, rssiKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i);
             allTrialResults.addAll(trialResults);
 
@@ -146,7 +147,7 @@ public class KNNTrial1 extends TestCase {
             File trialOutputPath = new File(trialFolder, geoTrialName);
             trialOutputPath.mkdir();
 
-            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, false, isEstimateImages);
+            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, false, isEstimateImages, isWeightedCentre);
             List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, geoKNNTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i);
             allTrialResults.addAll(trialResults);                        
 
@@ -188,7 +189,7 @@ public class KNNTrial1 extends TestCase {
             File trialOutputPath = new File(trialFolder, "CombinedMerged" + i);
             trialOutputPath.mkdir();
 
-            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged, isEstimateImages);
+            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged, isEstimateImages, isWeightedCentre);
             List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i);
             allTrialResults.addAll(trialResults);
 
@@ -229,7 +230,7 @@ public class KNNTrial1 extends TestCase {
             File trialOutputPath = new File(trialFolder, "CombinedUnmerged" + i);
             trialOutputPath.mkdir();
 
-            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged, isEstimateImages);
+            KNNTrialSettings trialSettings = new KNNTrialSettings(lowerKValue, upperKValue, isBSSIDMerged, isEstimateImages, isWeightedCentre);
             List<KNNTrialResults> trialResults = KNearestNeighbour.runTrials(trialSettings, trialOutputPath, offlineMap, knnTrialList, TrialDefaults.roomInfo, TrialDefaults.floorPlanFile, TrialDefaults.fieldSeparator, trialPrefix + "-" + i);
             allTrialResults.addAll(trialResults);
 

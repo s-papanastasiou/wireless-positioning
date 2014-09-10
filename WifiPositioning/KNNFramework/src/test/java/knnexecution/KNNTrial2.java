@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Filter trials
  * @author Gerg
  */
 public class KNNTrial2 extends TestCase {

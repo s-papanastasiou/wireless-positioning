@@ -88,79 +88,86 @@ public class KNearestNeighbour {
 
         List<KNNTrialResults> allTrialResults = new ArrayList<>();
         File summaryFile = new File(workingPath, "Trial Summary-" + trialName + ".csv");
-        try (BufferedWriter summaryWriter = new BufferedWriter(new FileWriter(summaryFile))) {
-            KNNTrialResults.printSummaryHeading(summaryWriter, fieldSeparator, trialSettings.isVariance);
-            for (int k = trialSettings.kLowerValue; k <= trialSettings.kUpperValue; k++) {      //Each K value
-                for (DistanceMeasure distMeasure : trialSettings.getDistanceMeasure()) {      //Each Distance measure
-                    for (double varLimit = trialSettings.varLowerLimit; varLimit <= trialSettings.varUpperLimit; varLimit += trialSettings.varLimitStep) {    //Each variance limit
-                        for (int varCount = trialSettings.varLowerCount; varCount <= trialSettings.varUpperCount; varCount++) {       //Each variance count
 
-                            //Setup the arrays to store the points for drawing
-                            List<Point> trialPoints = new ArrayList<>();
-                            List<Point> finalPoints = new ArrayList<>();
+        for (int k = trialSettings.kLowerValue; k <= trialSettings.kUpperValue; k++) {      //Each K value
+            for (DistanceMeasure distMeasure : trialSettings.getDistanceMeasure()) {      //Each Distance measure
+                for (double varLimit = trialSettings.varLowerLimit; varLimit <= trialSettings.varUpperLimit; varLimit += trialSettings.varLimitStep) {    //Each variance limit
+                    for (int varCount = trialSettings.varLowerCount; varCount <= trialSettings.varUpperCount; varCount++) {       //Each variance count
 
-                            //Setup the sub-folders and filenames
-                            File trialPath;
-                            File estimatesPath;
-                            File resultsFile;
-                            String filename;
+                        //Setup the arrays to store the points for drawing
+                        List<Point> trialPoints = new ArrayList<>();
+                        List<Point> finalPoints = new ArrayList<>();
 
+                        //Setup the sub-folders and filenames
+                        File trialPath;
+                        File estimatesPath;
+                        File resultsFile;
+                        String filename;
+
+                        if (trialSettings.isVariance) {
+                            //logger.info(String.format("Trial: %s-%s-%s-%s", k, distMeasure, varLimit, varCount));
+                            trialPath = new File(workingPath, String.format("%s-%s-%s-%s", k, distMeasure, varLimit, varCount));
+                            estimatesPath = new File(trialPath, "estimates");
+                            resultsFile = new File(trialPath, String.format("%s-%s-%s-%s-%s%s", FILE_ROOT, k, distMeasure, varLimit, varCount, FILE_EXTENSION));
+                            filename = String.format("%s-%s-%s-%s-%s", ROUTE_ROOT, k, distMeasure, varLimit, varCount);
+                        } else {
+                            //logger.info(String.format("Trial: %s-%s", k, distMeasure));
+                            trialPath = new File(workingPath, String.format("%s-%s", k, distMeasure));
+                            estimatesPath = new File(trialPath, "estimates");
+                            resultsFile = new File(trialPath, String.format("%s-%s-%s%s", FILE_ROOT, k, distMeasure, FILE_EXTENSION));
+                            filename = String.format("%s-%s-%s", ROUTE_ROOT, k, distMeasure);
+                        }
+
+                        trialPath.mkdir();
+                        estimatesPath.mkdir();
+
+                        //Open the output file for the results
+                        try (BufferedWriter writer = new BufferedWriter(new FileWriter(resultsFile))) {
+
+                            //store the settings for this execution of the algorithm                                
+                            KNNExecuteSettings executeSettings;
                             if (trialSettings.isVariance) {
-                                //logger.info(String.format("Trial: %s-%s-%s-%s", k, distMeasure, varLimit, varCount));
-                                trialPath = new File(workingPath, String.format("%s-%s-%s-%s", k, distMeasure, varLimit, varCount));
-                                estimatesPath = new File(trialPath, "estimates");
-                                resultsFile = new File(trialPath, String.format("%s-%s-%s-%s-%s%s", FILE_ROOT, k, distMeasure, varLimit, varCount, FILE_EXTENSION));
-                                filename = String.format("%s-%s-%s-%s-%s", ROUTE_ROOT, k, distMeasure, varLimit, varCount);
+                                executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator, varLimit, varCount);
                             } else {
-                                //logger.info(String.format("Trial: %s-%s", k, distMeasure));
-                                trialPath = new File(workingPath, String.format("%s-%s", k, distMeasure));
-                                estimatesPath = new File(trialPath, "estimates");
-                                resultsFile = new File(trialPath, String.format("%s-%s-%s%s", FILE_ROOT, k, distMeasure, FILE_EXTENSION));
-                                filename = String.format("%s-%s-%s", ROUTE_ROOT, k, distMeasure);
+                                executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator);
                             }
 
-                            trialPath.mkdir();
-                            estimatesPath.mkdir();
+                            KNNTrialResults trialResults = new KNNTrialResults(executeSettings, trialName);
+                            //iterate over each point in the trial
+                            for (KNNTrialPoint trialPoint : trialList) {
+                                KNNPointResult result = execute(estimatesPath, floorPlanFile, trialPoint, offlineMap, roomInfo, executeSettings, trialSettings.isEstimateImages);
+                                trialResults.addResult(result);
+                                trialPoints.add(result.getTrialLocation().getDrawPoint());
+                                finalPoints.add(result.getFinalLocation().getDrawPoint());
+                            }
 
-                            //Open the output file for the results
-                            try (BufferedWriter writer = new BufferedWriter(new FileWriter(resultsFile))) {
+                            //Write the results to file.
+                            trialResults.printResults(writer);
 
-                                //store the settings for this execution of the algorithm                                
-                                KNNExecuteSettings executeSettings;
-                                if (trialSettings.isVariance) {
-                                    executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator, varLimit, varCount);
-                                } else {
-                                    executeSettings = new KNNExecuteSettings(k, distMeasure, fieldSeparator);
-                                }
-
-                                KNNTrialResults trialResults = new KNNTrialResults(executeSettings, trialName);
-                                //iterate over each point in the trial
-                                for (KNNTrialPoint trialPoint : trialList) {
-                                    KNNPointResult result = execute(estimatesPath, floorPlanFile, trialPoint, offlineMap, roomInfo, executeSettings, trialSettings.isEstimateImages);
-                                    trialResults.addResult(result);
-                                    trialPoints.add(result.getTrialLocation().getDrawPoint());
-                                    finalPoints.add(result.getFinalLocation().getDrawPoint());
-                                }
-
-                                //Write the results to file.
-                                trialResults.printResults(writer);
-                                trialResults.printSummary(summaryWriter);
-                                allTrialResults.add(trialResults);
+                            allTrialResults.add(trialResults);
                                 //draw the trial route to the floor plan
-                                //if (trialSettings.isPrintImages) {
-                                DisplayRoute.print(trialPath, filename, floorPlanFile, trialPoints, finalPoints);
-                                //}
+                            //if (trialSettings.isPrintImages) {
+                            DisplayRoute.print(trialPath, filename, floorPlanFile, trialPoints, finalPoints);
+                            //}
 
-                            } catch (IOException ex) {
-                                logger.error("Error writing trial {} to file: {}", filename, ex);
-                            }
+                        } catch (IOException ex) {
+                            logger.error("Error writing trial {} to file: {}", filename, ex);
                         }
                     }
                 }
             }
+        }
+
+        //Summary of the trials in one file.
+        try (BufferedWriter summaryWriter = new BufferedWriter(new FileWriter(summaryFile))) {
+            KNNTrialResults.printSummaryHeading(summaryWriter, fieldSeparator, trialSettings.isVariance);
+            for (KNNTrialResults trialResults : allTrialResults) {
+                trialResults.printSummary(summaryWriter);
+            }
         } catch (IOException ex) {
             logger.error("Error writing trial {} to file: {}", summaryFile, ex);
         }
+                
         return allTrialResults;
     }
 

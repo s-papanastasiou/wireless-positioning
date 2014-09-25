@@ -37,7 +37,7 @@ public class KNNFramework {
     /**
      * @param args the command line arguments
      */
-    private final static String[] options = {"Exit", "Instructions", "Change Working Directory", "Change Field Separator", "Load Default Filesnames", "Load BSSID Filter", "Load Radio Map", "Load Trial", "Load Floor Plan", "Print Data Grid", "Print Heatmap", "Print Matchmap", "Test Algorithms"};
+    private final static String[] options = {"Exit", "Instructions", "Change Working Directory", "Change Field Separator", "Load Default Filesnames", "Load BSSID Filter", "Load Radio Map", "Load Trial", "Load Floor Plan", "Print Data Grid", "Print Heatmap", "Print Match/Value maps", "Test Algorithms"};
     private final static String defaultFilterBSSID = "FilterBSSID.txt";
     private final static String defaultRadioMap = "RSSISurveyData.csv";
     private final static String defaultTrial = "RSSITrialData.csv";
@@ -70,6 +70,7 @@ public class KNNFramework {
         boolean isRunning = true;
 
         //assign path to the user's working directory
+        //File workingPath = new File("C:\\WifiFiles");
         File workingPath = new File(System.getProperty("user.dir"));
 
         String fieldSeparator = DEFAULT_FIELD_SEPARATOR;
@@ -140,10 +141,10 @@ public class KNNFramework {
                         break;
                     case 11:  //Print variance maps
                         if (settings.isPrintReady()) {
-                            Double rangeValue = Menus.Value("Enter the range value for matches:", 0.0); 
-                            Double lowerBound = Menus.Value("Enter the range value for matches:", -90.0);
-                            Double upperBound = Menus.Value("Enter the range value for matches:", -90.0);
-                            Double step = Menus.Value("Enter the range value for matches:", 0.00001);
+                            Double rangeValue = Menus.Value("Enter the range for matches:", 0.0); 
+                            Double lowerBound = Menus.Value("Enter the lower bound:", -90.0);
+                            Double upperBound = Menus.Value("Enter the upper bound:", -10.0);
+                            Double step = Menus.Value("Enter the step between values:", 0.00001);
                             boolean isOrientationMerged = Menus.Choice("Merge the orientations together (W ref)?");
                             boolean isBSSIDMerged = Menus.Choice("Merge BSSIDs where first five hex pairs match?");
                             MatchMap.print(workingPath, "MatchMap", settings.getFloorPlan(), settings.getRadioMapList(), settings.getRoomInfo(), rangeValue, isBSSIDMerged, isOrientationMerged, fieldSeparator);

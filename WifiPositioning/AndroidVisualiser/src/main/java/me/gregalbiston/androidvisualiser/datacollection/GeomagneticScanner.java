@@ -12,6 +12,8 @@ import datastorage.ResultLocation;
 import general.Locate;
 import general.Point;
 import java.util.List;
+
+import general.ResultPoint;
 import me.gregalbiston.androidvisualiser.VisActivity;
 import me.gregalbiston.androidvisualiser.dataload.DataManager;
 import me.gregalbiston.androidvisualiser.dataload.SettingsController;
@@ -57,7 +59,6 @@ public class GeomagneticScanner {
         KNNFloorPoint scanPoint = convertToFloorPoint(event, location);
 
         List<ResultLocation> estimates;
-        Point finalPoint;
 
         // find list of estimates
         estimates = Positioning.estimate(scanPoint, dataManager.getGeomagneticRadioMap(), settingsController.getDistMeasure());
@@ -69,7 +70,7 @@ public class GeomagneticScanner {
             estimates = Positioning.nearestEstimates(estimates, settingsController.getkLimit());
 
         //determine the onscreen point based on nearest estimates
-        finalPoint = Locate.findUnweightedCentre(estimates);       
+        ResultPoint finalPoint = Locate.findInvertedWeightedCentre(estimates, false);
 
         //transfer the current settings
         PositioningSettings positioningSettings;

@@ -13,6 +13,8 @@ import general.Locate;
 import general.Point;
 import java.util.ArrayList;
 import java.util.List;
+
+import general.ResultPoint;
 import me.gregalbiston.androidvisualiser.VisActivity;
 import me.gregalbiston.androidvisualiser.dataload.DataManager;
 import me.gregalbiston.androidvisualiser.dataload.SettingsController;
@@ -66,7 +68,7 @@ public class RSSIScanner {
             scanPoint = scanPointUnfiltered;
 
         List<ResultLocation> estimates;
-        Point finalPoint;
+        ResultPoint finalPoint;
 
         //skip positioning process if ssid filter has removed all bssids
         if (!scanPoint.getAttributes().isEmpty()) {
@@ -82,10 +84,10 @@ public class RSSIScanner {
 
             //TODO Check whether this should be weighted or unweighted.
             //determine the onscreen point based on nearest estimates
-            finalPoint = Locate.findUnweightedCentre(estimates);
+            finalPoint = Locate.findInvertedWeightedCentre(estimates, false);
         } else {
             estimates = new ArrayList<>();
-            finalPoint = new Point(-1, -1);
+            finalPoint = new ResultPoint(screenPoint, new Point(-1, -1));
         }       
 
         //transfer the current settings

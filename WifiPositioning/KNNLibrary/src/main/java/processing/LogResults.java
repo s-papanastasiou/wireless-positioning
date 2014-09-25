@@ -58,7 +58,7 @@ public class LogResults {
         writer.newLine();
     } 
      
-    public static String logRSSI(KNNFloorPoint scanPoint, general.Point screenPoint, List<ResultLocation> estimates, general.Point finalPoint, KNNFloorPoint scanPointUnfiltered, List<String> filterBSSIDs, PositioningSettings positioningSettings){
+    public static String logRSSI(KNNFloorPoint scanPoint, general.Point screenPoint, List<ResultLocation> estimates, general.ResultPoint finalPoint, KNNFloorPoint scanPointUnfiltered, List<String> filterBSSIDs, PositioningSettings positioningSettings){
         String message = "";
         String endl = System.getProperty("line.separator");
         
@@ -134,17 +134,17 @@ public class LogResults {
         message +="</nearest_estimates>" + endl;
 
         //Location Estimate
-        if (finalPoint.getX() == -1) {
+        if (finalPoint.getGlobal().getX() == -1) {
             message +="<location x=\"\" y=\"\" />" + endl;
         } else {
-            message +=String.format("<location x=\"%s\" y=\"%s\" />", finalPoint.getX(), finalPoint.getY()) + endl;
+            message +=String.format("<location x=\"%s\" y=\"%s\" />", finalPoint.getGlobal().getX(), finalPoint.getGlobal().getY()) + endl;
         }
         message +="</scan_entry>" + endl;
                         
         return message;
     } 
     
-    public static String logMagnetic(KNNFloorPoint scanPoint, general.Point screenPoint, List<ResultLocation> estimates, general.Point finalPoint, PositioningSettings positioningSettings){
+    public static String logMagnetic(KNNFloorPoint scanPoint, general.Point screenPoint, List<ResultLocation> estimates, general.ResultPoint finalPoint, PositioningSettings positioningSettings){
         String message = "";
         String endl = System.getProperty("line.separator");
         
@@ -191,10 +191,10 @@ public class LogResults {
         message +="</nearest_estimates>" + endl;
 
         //Location Estimate
-        if (finalPoint.getX() == -1) {
+        if (finalPoint.getGlobal().getX() == -1) {
             message +="<location x=\"\" y=\"\" />" + endl;
         } else {
-            message +=String.format("<location x=\"%s\" y=\"%s\" />", finalPoint.getX(), finalPoint.getY()) + endl;
+            message +=String.format("<location x=\"%s\" y=\"%s\" />", finalPoint.getGlobal().getX(), finalPoint.getGlobal().getY()) + endl;
         }
         message +="</scan_entry>" + endl;
                         

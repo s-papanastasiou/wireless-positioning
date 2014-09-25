@@ -83,6 +83,9 @@ public class DetectorActivity extends Activity {
         } else {
             isConnected = false;
         }
+
+        Button changeAccount = (Button) findViewById(R.id.buttonChangeAccount);
+        changeAccount.setEnabled(isConnected);
     }
 
     public void startScan(View view) {

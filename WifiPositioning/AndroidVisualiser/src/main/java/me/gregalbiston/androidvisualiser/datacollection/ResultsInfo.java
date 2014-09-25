@@ -16,10 +16,10 @@ import java.util.List;
  * Parameter for PointsResults function add.
  */
 public class ResultsInfo {
-    public Point screenPoint;
-    public ResultPoint finalPoint;
-    public List<? extends Location> estimatePoints;
-    public String message;
+    public final Point screenPoint;
+    public final ResultPoint finalPoint;
+    public final List<? extends Location> estimatePoints;
+    public final String message;
 
     public ResultsInfo(Point screenPoint, ResultPoint finalPoint, List<? extends Location> estimatePoints, String message) {
         this.screenPoint = screenPoint;

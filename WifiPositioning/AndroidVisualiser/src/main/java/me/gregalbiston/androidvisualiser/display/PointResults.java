@@ -62,7 +62,7 @@ public class PointResults {
 
     public void add(ResultsInfo results) {
         scanPoints.add(results.screenPoint);
-        finalPoints.add(results.finalPoint);
+        finalPoints.add(results.finalPoint.getDraw());
         isNew = false;
 
         this.estimates = results.estimatePoints;
